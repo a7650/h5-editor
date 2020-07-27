@@ -1,0 +1,79 @@
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+@mixin scrollBar {
+  &::-webkit-scrollbar-track-piece {
+    background: #dddddd;
+  }
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #a7a7a7;
+    border-radius: 20px;
+  }
+}
+
+@mixin relative {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+@mixin container($top: 0, $right: 0, $bottom: 0, $left: 0, $position: absolute) {
+  position: absolute;
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
+  box-sizing: border-box;
+}
+
+@mixin extend-click() {
+  //扩展点击区域
+  position: relative;
+  &:before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+  }
+}
+
+@mixin no-wrap() {
+  //不换行
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  // padding-top: 1px;
+}
+
+@mixin wrap {
+  white-space: wrap;
+  word-break: break-all;
+}
+
+@mixin page-container {
+  width: 100%;
+  min-height: 100%;
+  background-color: #fff;
+  border-radius: 2px;
+  box-sizing: border-box;
+  padding: 10px;
+  min-width: 860px;
+  box-shadow: 0 0 6px rgba($color: #000000, $alpha: 0.02);
+}
+
+@mixin center {
+  display: flex;
+  justify-content: center;
+}

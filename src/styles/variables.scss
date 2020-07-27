@@ -1,0 +1,41 @@
+//color theme
+$colorTheme: rgb(45, 81, 204);
+$colorThemeD: rgb(41, 70, 168);
+$colorThemeDD: #263445;
+$colorThemeL: rgb(226, 230, 243);
+$colorSideBarBg: rgb(53, 55, 68);
+$colorBg1: rgb(245, 248, 253); //偏蓝的底色
+$colorBg2: rgb(244, 244, 244); //偏灰的底色
+
+$colorSuccess: #67c23a;
+$colorWarn: #e6a23c;
+$colorDanger: #f56c6c;
+$colorError: #f56c6c;
+$colorMoney: #ff6600;
+
+//color text
+$colorText: #606266;
+$colorTextD: #303133;
+$colorTextL: #909399;
+
+//color border
+$colorBorder: #dcdfe6;
+
+:export {
+  colorTheme: $colorTheme;
+  colorThemeD: $colorThemeD;
+  colorThemeDD: $colorThemeDD;
+  colorThemeL: $colorThemeL;
+  colorSideBarBg: $colorSideBarBg;
+  colorBg1: $colorBg1;
+  colorBg2: $colorBg2;
+  colorSuccess: $colorSuccess;
+  colorWarn: $colorWarn;
+  colorDanger: $colorDanger;
+  colorError: $colorError;
+  colorMoney: $colorMoney;
+  colorText: $colorText;
+  colorTextD: $colorTextD;
+  colorTextL: $colorTextL;
+  colorBorder: $colorBorder;
+}
