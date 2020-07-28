@@ -258,6 +258,12 @@ export default {
     h(val) {
       this.height = val
     },
+    x(val) {
+      this.left = val
+    },
+    y(val) {
+      this.top = val
+    },
     active(val) {
       this.enabled = val
     },

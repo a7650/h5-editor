@@ -1,48 +1,62 @@
 <template>
   <div id="image-control" class="image-control">
     <el-collapse v-model="activeNames">
-      <el-collapse-item title="图片" name="image">
-        图片
+      <el-collapse-item name="image">
+        <template #title>
+          <div class="header">
+            图片
+          </div>
+        </template>
+        <div class="setting-content">
+          #tupian
+        </div>
       </el-collapse-item>
-      <el-collapse-item title="位置" name="position">
-        <div class="setting-item">
-          <div class="title">
-            宽度
+      <el-collapse-item name="position">
+        <template #title>
+          <div class="header">
+            位置
           </div>
-          <div class="content">
-            {{ dragInfo.w }}
+        </template>
+        <div class="setting-content">
+          <div class="setting-item">
+            <div class="title">
+              宽度
+            </div>
+            <div class="content">
+              <input v-model.number="inDragInfo.w" type="number">
+            </div>
           </div>
-        </div>
-        <div class="setting-item">
-          <div class="title">
-            高度
+          <div class="setting-item">
+            <div class="title">
+              高度
+            </div>
+            <div class="content">
+              <input v-model.number="inDragInfo.h" type="number">
+            </div>
           </div>
-          <div class="content">
-            {{ dragInfo.h }}
+          <div class="setting-item">
+            <div class="title">
+              左侧距离
+            </div>
+            <div class="content">
+              <input v-model.number="inDragInfo.x" type="number">
+            </div>
           </div>
-        </div>
-        <div class="setting-item">
-          <div class="title">
-            左侧距离
+          <div class="setting-item">
+            <div class="title">
+              顶部距离
+            </div>
+            <div class="content">
+              <input v-model.number="inDragInfo.y" type="number">
+            </div>
           </div>
-          <div class="content">
-            {{ dragInfo.x }}
-          </div>
-        </div>
-        <div class="setting-item">
-          <div class="title">
-            顶部距离
-          </div>
-          <div class="content">
-            {{ dragInfo.y }}
-          </div>
-        </div>
-        <div class="setting-item">
-          <div class="title">
-            旋转角度
-          </div>
-          <div class="content">
-            {{ dragInfo.rotateZ }}
+          <div class="setting-item">
+            <div class="title">
+              旋转角度
+            </div>
+            <div class="content">
+              <input v-model.number="inDragInfo.rotateZ" type="number">
+            </div>
           </div>
         </div>
       </el-collapse-item>
@@ -68,24 +82,47 @@ export default {
   },
   data() {
     return {
-      activeNames: []
+      activeNames: ['image', 'position'],
+      inDragInfo: {}
     }
+  },
+  watch: {
+    inDragInfo: {
+      handler() {
+        this.$emit('dragInfoChange', this.inDragInfo)
+      },
+      deep: true
+    }
+  },
+  created() {
+    this.inDragInfo = this.$deepCopy(this.dragInfo)
   },
   methods: {}
 }
 </script>
 <style lang="scss" scoped>
-.image-control{
+.image-control {
   width: 100%;
-  box-sizing: border-box;
-  padding: 20px;
-  .setting-item{
-    background-color: rgb(161, 161, 161);
-    .title{
-
+  .header {
+    box-sizing: border-box;
+    padding: 0 20px;
+  }
+  .setting-content {
+    background-color: rgb(238, 238, 238);
+    box-sizing: border-box;
+    padding: 0 20px 10px;
+  }
+  .setting-item {
+    .title {
     }
-    .content{
-
+    .content {
+      input {
+        width: 100%;
+        height: 34px;
+        border: 1px solid rgb(117, 117, 117);
+        box-sizing: border-box;
+        padding: 0 4px;
+      }
     }
   }
 }

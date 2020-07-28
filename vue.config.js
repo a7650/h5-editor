@@ -33,7 +33,7 @@ const webpackConfig = {
     resolve: {
       alias: {
         '@': resolve('src'),
-        'poster': resolve('src/views/poster')
+        'poster': resolve('src/views/posterEditor')
       }
     },
     plugins: [

@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { mapMutations } from '../../poster.vuex'
+import { mapMutations } from 'poster/poster.vuex'
 import uniqueId from 'lodash/uniqueId'
 export default {
   data() {

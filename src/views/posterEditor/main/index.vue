@@ -38,7 +38,6 @@ export default {
       const panelRef = this.$refs.mainPanel.$el
       this.maskBorderWidth = `${(mainRef.clientHeight - panelRef.clientHeight) /
         2}px ${(mainRef.clientWidth - panelRef.clientWidth) / 2}px`
-      console.log(this.maskBorderWidth)
     }
   }
 }
