@@ -2,7 +2,7 @@
   <div class="extend-side-bar">
     <ul class="list">
       <el-tooltip effect="dark" content="图层" placement="left">
-        <li class="item" @click="openLayer">
+        <li class="item" :class="{active:layerPanelOpened}" @click="openLayer">
           <i class="el-icon-copy-document" />
         </li>
       </el-tooltip>
@@ -11,9 +11,13 @@
 </template>
 
 <script>
+import { mapState } from 'poster/poster.vuex'
 export default {
   data() {
     return {}
+  },
+  computed: {
+    ...mapState(['layerPanelOpened'])
   },
   methods: {
     // 打开图层面板
@@ -37,7 +41,7 @@ export default {
     i {
       font-size: 24px;
     }
-    &:hover {
+    &:hover,&.active {
       background-color: $colorTheme;
       color: #fff;
     }

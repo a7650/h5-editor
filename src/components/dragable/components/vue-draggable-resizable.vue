@@ -9,7 +9,8 @@
       active: enabled,
       dragging: dragging,
       resizing: resizing,
-      rotating: rotating
+      rotating: rotating,
+      lock: lock
     }"
     @mousedown.stop="elmDown"
     @touchstart.prevent.stop="elmDown"
@@ -67,6 +68,10 @@ export default {
     rotatable: {
       type: Boolean,
       default: true
+    },
+    lock: {
+      type: Boolean,
+      default: false
     },
     w: {
       type: [Number, String],
@@ -138,7 +143,7 @@ export default {
       },
       validator: function(val) {
         var s = new Set(['tl', 'tm', 'tr', 'mr', 'br', 'bm', 'bl', 'ml'])
-        return new Set(val.filter(h => s.has(h))).size === val.length
+        return new Set(val.filter((h) => s.has(h))).size === val.length
       }
     },
     cursors: {
@@ -202,7 +207,8 @@ export default {
       rotating: false,
       enabled: this.active,
       handle: null,
-      zIndex: this.z
+      zIndex: this.z,
+      passive: false
     }
   },
   computed: {
@@ -314,11 +320,7 @@ export default {
       this.deselect,
       true
     )
-    document.documentElement.addEventListener(
-      'touchstart',
-      this.handleUp,
-      true
-    )
+    document.documentElement.addEventListener('touchstart', this.handleUp, true)
     this.elmX = parseInt(this.$el.style.left)
     this.elmY = parseInt(this.$el.style.top)
     this.elmW = this.$el.offsetWidth || this.$el.clientWidth
@@ -336,11 +338,7 @@ export default {
       this.deselect,
       true
     )
-    document.documentElement.removeEventListener(
-      'mouseup',
-      this.handleUp,
-      true
-    )
+    document.documentElement.removeEventListener('mouseup', this.handleUp, true)
     // touch events bindings removed
     document.documentElement.addEventListener(
       'touchmove',
@@ -352,11 +350,7 @@ export default {
       this.deselect,
       true
     )
-    document.documentElement.addEventListener(
-      'touchstart',
-      this.handleUp,
-      true
-    )
+    document.documentElement.addEventListener('touchstart', this.handleUp, true)
   },
   methods: {
     reviewDimensions() {
@@ -377,6 +371,9 @@ export default {
       this.$emit('resizing', this.left, this.top, this.width, this.height)
     },
     elmDown(e) {
+      if (this.lock) {
+        return
+      }
       const target = e.target || e.srcElement
       if (this.$el.contains(target)) {
         if (
@@ -391,19 +388,24 @@ export default {
         ) {
           return
         }
-        this.reviewDimensions()
-        if (!this.enabled) {
-          this.enabled = true
-          this.$emit('activated')
-          this.$emit('update:active', true)
-        }
-        if (this.draggable) {
-          this.lastElmX = this.elmX
-          this.lastElmY = this.elmY
-          this.lastElmW = this.elmW
-          this.lastElmH = this.elmH
-          this.dragging = true
-        }
+        // debugger
+        this.elDownHandler()
+      }
+    },
+    elDownHandler(isPassive /** 是否被动触发，即程序触发 */) {
+      this.passive = !!isPassive
+      this.reviewDimensions()
+      if (!this.enabled) {
+        this.enabled = true
+        this.$emit('activated')
+        this.$emit('update:active', true)
+      }
+      if (this.draggable) {
+        this.lastElmX = this.elmX
+        this.lastElmY = this.elmY
+        this.lastElmW = this.elmW
+        this.lastElmH = this.elmH
+        this.dragging = true
       }
     },
     deselect(e) {
@@ -447,12 +449,14 @@ export default {
       this.lastElmW = this.elmW
       this.lastElmH = this.elmH
       this.resizing = true
+      this.passive = false
     },
     handleRotateDown(handle, e) {
       const { top, left, width, height } = this.$el.getBoundingClientRect()
       this.lastCenterX = window.pageXOffset + left + width / 2
       this.lastCenterY = window.pageYOffset + top + height / 2
       this.rotating = true
+      this.passive = false
     },
     handleDown(handle, e) {
       this.handle = handle
@@ -514,7 +518,8 @@ export default {
       window.requestAnimationFrame(animate)
     },
     handleMove(e) {
-      if (!this.enabled) {
+      console.log(this.passive)
+      if (!this.enabled || this.passive) {
         return
       }
       const { x: mouseX, y: mouseY } = this.getMouseCoordinate(e)
@@ -590,8 +595,7 @@ export default {
           if (this.elmY + dY < this.parentY) {
             this.mouseOffY = dY - (diffY = this.parentY - this.elmY)
           } else if (this.elmY + this.elmH + dY > this.parentH) {
-            this.mouseOffY =
-              dY - (diffY = this.parentH - this.elmY - this.elmH)
+            this.mouseOffY = dY - (diffY = this.parentH - this.elmY - this.elmH)
           }
         }
         this.elmX += diffX
@@ -625,6 +629,7 @@ export default {
         this.rotating = false
         this.$emit('rotatestop', this.rotate)
       }
+      console.log(this.resizing, this.rotating, this.dragging)
       this.elmX = this.left
       this.elmY = this.top
     },
@@ -694,17 +699,18 @@ export default {
   box-sizing: border-box;
   border: 1px solid transparent;
   &.dragging,
-  &.active {
+  &.active,
+  &.lock {
     user-select: none;
   }
-  &:hover{
-    border:1px dashed $colorTheme;
+  &:hover {
+    border: 1px dashed $colorTheme;
   }
-  &.active{
+  &.active {
     border-color: $colorTheme;
   }
   &.active:before {
-    content: "";
+    content: '';
     position: absolute;
     top: -1px;
     right: -1px;
@@ -737,7 +743,7 @@ export default {
   text-align: center;
   cursor: url(../rotate.png) -8 -8, pointer;
   &.rotating::before {
-    content: "";
+    content: '';
     display: block;
     position: absolute;
     top: -30px;
@@ -747,8 +753,8 @@ export default {
   }
 }
 @media only screen and (max-width: 768px) {
-  [class*="handle-"]:before {
-    content: "";
+  [class*='handle-']:before {
+    content: '';
     left: -10px;
     right: -10px;
     bottom: -10px;

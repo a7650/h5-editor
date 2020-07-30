@@ -3,6 +3,7 @@
     <component
       :is="item.componentName"
       v-for="item in posterItems"
+      v-show="item.visible"
       :key="item.id"
       :item="item"
     />
@@ -34,7 +35,7 @@ export default {
   left: 50%;
   margin-left: -169px;
   user-select: none;
-  box-shadow: 0 0 6px rgba($color: #000000, $alpha: .1);
+  box-shadow: 0 0 6px rgba($color: #000000, $alpha: 0.1);
   .poster-item-container {
     /* position: absolute;
     top: 0; */

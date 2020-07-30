@@ -43,9 +43,13 @@ export default {
     addImage({ src }) {
       this.ADD_ITEM({
         type: 'image',
+        typeLabel: '图片',
         id: uniqueId('image-'),
         componentName: 'image-widget',
-        src
+        icon: 'el-icon-picture',
+        src,
+        lock: false,
+        visible: true
       })
     }
   }
