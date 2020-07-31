@@ -79,11 +79,6 @@ export default {
       }
     }
   },
-  watch: {
-    inPosterItems() {
-      console.log(this.inPosterItems, this.posterItems)
-    }
-  },
   methods: {
     ...mapMutations(['REPLACE_POSTER_ITEMS']),
     ...mapActions([

@@ -31,6 +31,7 @@ const webpackConfig = {
   configureWebpack: {
     name: name,
     resolve: {
+      extensions: ['.ts', '.tsx', '.js', '.json'],
       alias: {
         '@': resolve('src'),
         'poster': resolve('src/views/posterEditor')

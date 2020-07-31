@@ -11,14 +11,14 @@
 </template>
 
 <script>
-import { mapMutations } from 'poster/poster.vuex'
-import uniqueId from 'lodash/uniqueId'
+import { mapActions } from 'poster/poster.vuex'
+import { ImageWidget } from '../../widgetHelpers'
 export default {
   data() {
     return {}
   },
   methods: {
-    ...mapMutations(['ADD_ITEM']),
+    ...mapActions(['addItem']),
     selectImgHandler() {
       this.$refs.input.click()
     },
@@ -41,16 +41,7 @@ export default {
       inputNode.value = ''
     },
     addImage({ src }) {
-      this.ADD_ITEM({
-        type: 'image',
-        typeLabel: '图片',
-        id: uniqueId('image-'),
-        componentName: 'image-widget',
-        icon: 'el-icon-picture',
-        src,
-        lock: false,
-        visible: true
-      })
+      this.addItem(new ImageWidget({ src }))
     }
   }
 }

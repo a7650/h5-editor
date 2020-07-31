@@ -1,4 +1,6 @@
 import * as MTS from './poster.mutations'
+import { Message } from 'element-ui'
+import { Widget } from 'poster/widgetHelpers'
 
 const state = {
     posterItems: [], // 组件列表
@@ -48,7 +50,9 @@ const mutations = {
 
 const actions = {
     addItem({ commit }, item) {
-        commit(MTS.ADD_ITEM, item)
+        if (item instanceof Widget) {
+            commit(MTS.ADD_ITEM, item)
+        }
     },
     removeItem({ commit, getters }, item) {
         if (item.lock) {

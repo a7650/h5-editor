@@ -518,7 +518,6 @@ export default {
       window.requestAnimationFrame(animate)
     },
     handleMove(e) {
-      console.log(this.passive)
       if (!this.enabled || this.passive) {
         return
       }
@@ -629,7 +628,6 @@ export default {
         this.rotating = false
         this.$emit('rotatestop', this.rotate)
       }
-      console.log(this.resizing, this.rotating, this.dragging)
       this.elmX = this.left
       this.elmY = this.top
     },
