@@ -12,7 +12,7 @@
     :lock="item.lock"
     :active.sync="isActive"
     class="drag-item"
-    deselect-cancel="#image-control"
+    deselect-cancel=".poster-editor_deactivated-ignore"
     @activated="activated"
     @deactivated="deactivated"
     @dragging="onDrag"
@@ -66,8 +66,14 @@ export default {
   },
   watch: {
     activeItemIds(newVal) {
-      if (newVal.includes(this.item.id) && !this.isActive) {
-        this.activated()
+      if (newVal.includes(this.item.id)) {
+        if (!this.isActive) {
+          this.activated()
+        }
+      } else {
+        if (this.isActive) {
+          this.deactivated()
+        }
       }
     }
   },

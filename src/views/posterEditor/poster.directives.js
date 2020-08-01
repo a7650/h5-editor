@@ -1,6 +1,6 @@
 // import clickoutside from 'element-ui/src/utils/clickoutside'
 
-export { clickoutside } from 'element-ui/src/utils/clickoutside'
+export { default as clickoutside } from 'element-ui/src/utils/clickoutside'
 
 let activeViewZidx = 99
 

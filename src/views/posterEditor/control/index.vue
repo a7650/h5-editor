@@ -1,5 +1,5 @@
 <template>
-  <div class="poster-editor-control">
+  <div class="poster-editor-control poster-editor_deactivated-ignore">
     <portal-target name="widgetControl" />
   </div>
 </template>

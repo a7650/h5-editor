@@ -64,15 +64,15 @@ const actions = {
         commit(MTS.REMOVE_ITEM, item)
     },
     replacePosterItems({ commit }, items) {
-        commit(MTS.REPLACE_POSTER_ITEMS, items.filter(i => !i.lock))
+        commit(MTS.REPLACE_POSTER_ITEMS, items)
         commit(MTS.REPLACE_ACTIVE_ITEMS, [])
     },
     addActiveItem({ commit, getters }, item) {
-        if (item.lock || item.visible) {
+        if (item.lock || !item.visible) {
             return
         }
         if (getters.activeItemIds.includes(item.id)) {
-            commit(MTS.REMOVE_ACTIVE_ITEM, item)
+            return
         }
         commit(MTS.ADD_ACTIVE_ITEM, item)
     },
@@ -81,7 +81,7 @@ const actions = {
     },
     // 切换组件的选中状态
     toggleActiveItem({ commit, getters }, item) {
-        if (item.lock || item.visible) {
+        if (item.lock || !item.visible) {
             return
         }
         if (!getters.posterItemIds.includes(item.id)) {
@@ -93,8 +93,13 @@ const actions = {
             commit(MTS.ADD_ACTIVE_ITEM, item)
         }
     },
-    replaceActiveItems({ commit }, items) {
-        commit(MTS.REPLACE_ACTIVE_ITEMS, items.filter(i => !i.lock))
+    replaceActiveItems({ commit, dispatch }, items) {
+        if (items.length === 1) {
+            commit(MTS.REPLACE_ACTIVE_ITEMS, [])
+            dispatch('addActiveItem', items[0])
+        } else {
+            commit(MTS.REPLACE_ACTIVE_ITEMS, items.filter(i => !i.lock))
+        }
     },
     setLayerPanel({ commit }, flag) {
         commit(MTS.SET_LAYER_PANEL, flag)

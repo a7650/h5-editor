@@ -1,5 +1,5 @@
 <template>
-  <div id="image-control" class="image-control">
+  <div class="image-control">
     <el-collapse v-model="activeNames">
       <el-collapse-item name="image">
         <template #title>
