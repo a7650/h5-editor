@@ -1,5 +1,16 @@
 <template>
-  <div class="main-panel">
+  <div
+    class="main-panel"
+    :style="{
+      width: canvasSize.width + 'px',
+      height: canvasSize.height + 'px'
+    }"
+  >
+    <background-widget
+      v-if="background"
+      :key="background.id"
+      :item="background"
+    />
     <component
       :is="item.componentName"
       v-for="item in posterItems"
@@ -12,22 +23,27 @@
 
 <script>
 import imageWidget from './widgets/imageWidget'
-import { mapState } from '../poster.vuex'
+import backgroundWidget from './widgets/backgroundWidget'
+import textWidget from './widgets/textWidget'
+import { mapState, mapMutations } from '../poster.vuex'
 export default {
-  components: { imageWidget },
+  components: { imageWidget, backgroundWidget, textWidget },
   data() {
     return {}
   },
   computed: {
-    ...mapState(['posterItems'])
+    ...mapState(['posterItems', 'canvasSize', 'background'])
   },
-  methods: {}
+  methods: {
+    ...mapMutations(['SET_CANVAS_SIZE'])
+  },
+  created() {
+    this.SET_CANVAS_SIZE({ width: 338, height: 600 })
+  }
 }
 </script>
 <style lang="scss" scoped>
 .main-panel {
-  width: 338px;
-  height: 600px;
   background-color: #fff;
   position: absolute;
   top: 50%;

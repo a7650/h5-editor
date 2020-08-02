@@ -1,6 +1,6 @@
 <template>
   <div
-    class="vdrr"
+    class="vdrr poster-editor-drag"
     :style="style"
     :class="{
       draggable: draggable,
@@ -413,20 +413,30 @@ export default {
       this.lastMouseX = mouseX
       this.lastMouseY = mouseY
       const target = e.target || e.srcElement
-      const regex = new RegExp('handle-([trmbl]{2})', '')
+      const classList = target.classList
       if (
-        this.deselectCancel &&
-        matchesSelectorToParentElements(target, this.deselectCancel)
+        this.enabled &&
+        (classList.contains('main-panel') ||
+          classList.contains('poster-editor-main'))
       ) {
-        return
+        this.enabled = false
+        this.$emit('deactivated')
+        this.$emit('update:active', false)
       }
-      if (!this.$el.contains(target) && !regex.test(target.className)) {
-        if (this.enabled) {
-          this.enabled = false
-          this.$emit('deactivated')
-          this.$emit('update:active', false)
-        }
-      }
+      // const regex = new RegExp('handle-([trmbl]{2})', '')
+      // if (
+      //   this.deselectCancel &&
+      //   matchesSelectorToParentElements(target, this.deselectCancel)
+      // ) {
+      //   return
+      // }
+      // if (!this.$el.contains(target) && !regex.test(target.className)) {
+      //   if (this.enabled) {
+      //     this.enabled = false
+      //     this.$emit('deactivated')
+      //     this.$emit('update:active', false)
+      //   }
+      // }
     },
     handleResizeDown(handle, e) {
       const fixed = {

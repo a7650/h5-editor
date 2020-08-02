@@ -14,15 +14,17 @@
       </li>
     </ul>
     <div v-if="current" class="widget-container">
-      <component :is="current.component" />
+      <component :is="current.component" :key="current.component" />
     </div>
   </div>
 </template>
 
 <script>
 import imageWidget from './widgets/imageWidget'
+import backgroundWidget from './widgets/backgroundWidget'
+import textWidget from './widgets/textWidget'
 export default {
-  components: { imageWidget },
+  components: { imageWidget, backgroundWidget, textWidget },
   data() {
     return {
       current: null,
@@ -32,6 +34,18 @@ export default {
           component: 'image-widget',
           name: '图片',
           icon: 'el-icon-picture'
+        },
+        {
+          type: 'background',
+          component: 'background-widget',
+          name: '背景',
+          icon: 'el-icon-s-grid'
+        },
+        {
+          type: 'text',
+          component: 'text-widget',
+          name: '文本',
+          icon: 'el-icon-s-order'
         }
       ]
     }
