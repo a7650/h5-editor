@@ -1,3 +1,5 @@
+export const SET_CANVAS_SIZE = 'SET_CANVAS_SIZE'
+export const ADD_BACKGROUND = 'ADD_BACKGROUND'
 export const ADD_ITEM = 'ADD_ITEM'
 export const REMOVE_ITEM = 'REMOVE_ITEM'
 export const REPLACE_POSTER_ITEMS = 'REPLACE_POSTER_ITEMS'

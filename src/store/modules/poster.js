@@ -1,8 +1,13 @@
 import * as MTS from './poster.mutations'
-import { Message } from 'element-ui'
-import { Widget } from 'poster/widgetHelpers'
+// import { Message } from 'element-ui'
+import { Widget, BackgroundWidget } from 'poster/widgetHelpers'
 
 const state = {
+    canvasSize: {
+        width: null,
+        height: null
+    },
+    background: null,
     posterItems: [], // 组件列表
     activeItems: [], // 当前选中的组件
     layerPanelOpened: false // 是否打开图层面板
@@ -18,6 +23,12 @@ const getters = {
 }
 
 const mutations = {
+    [MTS.SET_CANVAS_SIZE](state, data) {
+        state.canvasSize = data
+    },
+    [MTS.ADD_BACKGROUND](state, item) {
+        state.background = item
+    },
     // 添加组件
     [MTS.ADD_ITEM](state, item) {
         state.posterItems.push(item)
@@ -49,6 +60,11 @@ const mutations = {
 }
 
 const actions = {
+    addBackground({ commit }, item) {
+        if (item instanceof BackgroundWidget) {
+            commit(MTS.ADD_BACKGROUND, item)
+        }
+    },
     addItem({ commit }, item) {
         if (item instanceof Widget) {
             commit(MTS.ADD_ITEM, item)
