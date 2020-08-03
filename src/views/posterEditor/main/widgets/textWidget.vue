@@ -25,7 +25,7 @@
       v-if="!isEditing"
       class="text-container"
       contenteditable="false"
-      :style="textStyle"
+      :style="textStyleFilter"
     >
       {{ text }}
     </div>
@@ -35,14 +35,14 @@
       v-clickoutside="saveText"
       class="text-container editing"
       contenteditable="true"
-      :style="textStyle"
+      :style="textStyleFilter"
     >
       {{ text }}
     </div>
     <portal v-if="isActive" to="widgetControl">
       <text-control
         :drag-info="dragInfo"
-        :text-color.sync="textStyle.color"
+        v-bind.sync="textStyle"
         @dragInfoChange="dragInfo = $event"
       />
     </portal>
@@ -54,7 +54,7 @@ import vueDraggableResizable from '@/components/dragable/components/vue-draggabl
 import { TextWidget } from 'poster/widgetHelpers'
 import { clickoutside } from 'poster/poster.directives'
 import textControl from 'poster/control/widgets/textControl'
-import { mapState } from 'poster/poster.vuex'
+import { mapState, mapActions } from 'poster/poster.vuex'
 export default {
   components: { vueDraggableResizable, textControl },
   mixins: [TextWidget.mixin()],
@@ -64,12 +64,30 @@ export default {
       isEditing: false,
       text: '',
       textStyle: {
-        textAlign: 'center'
+        color: '#000',
+        textAlign: 'center',
+        fontSize: 14, // px
+        padding: 0, // px
+        borderColor: '#000',
+        borderWidth: 0, // px
+        borderStyle: 'solid',
+        lineHeight: 100, // %
+        letterSpacing: 0, // %
+        backgroundColor: ''
       }
     }
   },
   computed: {
-    ...mapState(['canvasSize'])
+    ...mapState(['canvasSize']),
+    textStyleFilter() {
+      return Object.assign({}, this.textStyle, {
+        fontSize: this.textStyle.fontSize + 'px',
+        padding: this.textStyle.padding + 'px',
+        borderWidth: this.textStyle.borderWidth + 'px',
+        lineHeight: this.textStyle.lineHeight + '%',
+        letterSpacing: this.textStyle.letterSpacing + 'px'
+      })
+    }
   },
   created() {
     this.dragInfo.w = 160
@@ -79,6 +97,7 @@ export default {
     this.text = this.item.text
   },
   methods: {
+    ...mapActions(['setWidgetConfig']),
     openEditing() {
       this.isEditing = true
       this.$nextTick(() => {
@@ -94,6 +113,7 @@ export default {
       const ref = this.$refs.textContainer
       this.text = ref.innerText
       this.isEditing = false
+      this.setWidgetConfig({ item: this.item, cb: (i) => (i.text = this.text) })
     }
   }
 }
