@@ -1,0 +1,58 @@
+{
+  "id": "1981772",
+  "name": "3",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "2404485",
+      "name": "矩形",
+      "font_class": "rect",
+      "unicode": "e648",
+      "unicode_decimal": 58952
+    },
+    {
+      "icon_id": "2593666",
+      "name": "字体",
+      "font_class": "text",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "6052579",
+      "name": "背景",
+      "font_class": "background",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
+      "icon_id": "8821270",
+      "name": "图层-01",
+      "font_class": "layer",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "10047323",
+      "name": "左对齐",
+      "font_class": "align-left",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "12403107",
+      "name": "居中对齐",
+      "font_class": "align-center",
+      "unicode": "e6c2",
+      "unicode_decimal": 59074
+    },
+    {
+      "icon_id": "12403109",
+      "name": "右对齐",
+      "font_class": "align-right",
+      "unicode": "e6c4",
+      "unicode_decimal": 59076
+    }
+  ]
+}
