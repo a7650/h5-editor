@@ -3,7 +3,7 @@
     <ul class="list">
       <el-tooltip effect="dark" content="图层" placement="left">
         <li class="item" :class="{active:layerPanelOpened}" @click="openLayer">
-          <i class="el-icon-copy-document" />
+          <i class="icon-layer" />
         </li>
       </el-tooltip>
     </ul>

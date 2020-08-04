@@ -61,7 +61,7 @@ export default {
     border-left: 1px solid $colorBorder;
   }
   .poster-editor-control {
-    width: 300px;
+    width: 200px;
     height: 100%;
     box-sizing: border-box;
     border-left: 1px solid $colorBorder;

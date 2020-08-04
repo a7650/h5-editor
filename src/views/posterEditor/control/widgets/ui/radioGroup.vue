@@ -43,7 +43,7 @@ export default {
   width: 100%;
   ul {
     width: 100%;
-    height: 32px;
+    height: 28px;
     display: flex;
     li {
       width: 1px;
@@ -61,15 +61,16 @@ export default {
       border-top-width: 1px;
       border-bottom-width: 1px;
       border-left-width: 1px;
-      transition: 0.2s;
+      transition: 0.1s;
       background-color: #fff;
       user-select: none;
       cursor: pointer;
+      color: $colorText;
       &:first-child {
-        border-radius: 2px 0 0 2px;
+        border-radius: 4px 0 0 4px;
       }
       &:last-child {
-        border-radius: 0 2px 2px 0;
+        border-radius: 0 4px 4px 0;
         border-right-width: 1px;
       }
       &:hover,

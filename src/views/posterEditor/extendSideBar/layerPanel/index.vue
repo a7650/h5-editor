@@ -17,6 +17,7 @@
         >
           <panel-item
             v-for="item in inPosterItems"
+            v-show="item.layerPanelVisible"
             :key="item.id"
             :item="item"
             class="item"

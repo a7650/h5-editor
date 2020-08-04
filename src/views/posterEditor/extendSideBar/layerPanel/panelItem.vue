@@ -11,7 +11,7 @@
       @keydown.enter="saveName"
     >
     <div v-else class="name" @dblclick="isEditing = true">
-      {{ rename }}
+      {{ rename || item.text }}
     </div>
     <div class="handle">
       <i
@@ -46,19 +46,27 @@ export default {
   },
   data() {
     return {
-      rename: this.item.id,
+      rename: '',
       isEditing: false
     }
   },
   computed: {
     ...mapGetters(['activeItemIds'])
   },
+  created() {
+    if (this.item.type === 'text') {
+      this.rename = ''
+    } else {
+      this.rename = this.item.id
+    }
+    console.log(this.rename, this.item)
+  },
   methods: {
     ...mapActions([
       'removeItem',
       'lockItem',
       'unlockItem',
-      'toggleVisible',
+      'toggleItemVisible',
       'replaceActiveItems'
     ]),
     saveName() {
@@ -80,7 +88,7 @@ export default {
       this.unlockItem(this.item)
     },
     hide() {
-      this.toggleVisible({ item: this.item, visible: !this.item.visible })
+      this.toggleItemVisible({ item: this.item, visible: !this.item.visible })
     }
   }
 }

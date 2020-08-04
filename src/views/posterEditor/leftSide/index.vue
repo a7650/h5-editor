@@ -23,8 +23,9 @@
 import imageWidget from './widgets/imageWidget'
 import backgroundWidget from './widgets/backgroundWidget'
 import textWidget from './widgets/textWidget'
+import rectWidget from './widgets/rectWidget'
 export default {
-  components: { imageWidget, backgroundWidget, textWidget },
+  components: { imageWidget, backgroundWidget, textWidget, rectWidget },
   data() {
     return {
       current: null,
@@ -39,13 +40,19 @@ export default {
           type: 'background',
           component: 'background-widget',
           name: '背景',
-          icon: 'el-icon-s-grid'
+          icon: 'icon-background'
         },
         {
           type: 'text',
           component: 'text-widget',
           name: '文本',
-          icon: 'el-icon-s-order'
+          icon: 'icon-text'
+        },
+        {
+          type: 'rect',
+          component: 'rect-widget',
+          name: '矩形',
+          icon: 'icon-rect'
         }
       ]
     }
@@ -67,6 +74,7 @@ export default {
     height: 100%;
     border-right: 1px solid rgb(224, 224, 224);
     .widget-item {
+      display: block;
       width: 60px;
       height: 60px;
       cursor: pointer;

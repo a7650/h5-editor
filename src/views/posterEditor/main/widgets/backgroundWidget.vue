@@ -23,6 +23,7 @@
   >
     <div
       v-if="item.isSolid"
+      class="poster-editor-background"
       :style="{
         backgroundColor: item.backgroundColor,
         width: '100%',
@@ -37,12 +38,8 @@
       style="width:100%;height:100%"
       ondragstart="return false"
     >
-    <portal v-if="isActive" to="widgetControl">
-      <image-control
-        :drag-info="dragInfo"
-        @dragInfoChange="dragInfo = $event"
-      />
-    </portal>
+    <!-- <portal v-if="isActive" to="widgetControl">
+    </portal> -->
   </vue-draggable-resizable>
 </template>
 

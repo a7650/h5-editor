@@ -417,7 +417,8 @@ export default {
       if (
         this.enabled &&
         (classList.contains('main-panel') ||
-          classList.contains('poster-editor-main'))
+          classList.contains('poster-editor-main')) ||
+          classList.contains('poster-editor-background')
       ) {
         this.enabled = false
         this.$emit('deactivated')

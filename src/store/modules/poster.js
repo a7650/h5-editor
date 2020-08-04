@@ -56,6 +56,13 @@ const mutations = {
     // 设置图层面板的打开关闭状态
     [MTS.SET_LAYER_PANEL](state, flag) {
         state.layerPanelOpened = !!flag
+    },
+    // 设置某个组件的data
+    [MTS.SET_WIDGET_CONFIG](state, { item, cb }) {
+        const target = state.posterItems.find(i => i.id === item.id)
+        if (target && cb) {
+            cb(target)
+        }
     }
 }
 
@@ -120,32 +127,20 @@ const actions = {
     setLayerPanel({ commit }, flag) {
         commit(MTS.SET_LAYER_PANEL, flag)
     },
-    lockItem({ commit, state, getters }, item) {
+    setWidgetConfig({ commit }, { item, cb }) {
+        commit(MTS.SET_WIDGET_CONFIG, { item, cb })
+    },
+    lockItem({ commit, getters }, item) {
         if (getters.activeItemIds.includes(item.id)) {
             commit(MTS.REMOVE_ACTIVE_ITEM, item)
         }
-        commit(MTS.REPLACE_POSTER_ITEMS, state.posterItems.map(i => {
-            if (i.id === item.id) {
-                i.lock = true
-            }
-            return i
-        }))
+        commit(MTS.SET_WIDGET_CONFIG, { item, cb: (i) => (i.lock = true) })
     },
     unlockItem({ commit }, item) {
-        commit(MTS.REPLACE_POSTER_ITEMS, state.posterItems.map(i => {
-            if (i.id === item.id) {
-                i.lock = false
-            }
-            return i
-        }))
+        commit(MTS.SET_WIDGET_CONFIG, { item, cb: (i) => (i.lock = false) })
     },
-    toggleVisible({ commit }, { item, visible }) {
-        commit(MTS.REPLACE_POSTER_ITEMS, state.posterItems.map(i => {
-            if (i.id === item.id) {
-                i.visible = !!visible
-            }
-            return i
-        }))
+    toggleItemVisible({ commit }, { item, visible }) {
+        commit(MTS.SET_WIDGET_CONFIG, { item, cb: (i) => (i.visible = !!visible) })
     }
 }
 

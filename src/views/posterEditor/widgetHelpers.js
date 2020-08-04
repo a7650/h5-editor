@@ -10,7 +10,8 @@ const defaultWidgetConfig = {
     lock: false, // 是否处于锁定状态
     visible: true, // 是否可见
     id: '',
-    initHook: null // Function 组件初始化时候（created）执行
+    initHook: null, // Function 组件初始化时候（created）执行
+    layerPanelVisible: true // 是否在图片面板中可见
 }
 
 // 组件父类
@@ -48,6 +49,11 @@ export class Widget {
             },
             computed: {
                 ...mapGetters(['activeItemIds'])
+            },
+            created() {
+                if (this.item.initHook && typeof this.item.initHook === 'function') {
+                    this.item.initHook(this._self)
+                }
             },
             watch: {
                 activeItemIds(newVal) {
@@ -104,7 +110,6 @@ export class ImageWidget extends Widget {
         })
         super(config)
         this.src = config.src
-        console.log(1)
     }
 }
 
@@ -115,7 +120,7 @@ export class BackgroundWidget extends Widget {
             type: 'background',
             typeLabel: '背景',
             componentName: 'background-widget',
-            icon: 'el-icon-s-grid',
+            icon: 'icon-background',
             lock: false,
             visible: true
         }, config)
@@ -126,14 +131,47 @@ export class BackgroundWidget extends Widget {
     }
 }
 
+// 绘制矩形
+export class DrawRectWidget extends Widget {
+    constructor(config) {
+        config = Object.assign({}, {
+            type: 'rect',
+            typeLabel: '矩形',
+            componentName: 'draw-rect-widget',
+            icon: 'icon-rect',
+            lock: false,
+            visible: true,
+            layerPanelVisible: false
+        }, config)
+        super(config)
+        this.drawing = true
+    }
+}
+
+// 矩形
+export class RectWidget extends Widget {
+    constructor(config) {
+        config = Object.assign({}, {
+            type: 'rect',
+            typeLabel: '矩形',
+            componentName: 'rect-widget',
+            icon: 'icon-rect',
+            lock: false,
+            visible: true
+        }, config)
+        super(config)
+        this.drawing = true
+    }
+}
+
 // 文本Widget
 export class TextWidget extends Widget {
     constructor(config) {
         config = Object.assign({}, {
-            type: 'background',
+            type: 'text',
             typeLabel: '文本',
             componentName: 'text-widget',
-            icon: 'el-icon-s-order',
+            icon: 'icon-text',
             lock: false,
             visible: true,
             text: '双击编辑文本'
