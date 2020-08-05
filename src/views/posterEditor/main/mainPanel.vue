@@ -25,7 +25,7 @@
 import imageWidget from './widgets/imageWidget'
 import backgroundWidget from './widgets/backgroundWidget'
 import textWidget from './widgets/textWidget'
-import drawRectWidget from './widgets/rectWidget'
+import drawRectWidget from './widgets/drawRectWidget'
 import rectWidget from './widgets/rectWidget'
 import { mapState, mapMutations } from '../poster.vuex'
 export default {

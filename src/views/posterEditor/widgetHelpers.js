@@ -131,7 +131,7 @@ export class BackgroundWidget extends Widget {
     }
 }
 
-// 绘制矩形
+// 绘制矩形（矩形前置组件）
 export class DrawRectWidget extends Widget {
     constructor(config) {
         config = Object.assign({}, {
@@ -148,7 +148,7 @@ export class DrawRectWidget extends Widget {
     }
 }
 
-// 矩形
+// 矩形Widget
 export class RectWidget extends Widget {
     constructor(config) {
         config = Object.assign({}, {
@@ -160,7 +160,6 @@ export class RectWidget extends Widget {
             visible: true
         }, config)
         super(config)
-        this.drawing = true
     }
 }
 

@@ -705,7 +705,7 @@ export default {
 <style scoped lang="scss">
 .vdrr {
   position: absolute;
-  box-sizing: border-box;
+  /* box-sizing: border-box; */
   border: 1px solid transparent;
   &.dragging,
   &.active,

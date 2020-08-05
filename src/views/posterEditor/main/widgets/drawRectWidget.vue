@@ -89,13 +89,13 @@ export default {
     dragEnd() {
       this.dragging = false
       this.drawInfo = null
-      this.draggingRectStyle = null
       const rectInfo = {
         width: parseInt(this.draggingRectStyle.width),
         height: parseInt(this.draggingRectStyle.height),
         top: parseInt(this.draggingRectStyle.top),
         left: parseInt(this.draggingRectStyle.left)
       }
+      this.draggingRectStyle = null
       this.addItem(
         new RectWidget({
           initHook(vm) {
@@ -106,6 +106,7 @@ export default {
           }
         })
       )
+      this.removeSelf()
     }
   }
 }

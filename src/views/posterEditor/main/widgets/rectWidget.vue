@@ -6,8 +6,8 @@
     :x="dragInfo.x"
     :y="dragInfo.y"
     :r="dragInfo.rotateZ"
-    :min-width="10"
-    :min-height="10"
+    :minw="1"
+    :minh="1"
     :resizable="true"
     :lock="item.lock"
     :active.sync="isActive"
@@ -19,16 +19,10 @@
     @resizing="onResize"
     @rotating="onRotate"
   >
-    <img
-      ref="image"
-      :src="item.src"
-      class="qr-code"
-      style="width:100%;height:100%"
-      ondragstart="return false"
-      @load="load"
-    >
+    <div class="content" :style="rectStyleFilter" />
     <portal v-if="isActive" to="widgetControl">
-      <image-control
+      <rect-control
+        v-bind.sync="rectStyle"
         :drag-info="dragInfo"
         @dragInfoChange="dragInfo = $event"
       />
@@ -38,31 +32,46 @@
 
 <script>
 import vueDraggableResizable from '@/components/dragable/components/vue-draggable-resizable'
-import imageControl from '../../control/widgets/imageControl'
-import { ImageWidget } from 'poster/widgetHelpers'
+import rectControl from '../../control/widgets/rectControl'
+import { RectWidget } from 'poster/widgetHelpers'
 // import { mapGetters, mapActions } from 'poster/poster.vuex'
 export default {
-  components: { vueDraggableResizable, imageControl },
-  mixins: [ImageWidget.mixin()],
+  components: { vueDraggableResizable, rectControl },
+  mixins: [RectWidget.mixin()],
   data() {
-    return {}
-  },
-  methods: {
-    load() {
-      const imgRef = this.$refs.image
-      const width = imgRef.naturalWidth
-      const height = imgRef.naturalHeight
-      this.dragInfo.w = 100
-      this.dragInfo.h = parseInt((100 * height) / width)
+    return {
+      rectStyle: {
+        borderColor: '',
+        borderWidth: 0, // px
+        borderStyle: '',
+        backgroundColor: '#2d51cc',
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0
+      }
     }
-  }
+  },
+  computed: {
+    rectStyleFilter() {
+      return Object.assign({}, this.rectStyle, {
+        borderWidth: this.rectStyle.borderWidth + 'px',
+        borderTopLeftRadius: this.rectStyle.borderTopLeftRadius + '%',
+        borderTopRightRadius: this.rectStyle.borderTopRightRadius + '%',
+        borderBottomLeftRadius: this.rectStyle.borderBottomLeftRadius + '%',
+        borderBottomRightRadius: this.rectStyle.borderBottomRightRadius + '%'
+      })
+    }
+  },
+  methods: {}
 }
 </script>
 <style lang="scss" scoped>
 .drag-item {
   user-select: none;
-  img {
-    /* drag */
+  .content {
+    width: 100%;
+    height: 100%;
   }
 }
 </style>
