@@ -1,6 +1,7 @@
 import * as MTS from './poster.mutations'
 // import { Message } from 'element-ui'
 import { Widget, BackgroundWidget } from 'poster/widgetHelpers'
+import { arrMoveTop, arrMoveUpper, arrMoveLower, arrMoveBottom } from '@/utils/posterUtils'
 
 const state = {
     canvasSize: {
@@ -141,6 +142,30 @@ const actions = {
     },
     toggleItemVisible({ commit }, { item, visible }) {
         commit(MTS.SET_WIDGET_CONFIG, { item, cb: (i) => (i.visible = !!visible) })
+    },
+    widgetMoveToTop({ commit, state }, item) {
+        commit(
+            MTS.REPLACE_POSTER_ITEMS,
+            arrMoveTop(state.posterItems, state.posterItems.findIndex(i => i.id === item.id))
+        )
+    },
+    widgetMoveToUpper({ commit, state }, item) {
+        commit(
+            MTS.REPLACE_POSTER_ITEMS,
+            arrMoveUpper(state.posterItems, state.posterItems.findIndex(i => i.id === item.id))
+        )
+    },
+    widgetMoveToLower({ commit, state }, item) {
+        commit(
+            MTS.REPLACE_POSTER_ITEMS,
+            arrMoveLower(state.posterItems, state.posterItems.findIndex(i => i.id === item.id))
+        )
+    },
+    widgetMoveToBottom({ commit, state }, item) {
+        commit(
+            MTS.REPLACE_POSTER_ITEMS,
+            arrMoveBottom(state.posterItems, state.posterItems.findIndex(i => i.id === item.id))
+        )
     }
 }
 

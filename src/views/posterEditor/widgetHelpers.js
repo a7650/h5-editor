@@ -1,5 +1,6 @@
 import uniqueId from 'lodash/uniqueId'
 import { mapGetters, mapActions } from 'poster/poster.vuex'
+import store from '@/store'
 
 const defaultWidgetConfig = {
     type: '', // 类型
@@ -25,7 +26,17 @@ export class Widget {
             this[key] = item[key]
         })
     }
-    static mixin() {
+    /**
+     * 各个子组件继承的mixin
+     */
+    static mixin(options) {
+        options = Object.assign({}, {
+            invokeMap: {
+                getMenuList: 'getMenuList',
+                executeContextCommand: 'executeContextCommand'
+            },
+            baseMenuList: Widget.getBaseMenuList()
+        }, options)
         return {
             data() {
                 return {
@@ -54,6 +65,20 @@ export class Widget {
                 if (this.item.initHook && typeof this.item.initHook === 'function') {
                     this.item.initHook(this._self)
                 }
+                this._baseMenuList = options.baseMenuList
+            },
+            mounted() {
+                this._self.$el.addEventListener('contextmenu', (e) => {
+                    const menuList = [...(this.getMenuList() || []), ...this._baseMenuList]
+                    if (menuList && menuList.length > 0) {
+                        this.$emit('openContextmenu', {
+                            x: e.pageX,
+                            y: e.pageY,
+                            menuList,
+                            vm: this._self
+                        })
+                    }
+                })
             },
             watch: {
                 activeItemIds(newVal) {
@@ -90,10 +115,69 @@ export class Widget {
                 },
                 onRotate(e) {
                     this.dragInfo.rotateZ = (e > 0 ? e : 360 + e) % 360
+                },
+                // 获取菜单列表
+                getMenuList() {
+                    console.warn(`${this.item.type}-${this.item.id}: "getMenuList" is null`)
+                    return null
+                },
+                // 执行命令
+                executeContextCommand(command) {
+                    console.warn(`${this.item.type}-${this.item.id}: "executeContextCommand" is null`)
+                    return null
+                },
+                _executeBaseContextCommand(command) {
+                    switch (command) {
+                        case 'moveToTop':
+                            store.dispatch('poster/widgetMoveToTop', this.item)
+                            return true
+                        case 'moveToUpper':
+                            store.dispatch('poster/widgetMoveToUpper', this.item)
+                            return true
+                        case 'moveToLower':
+                            store.dispatch('poster/widgetMoveToLower', this.item)
+                            return true
+                        case 'moveToBottom':
+                            store.dispatch('poster/widgetMoveToBottom', this.item)
+                            return true
+                        default:
+                            return false
+                    }
+                },
+                // 执行命令
+                _executeContextCommand(commandItem) {
+                    const { command } = commandItem
+                    if (!command) {
+                        return
+                    }
+                    if (this._executeBaseContextCommand(command)) {
+                        return
+                    }
+                    this.executeContextCommand(command)
                 }
 
             }
         }
+    }
+    static getBaseMenuList() {
+        return [
+            {
+                label: '置于顶层',
+                command: 'moveToTop'
+            },
+            {
+                label: '上移一层',
+                command: 'moveToUpper'
+            },
+            {
+                label: '下移一层',
+                command: 'moveToLower'
+            },
+            {
+                label: '置于底层',
+                command: 'moveToBottom'
+            }
+        ]
     }
 }
 

@@ -98,6 +98,10 @@ export default {
   },
   methods: {
     ...mapActions(['setWidgetConfig']),
+    getMenuList() {
+      return [
+      ]
+    },
     openEditing() {
       this.isEditing = true
       this.$nextTick(() => {
