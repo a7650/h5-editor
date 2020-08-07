@@ -80,6 +80,7 @@ export default {
   flex-direction: column;
   font-size: 14px;
   user-select: none;
+  z-index: 1001;
   .header {
     height: 30px;
     display: flex;

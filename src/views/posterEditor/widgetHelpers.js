@@ -1,6 +1,6 @@
 import uniqueId from 'lodash/uniqueId'
 import { mapGetters, mapActions } from 'poster/poster.vuex'
-import store from '@/store'
+import { baseCommandStrat, baseMenuList } from './commandStrat'
 
 const defaultWidgetConfig = {
     type: '', // 类型
@@ -31,7 +31,7 @@ export class Widget {
      */
     static mixin(options) {
         options = Object.assign({}, {
-            invokeMap: {
+            invokeFunctionMap: {
                 getMenuList: 'getMenuList',
                 executeContextCommand: 'executeContextCommand'
             },
@@ -51,6 +51,9 @@ export class Widget {
                 }
             },
             props: {
+                /**
+                 * widgetConfig
+                 */
                 item: {
                     type: Object,
                     default() {
@@ -70,14 +73,14 @@ export class Widget {
             mounted() {
                 this._self.$el.addEventListener('contextmenu', (e) => {
                     const menuList = [...(this.getMenuList() || []), ...this._baseMenuList]
-                    if (menuList && menuList.length > 0) {
-                        this.$emit('openContextmenu', {
-                            x: e.pageX,
-                            y: e.pageY,
-                            menuList,
-                            vm: this._self
-                        })
-                    }
+                    const isLock = this.item.lock
+                    menuList.unshift({ label: isLock ? '解除锁定' : '锁定', command: isLock ? 'unlock' : 'lock' })
+                    this.$emit('openContextmenu', {
+                        x: e.pageX,
+                        y: e.pageY,
+                        menuList,
+                        vm: this._self
+                    })
                 })
             },
             watch: {
@@ -127,22 +130,11 @@ export class Widget {
                     return null
                 },
                 _executeBaseContextCommand(command) {
-                    switch (command) {
-                        case 'moveToTop':
-                            store.dispatch('poster/widgetMoveToTop', this.item)
-                            return true
-                        case 'moveToUpper':
-                            store.dispatch('poster/widgetMoveToUpper', this.item)
-                            return true
-                        case 'moveToLower':
-                            store.dispatch('poster/widgetMoveToLower', this.item)
-                            return true
-                        case 'moveToBottom':
-                            store.dispatch('poster/widgetMoveToBottom', this.item)
-                            return true
-                        default:
-                            return false
+                    if (baseCommandStrat[command]) {
+                        baseCommandStrat[command](this.item)
+                        return true
                     }
+                    return false
                 },
                 // 执行命令
                 _executeContextCommand(commandItem) {
@@ -160,24 +152,7 @@ export class Widget {
         }
     }
     static getBaseMenuList() {
-        return [
-            {
-                label: '置于顶层',
-                command: 'moveToTop'
-            },
-            {
-                label: '上移一层',
-                command: 'moveToUpper'
-            },
-            {
-                label: '下移一层',
-                command: 'moveToLower'
-            },
-            {
-                label: '置于底层',
-                command: 'moveToBottom'
-            }
-        ]
+        return baseMenuList
     }
 }
 

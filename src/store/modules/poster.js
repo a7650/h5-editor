@@ -146,25 +146,25 @@ const actions = {
     widgetMoveToTop({ commit, state }, item) {
         commit(
             MTS.REPLACE_POSTER_ITEMS,
-            arrMoveTop(state.posterItems, state.posterItems.findIndex(i => i.id === item.id))
+            arrMoveBottom(state.posterItems, state.posterItems.findIndex(i => i.id === item.id))
         )
     },
     widgetMoveToUpper({ commit, state }, item) {
         commit(
             MTS.REPLACE_POSTER_ITEMS,
-            arrMoveUpper(state.posterItems, state.posterItems.findIndex(i => i.id === item.id))
+            arrMoveLower(state.posterItems, state.posterItems.findIndex(i => i.id === item.id))
         )
     },
     widgetMoveToLower({ commit, state }, item) {
         commit(
             MTS.REPLACE_POSTER_ITEMS,
-            arrMoveLower(state.posterItems, state.posterItems.findIndex(i => i.id === item.id))
+            arrMoveUpper(state.posterItems, state.posterItems.findIndex(i => i.id === item.id))
         )
     },
     widgetMoveToBottom({ commit, state }, item) {
         commit(
             MTS.REPLACE_POSTER_ITEMS,
-            arrMoveBottom(state.posterItems, state.posterItems.findIndex(i => i.id === item.id))
+            arrMoveTop(state.posterItems, state.posterItems.findIndex(i => i.id === item.id))
         )
     }
 }

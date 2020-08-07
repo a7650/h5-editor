@@ -204,7 +204,6 @@ export function arrMoveTop(arr, index) {
 }
 
 /**
- * 将数组中某元素向上移动1个位置
  * @param {Array} arr
  * @param {Number} index
  * @returns {Array}
