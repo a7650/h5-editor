@@ -46,7 +46,7 @@
 <script>
 import vueDraggableResizable from '@/components/dragable/components/vue-draggable-resizable'
 import imageControl from '../../control/widgets/imageControl'
-import { mapGetters, mapActions, mapState } from 'poster/poster.vuex'
+import { mapGetters, mapActions, mapState, mapMutations } from 'poster/poster.vuex'
 import { BackgroundWidget } from 'poster/widgetHelpers'
 import { config } from 'vuedraggable'
 
@@ -63,7 +63,7 @@ export default {
   },
   computed: {
     ...mapGetters(['activeItemIds']),
-    ...mapState(['canvasSize'])
+    ...mapState(['canvasSize', 'copiedWidget'])
   },
   created() {
     this.dragInfo.w = this.canvasSize.width
@@ -77,6 +77,7 @@ export default {
   },
   methods: {
     ...mapActions(['removeBackground', 'setBackgroundConfig']),
+    ...mapMutations(['PASTE_WIDGET']),
     /**
      * @mixin
      */
@@ -93,6 +94,8 @@ export default {
         this.setBackgroundConfig((config) => {
           config.lock = false
         })
+      } else if (command === 'paste') {
+        this.PASTE_WIDGET()
       }
     },
     /**
@@ -101,6 +104,9 @@ export default {
      */
     getMenuList() {
       const menuList = [{ label: '删除', command: 'remove' }]
+      if (this.copiedWidget) {
+        menuList.unshift({ label: '粘贴', command: 'paste' })
+      }
       if (!this.item.isSolid) {
         if (this.item.lock) {
           menuList.unshift({ label: '解除锁定', command: 'unlock' })

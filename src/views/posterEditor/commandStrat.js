@@ -24,10 +24,24 @@ export const baseCommandStrat = {
     },
     $unlock(item) {
         store.dispatch('poster/unlockItem', item)
+    },
+    $copy(item, vm) {
+        console.log(vm)
+        const stateJson = JSON.stringify(vm.$data)
+        store.commit('poster/COPY_WIDGET', {
+            ...item,
+            componentState: function() {
+                return JSON.parse(stateJson)
+            }
+        })
     }
 }
 
 export const baseMenuList = [
+    {
+        label: '复制',
+        command: '$copy'
+    },
     {
         label: '置于顶层',
         command: '$moveToTop'

@@ -1,6 +1,6 @@
 import * as MTS from './poster.mutations'
 // import { Message } from 'element-ui'
-import { Widget, BackgroundWidget } from 'poster/widgetHelpers'
+import { Widget, BackgroundWidget, CopiedWidget } from 'poster/widgetHelpers'
 import { arrMoveTop, arrMoveUpper, arrMoveLower, arrMoveBottom } from '@/utils/posterUtils'
 
 const state = {
@@ -11,7 +11,8 @@ const state = {
     background: null,
     posterItems: [], // 组件列表
     activeItems: [], // 当前选中的组件
-    layerPanelOpened: false // 是否打开图层面板
+    layerPanelOpened: false, // 是否打开图层面板
+    copiedWidget: null // 当前复制的组件
 }
 
 const getters = {
@@ -63,6 +64,17 @@ const mutations = {
         const target = state.posterItems.find(i => i.id === item.id)
         if (target && cb) {
             cb(target)
+        }
+    },
+    // 复制组件
+    [MTS.COPY_WIDGET](state, item) {
+        state.copiedWidget = item
+    },
+    // 粘贴组件
+    [MTS.PASTE_WIDGET](state) {
+        const copiedWidget = state.copiedWidget
+        if (copiedWidget) {
+            state.posterItems.push(new CopiedWidget(copiedWidget))
         }
     }
 }

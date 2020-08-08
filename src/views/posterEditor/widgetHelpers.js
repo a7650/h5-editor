@@ -12,14 +12,16 @@ const defaultWidgetConfig = {
     visible: true, // 是否可见
     id: '',
     initHook: null, // Function 组件初始化时候（created）执行
-    layerPanelVisible: true // 是否在图片面板中可见
+    layerPanelVisible: true, // 是否在图片面板中可见
+    isCopied: false, // 是否是复制的组件
+    componentState: null // Function 复制组件时有效，返回结果为为复制时原组件内部的data
 }
 
 // 组件父类
 export class Widget {
     constructor(config = defaultWidgetConfig) {
         const item = Object.assign({}, defaultWidgetConfig, config, {
-            id: uniqueId(config.typeLabel)
+            id: uniqueId(config.typeLabel + '-')
         })
         this._config = item
         Object.keys(item).forEach(key => {
@@ -65,10 +67,17 @@ export class Widget {
                 ...mapGetters(['activeItemIds'])
             },
             created() {
+                // 执行initHook
                 if (this.item.initHook && typeof this.item.initHook === 'function') {
                     this.item.initHook(this._self)
                 }
+                // 初始化菜单
                 this._baseMenuList = options.baseMenuList
+                // 复制组件
+                if (this.item.isCopied) {
+                    Object.assign(this.$data, this.item.componentState())
+                    console.log(this.$data)
+                }
             },
             mounted() {
                 this._self.$el.addEventListener('contextmenu', (e) => {
@@ -135,7 +144,7 @@ export class Widget {
                 },
                 _executeBaseContextCommand(command) {
                     if (baseCommandStrat[command]) {
-                        baseCommandStrat[command](this.item)
+                        baseCommandStrat[command](this.item, this._self)
                         return true
                     }
                     return false
@@ -241,3 +250,18 @@ export class TextWidget extends Widget {
         this.text = config.text
     }
 }
+
+// 复制Widget
+export class CopiedWidget extends Widget {
+    constructor(config) {
+        config = Object.assign({}, config,
+            {
+                typeLabel: config.typeLabel + '-copy',
+                isCopied: true
+            }
+        )
+        super(config)
+        config.componentState.count = (config.componentState.count || 0) + 1
+    }
+}
+
