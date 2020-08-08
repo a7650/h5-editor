@@ -41,6 +41,7 @@
     </div>
     <portal v-if="isActive" to="widgetControl">
       <text-control
+        :key="item.id"
         :drag-info="dragInfo"
         v-bind.sync="textStyle"
         @dragInfoChange="dragInfo = $event"
@@ -90,17 +91,18 @@ export default {
     }
   },
   created() {
-    this.dragInfo.w = 160
-    this.dragInfo.h = 50
-    this.dragInfo.x = (this.canvasSize.width - 160) / 2
-    this.dragInfo.y = 200
-    this.text = this.item.text
+    if (!this.item.isCopied) {
+      this.dragInfo.w = 160
+      this.dragInfo.h = 50
+      this.dragInfo.x = (this.canvasSize.width - 160) / 2
+      this.dragInfo.y = 200
+      this.text = this.item.text
+    }
   },
   methods: {
     ...mapActions(['setWidgetConfig']),
     getMenuList() {
-      return [
-      ]
+      return []
     },
     openEditing() {
       this.isEditing = true

@@ -48,7 +48,6 @@ import vueDraggableResizable from '@/components/dragable/components/vue-draggabl
 import imageControl from '../../control/widgets/imageControl'
 import { mapGetters, mapActions, mapState, mapMutations } from 'poster/poster.vuex'
 import { BackgroundWidget } from 'poster/widgetHelpers'
-import { config } from 'vuedraggable'
 
 const baseMenuList = []
 
@@ -103,7 +102,7 @@ export default {
      * @return {MenuItem[]}
      */
     getMenuList() {
-      const menuList = [{ label: '删除', command: 'remove' }]
+      const menuList = []
       if (this.copiedWidget) {
         menuList.unshift({ label: '粘贴', command: 'paste' })
       }
@@ -113,6 +112,7 @@ export default {
         } else {
           menuList.unshift({ label: '锁定', command: 'lock' })
         }
+        menuList.push({ label: '删除', command: 'remove' })
       }
       return menuList
     }

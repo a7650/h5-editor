@@ -706,14 +706,15 @@ export default {
 .vdrr {
   position: absolute;
   /* box-sizing: border-box; */
-  border: 1px solid transparent;
+  border: 1px dashed transparent;
+  transition: border .2s;
   &.dragging,
   &.active,
   &.lock {
     user-select: none;
   }
   &:hover {
-    border: 1px dashed $colorTheme;
+    border-color:$colorTheme;
   }
   &.active {
     border-color: $colorTheme;

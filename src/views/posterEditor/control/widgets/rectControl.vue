@@ -1,5 +1,5 @@
 <template>
-  <div class="text-control">
+  <div class="rect-control">
     <el-collapse v-model="activeNames">
       <el-collapse-item name="borderAndBackground">
         <template #title>
@@ -204,7 +204,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.text-control {
+.rect-control {
   width: 100%;
   .header {
     box-sizing: border-box;

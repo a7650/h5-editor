@@ -22,6 +22,7 @@
     <div class="content" :style="rectStyleFilter" />
     <portal v-if="isActive" to="widgetControl">
       <rect-control
+        :key="item.id"
         v-bind.sync="rectStyle"
         :drag-info="dragInfo"
         @dragInfoChange="dragInfo = $event"

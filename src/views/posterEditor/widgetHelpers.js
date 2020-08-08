@@ -76,7 +76,9 @@ export class Widget {
                 // 复制组件
                 if (this.item.isCopied) {
                     Object.assign(this.$data, this.item.componentState())
-                    console.log(this.$data)
+                    const count = this.item.componentState.count
+                    this.dragInfo.x = this.dragInfo.x + count * 10
+                    this.dragInfo.y = this.dragInfo.y + count * 10
                 }
             },
             mounted() {

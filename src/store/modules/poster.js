@@ -86,7 +86,11 @@ const actions = {
         }
     },
     removeBackground({ state }) {
-        state.background = null
+        state.background = new BackgroundWidget({
+            backgroundColor: '#fff',
+            isSolid: true,
+            lock: true
+        })
     },
     setBackgroundConfig({ state }, cb) {
         if (state.background) {

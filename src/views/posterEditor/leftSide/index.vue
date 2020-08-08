@@ -24,6 +24,8 @@ import imageWidget from './widgets/imageWidget'
 import backgroundWidget from './widgets/backgroundWidget'
 import textWidget from './widgets/textWidget'
 import rectWidget from './widgets/rectWidget'
+import { mapActions } from 'poster/poster.vuex'
+import { BackgroundWidget } from 'poster/widgetHelpers'
 export default {
   components: { imageWidget, backgroundWidget, textWidget, rectWidget },
   data() {
@@ -57,8 +59,21 @@ export default {
       ]
     }
   },
+  methods: {
+    ...mapActions(['addBackground']),
+    init() {
+      this.addBackground(
+        new BackgroundWidget({
+          backgroundColor: '#fff',
+          isSolid: true,
+          lock: true
+        })
+      )
+    }
+  },
   created() {
     this.current = this.widgets[0]
+    this.init()
   }
 }
 </script>

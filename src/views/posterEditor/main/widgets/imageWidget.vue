@@ -29,6 +29,7 @@
     >
     <portal v-if="isActive" to="widgetControl">
       <image-control
+        :key="item.id"
         :drag-info="dragInfo"
         @dragInfoChange="dragInfo = $event"
       />
@@ -49,11 +50,13 @@ export default {
   },
   methods: {
     load() {
-      const imgRef = this.$refs.image
-      const width = imgRef.naturalWidth
-      const height = imgRef.naturalHeight
-      this.dragInfo.w = 100
-      this.dragInfo.h = parseInt((100 * height) / width)
+      if (!this.item.isCopied) {
+        const imgRef = this.$refs.image
+        const width = imgRef.naturalWidth
+        const height = imgRef.naturalHeight
+        this.dragInfo.w = 100
+        this.dragInfo.h = parseInt((100 * height) / width)
+      }
     }
   }
 }
