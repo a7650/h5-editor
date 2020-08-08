@@ -417,8 +417,8 @@ export default {
       if (
         this.enabled &&
         (classList.contains('main-panel') ||
-          classList.contains('poster-editor-main')) ||
-          classList.contains('poster-editor-background')
+          classList.contains('poster-editor-main') ||
+          classList.contains('poster-editor-background'))
       ) {
         this.enabled = false
         this.$emit('deactivated')
@@ -771,7 +771,7 @@ export default {
     position: absolute;
   }
 }
-$handle-item-pos: 4px;
+$handle-item-pos: 5px;
 .handle-tl {
   left: 0 - $handle-item-pos;
   top: 0 - $handle-item-pos;

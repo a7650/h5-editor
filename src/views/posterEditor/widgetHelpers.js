@@ -74,13 +74,17 @@ export class Widget {
                 this._self.$el.addEventListener('contextmenu', (e) => {
                     const menuList = [...(this.getMenuList() || []), ...this._baseMenuList]
                     const isLock = this.item.lock
-                    menuList.unshift({ label: isLock ? '解除锁定' : '锁定', command: isLock ? 'unlock' : 'lock' })
-                    this.$emit('openContextmenu', {
-                        x: e.pageX,
-                        y: e.pageY,
-                        menuList,
-                        vm: this._self
-                    })
+                    if (!(this.item instanceof BackgroundWidget)) {
+                        menuList.unshift({ label: isLock ? '解除锁定' : '锁定', command: isLock ? '$unlock' : '$lock' })
+                    }
+                    if (menuList.length > 0) {
+                        this.$emit('openContextmenu', {
+                            x: e.pageX,
+                            y: e.pageY,
+                            menuList,
+                            vm: this._self
+                        })
+                    }
                 })
             },
             watch: {
@@ -147,7 +151,6 @@ export class Widget {
                     }
                     this.executeContextCommand(command)
                 }
-
             }
         }
     }

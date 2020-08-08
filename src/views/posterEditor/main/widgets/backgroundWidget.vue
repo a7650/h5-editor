@@ -48,10 +48,13 @@ import vueDraggableResizable from '@/components/dragable/components/vue-draggabl
 import imageControl from '../../control/widgets/imageControl'
 import { mapGetters, mapActions, mapState } from 'poster/poster.vuex'
 import { BackgroundWidget } from 'poster/widgetHelpers'
+import { config } from 'vuedraggable'
+
+const baseMenuList = []
 
 export default {
   components: { vueDraggableResizable, imageControl },
-  mixins: [BackgroundWidget.mixin()],
+  mixins: [BackgroundWidget.mixin({ baseMenuList })],
   data() {
     return {
       draggable: true,
@@ -70,6 +73,42 @@ export default {
     if (this.item.isSolid) {
       this.resizable = false
       this.draggable = false
+    }
+  },
+  methods: {
+    ...mapActions(['removeBackground', 'setBackgroundConfig']),
+    /**
+     * @mixin
+     */
+    executeContextCommand(command) {
+      if (command === 'remove') {
+        if (!this.item.lock) {
+          this.removeBackground(null)
+        }
+      } else if (command === 'lock') {
+        this.setBackgroundConfig((config) => {
+          config.lock = true
+        })
+      } else if (command === 'unlock') {
+        this.setBackgroundConfig((config) => {
+          config.lock = false
+        })
+      }
+    },
+    /**
+     * @mixin
+     * @return {MenuItem[]}
+     */
+    getMenuList() {
+      const menuList = [{ label: '删除', command: 'remove' }]
+      if (!this.item.isSolid) {
+        if (this.item.lock) {
+          menuList.unshift({ label: '解除锁定', command: 'unlock' })
+        } else {
+          menuList.unshift({ label: '锁定', command: 'lock' })
+        }
+      }
+      return menuList
     }
   }
 }

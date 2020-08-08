@@ -73,6 +73,14 @@ const actions = {
             commit(MTS.ADD_BACKGROUND, item)
         }
     },
+    removeBackground({ state }) {
+        state.background = null
+    },
+    setBackgroundConfig({ state }, cb) {
+        if (state.background) {
+            cb(state.background)
+        }
+    },
     addItem({ commit }, item) {
         if (item instanceof Widget) {
             commit(MTS.ADD_ITEM, item)

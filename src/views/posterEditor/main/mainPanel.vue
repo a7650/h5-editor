@@ -11,6 +11,7 @@
       v-if="background"
       :key="background.id"
       :item="background"
+      @openContextmenu="openContextmenu"
     />
     <component
       :is="item.componentName"
