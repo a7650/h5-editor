@@ -28,7 +28,7 @@ import { clickoutside } from 'poster/poster.directives'
 import { mapState, mapActions } from 'poster/poster.vuex'
 export default {
   directives: { clickoutside },
-  mixins: [RectWidget.mixin()],
+  mixins: [RectWidget.mixin({ openContextMenu: false })],
   data() {
     return {
       drawing: false,
@@ -87,6 +87,9 @@ export default {
       this.draggingRectStyle.left = left + 'px'
     },
     dragEnd() {
+      if (!this.dragging) {
+        return
+      }
       this.dragging = false
       this.drawInfo = null
       const rectInfo = {
@@ -99,8 +102,8 @@ export default {
       this.addItem(
         new RectWidget({
           initHook(vm) {
-            vm.dragInfo.w = rectInfo.width
-            vm.dragInfo.h = rectInfo.height
+            vm.dragInfo.w = Math.max(50, rectInfo.width)
+            vm.dragInfo.h = Math.max(50, rectInfo.height)
             vm.dragInfo.y = rectInfo.top
             vm.dragInfo.x = rectInfo.left
           }
@@ -130,10 +133,13 @@ export default {
     top: 50%;
     margin-top: -20px;
     color: $colorText;
+    font-size: 14px;
+    animation: fade 1.5s infinite;
   }
   &.dragging {
     .tip {
       opacity: 0;
+      animation: none;
     }
   }
   .dragging-rect {
@@ -147,6 +153,17 @@ export default {
     font-size: 12px;
     color: $colorText;
     @include no-wrap;
+  }
+  @keyframes fade{
+    0%{
+      opacity: 1;
+    }
+    50%{
+      opacity: 0;
+    }
+    100%{
+      opacity: 1;
+    }
   }
 }
 </style>

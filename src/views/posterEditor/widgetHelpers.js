@@ -37,7 +37,8 @@ export class Widget {
                 getMenuList: 'getMenuList',
                 executeContextCommand: 'executeContextCommand'
             },
-            baseMenuList: Widget.getBaseMenuList()
+            baseMenuList: Widget.getBaseMenuList(),
+            openContextMenu: true // 是否打开右键菜单
         }, options)
         return {
             data() {
@@ -82,21 +83,23 @@ export class Widget {
                 }
             },
             mounted() {
-                this._self.$el.addEventListener('contextmenu', (e) => {
-                    const menuList = [...(this.getMenuList() || []), ...this._baseMenuList]
-                    const isLock = this.item.lock
-                    if (!(this.item instanceof BackgroundWidget)) {
-                        menuList.unshift({ label: isLock ? '解除锁定' : '锁定', command: isLock ? '$unlock' : '$lock' })
-                    }
-                    if (menuList.length > 0) {
-                        this.$emit('openContextmenu', {
-                            x: e.pageX,
-                            y: e.pageY,
-                            menuList,
-                            vm: this._self
-                        })
-                    }
-                })
+                if (options.openContextMenu) {
+                    this._self.$el.addEventListener('contextmenu', (e) => {
+                        const menuList = [...(this.getMenuList() || []), ...this._baseMenuList]
+                        const isLock = this.item.lock
+                        if (!(this.item instanceof BackgroundWidget)) {
+                            menuList.unshift({ label: isLock ? '解除锁定' : '锁定', command: isLock ? '$unlock' : '$lock' })
+                        }
+                        if (menuList.length > 0) {
+                            this.$emit('openContextmenu', {
+                                x: e.pageX,
+                                y: e.pageY,
+                                menuList,
+                                vm: this._self
+                            })
+                        }
+                    })
+                }
             },
             watch: {
                 activeItemIds(newVal) {
