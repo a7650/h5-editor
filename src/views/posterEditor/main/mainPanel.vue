@@ -92,8 +92,7 @@ export default {
 .main-panel {
   background-color: #fff;
   position: absolute;
-  top: 50%;
-  margin-top: -300px;
+  margin-top: 50px;
   left: 50%;
   margin-left: -169px;
   user-select: none;
