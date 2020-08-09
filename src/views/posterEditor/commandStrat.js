@@ -1,6 +1,19 @@
 import store from '@/store'
 
 /**
+ * 获取复制组件的数据
+ */
+export function getCopyData(item, vm) {
+    const stateJson = JSON.stringify(vm.$data)
+    return {
+        ...item,
+        componentState: function() {
+            return JSON.parse(stateJson)
+        }
+    }
+}
+
+/**
  * $开头表示是内部指令，以便和组件自定义指令区分
  */
 export const baseCommandStrat = {
@@ -26,14 +39,7 @@ export const baseCommandStrat = {
         store.dispatch('poster/unlockItem', item)
     },
     $copy(item, vm) {
-        console.log(vm)
-        const stateJson = JSON.stringify(vm.$data)
-        store.commit('poster/COPY_WIDGET', {
-            ...item,
-            componentState: function() {
-                return JSON.parse(stateJson)
-            }
-        })
+        store.commit('poster/COPY_WIDGET', getCopyData(item, vm))
     }
 }
 

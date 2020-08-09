@@ -17,6 +17,7 @@
       :is="item.componentName"
       v-for="item in posterItems"
       v-show="item.visible"
+      :ref="item.id"
       :key="item.id"
       :item="item"
       @openContextmenu="openContextmenu"

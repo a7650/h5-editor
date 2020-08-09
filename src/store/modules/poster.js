@@ -12,7 +12,7 @@ const state = {
     posterItems: [], // 组件列表
     activeItems: [], // 当前选中的组件
     layerPanelOpened: false, // 是否打开图层面板
-    copiedWidget: null // 当前复制的组件
+    copiedWidgets: null // 当前复制的组件 WidgetItem[]
 }
 
 const getters = {
@@ -68,13 +68,15 @@ const mutations = {
     },
     // 复制组件
     [MTS.COPY_WIDGET](state, item) {
-        state.copiedWidget = item
+        state.copiedWidgets = Array.isArray(item) ? item : [item]
     },
     // 粘贴组件
     [MTS.PASTE_WIDGET](state) {
-        const copiedWidget = state.copiedWidget
-        if (copiedWidget) {
-            state.posterItems.push(new CopiedWidget(copiedWidget))
+        const copiedWidgets = state.copiedWidgets
+        if (copiedWidgets && copiedWidgets.length > 0) {
+            copiedWidgets.forEach(item => {
+                state.posterItems.push(new CopiedWidget(item))
+            })
         }
     }
 }

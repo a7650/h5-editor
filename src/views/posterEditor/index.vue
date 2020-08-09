@@ -2,7 +2,7 @@
   <div class="poster-editor">
     <div class="base">
       <left-side />
-      <main-component />
+      <main-component ref="main" />
       <extend-side-bar />
       <control-component />
     </div>
@@ -12,12 +12,18 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from './poster.vuex'
+import { mapState, mapGetters, mapActions, mapMutations } from './poster.vuex'
 import controlComponent from './control/index'
 import mainComponent from './main/index'
 import leftSide from './leftSide/index'
 import extendSideBar from './extendSideBar'
 import layerPanel from './extendSideBar/layerPanel'
+import { getCopyData } from './commandStrat'
+
+const DELETE_KEY = 8
+const COPY_KEY = 67
+const PASTE_KEY = 86
+
 export default {
   components: {
     controlComponent,
@@ -27,10 +33,51 @@ export default {
     layerPanel
   },
   computed: {
-    ...mapState(['items', 'layerPanelOpened'])
+    ...mapState([
+      'posterItems',
+      'layerPanelOpened',
+      'activeItems',
+      'copiedWidgets'
+    ]),
+    ...mapGetters(['activeItemIds'])
+  },
+  mounted() {
+    document.addEventListener('keydown', this.keydownHandle)
+    this.body = document.body
+    this.mainPanelRef = this.$refs.main.$refs.mainPanel
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.keydownHandle)
   },
   methods: {
-    ...mapMutations(['ADD_ITEM'])
+    ...mapActions(['replacePosterItems']),
+    ...mapMutations(['PASTE_WIDGET', 'COPY_WIDGET']),
+    keydownHandle(e) {
+      if (e.target !== this.body) {
+        return
+      }
+      const keyCode = e.keyCode
+      if (keyCode === DELETE_KEY && this.activeItemIds.length > 0) {
+      // 删除
+        this.replacePosterItems(
+          this.posterItems.filter(
+            (item) => !this.activeItemIds.includes(item.id)
+          )
+        )
+      } else if (keyCode === PASTE_KEY && e.ctrlKey && this.copiedWidgets) {
+        // 粘贴
+        this.PASTE_WIDGET()
+      } else if (keyCode === COPY_KEY && e.ctrlKey && this.activeItemIds.length > 0) {
+        // 复制
+        const copiedWidgets = []
+        const widgetRefs = this.mainPanelRef.$refs
+        this.activeItemIds.forEach(itemId => {
+          const widgetRef = widgetRefs[itemId][0]
+          copiedWidgets.push(getCopyData(widgetRef.item, widgetRef._self))
+        })
+        this.COPY_WIDGET(copiedWidgets)
+      }
+    }
   }
 }
 </script>
@@ -41,7 +88,7 @@ export default {
   height: 100%;
   background-color: #fff;
   position: fixed;
-  .base{
+  .base {
     width: 100%;
     height: 100%;
     position: relative;

@@ -62,7 +62,7 @@ export default {
   },
   computed: {
     ...mapGetters(['activeItemIds']),
-    ...mapState(['canvasSize', 'copiedWidget'])
+    ...mapState(['canvasSize', 'copiedWidgets'])
   },
   created() {
     this.dragInfo.w = this.canvasSize.width
@@ -103,7 +103,7 @@ export default {
      */
     getMenuList() {
       const menuList = []
-      if (this.copiedWidget) {
+      if (this.copiedWidgets) {
         menuList.unshift({ label: '粘贴', command: 'paste' })
       }
       if (!this.item.isSolid) {

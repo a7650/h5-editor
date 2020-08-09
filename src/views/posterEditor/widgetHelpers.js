@@ -74,12 +74,13 @@ export class Widget {
                 }
                 // 初始化菜单
                 this._baseMenuList = options.baseMenuList
-                // 复制组件
+                // 复制组件初始化数据
                 if (this.item.isCopied) {
                     Object.assign(this.$data, this.item.componentState())
                     const count = this.item.componentState.count
                     this.dragInfo.x = this.dragInfo.x + count * 10
                     this.dragInfo.y = this.dragInfo.y + count * 10
+                    this.isActive = false
                 }
             },
             mounted() {
