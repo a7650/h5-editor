@@ -45,7 +45,9 @@ const mutations = {
     },
     // 添加选中的组件
     [MTS.ADD_ACTIVE_ITEM](state, item) {
-        state.activeItems.push(item)
+        if (item.couldAddToActive) {
+            state.activeItems.push(item)
+        }
     },
     // 取消选中
     [MTS.REMOVE_ACTIVE_ITEM](state, item) {
@@ -53,7 +55,7 @@ const mutations = {
     },
     // 替换选中的组件
     [MTS.REPLACE_ACTIVE_ITEMS](state, items) {
-        state.activeItems = items
+        state.activeItems = items.filter(i => i.couldAddToActive)
     },
     // 设置图层面板的打开关闭状态
     [MTS.SET_LAYER_PANEL](state, flag) {
@@ -68,7 +70,9 @@ const mutations = {
     },
     // 复制组件
     [MTS.COPY_WIDGET](state, item) {
-        state.copiedWidgets = Array.isArray(item) ? item : [item]
+        const items = Array.isArray(item) ? item : [item]
+        const finalItems = items.filter(i => i.replicable)
+        state.copiedWidgets = finalItems.length > 0 ? finalItems : null
     },
     // 粘贴组件
     [MTS.PASTE_WIDGET](state) {

@@ -18,6 +18,7 @@
     @dragging="onDrag"
     @resizing="onResize"
     @rotating="onRotate"
+    @dragstop="onDragStop"
   >
     <img
       ref="image"

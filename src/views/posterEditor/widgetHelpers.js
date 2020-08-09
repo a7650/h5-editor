@@ -1,8 +1,9 @@
 import uniqueId from 'lodash/uniqueId'
 import { mapGetters, mapActions } from 'poster/poster.vuex'
 import { baseCommandStrat, baseMenuList } from './commandStrat'
-
+import store from '@/store'
 const defaultWidgetConfig = {
+    id: '', // 组件id
     type: '', // 类型
     typeLabel: '', // 类型标签
     componentName: '', // 动态component的name
@@ -10,11 +11,13 @@ const defaultWidgetConfig = {
     rename: '', // typeLabel重命名
     lock: false, // 是否处于锁定状态
     visible: true, // 是否可见
-    id: '',
     initHook: null, // Function 组件初始化时候（created）执行
     layerPanelVisible: true, // 是否在图片面板中可见
-    isCopied: false, // 是否是复制的组件
-    componentState: null // Function 复制组件时有效，返回结果为为复制时原组件内部的data
+    replicable: true, // 是否可复制
+    isCopied: false, // 是否是复制的组件(通过复制操作获得的组件)
+    removable: true, // 是否可删除
+    couldAddToActive: true, // 是否可被添加进activeItems
+    componentState: null // Function 复制组件时有效，返回结果为为复制时原组件内部的data；componentState.count为复制的次数
 }
 
 // 组件父类
@@ -38,7 +41,7 @@ export class Widget {
                 executeContextCommand: 'executeContextCommand'
             },
             baseMenuList: Widget.getBaseMenuList(),
-            openContextMenu: true // 是否打开右键菜单
+            contextMenu: true // 使用右键菜单功能
         }, options)
         return {
             data() {
@@ -50,7 +53,8 @@ export class Widget {
                         x: 0,
                         y: 0,
                         rotateZ: 0
-                    }
+                    },
+                    hasCopiedOnDrag: false // 拖动过程中是否执行过复制
                 }
             },
             props: {
@@ -84,7 +88,7 @@ export class Widget {
                 }
             },
             mounted() {
-                if (options.openContextMenu) {
+                if (options.contextMenu) {
                     this._self.$el.addEventListener('contextmenu', (e) => {
                         const menuList = [...(this.getMenuList() || []), ...this._baseMenuList]
                         const isLock = this.item.lock
@@ -131,9 +135,18 @@ export class Widget {
                     this.dragInfo.x = x
                     this.dragInfo.y = y
                 },
-                onDrag(x, y) {
+                onDrag(x, y, e) {
                     this.dragInfo.x = x
                     this.dragInfo.y = y
+                    // ctrl快捷键拖动复制
+                    if (!this.hasCopiedOnDrag && e.ctrlKey) {
+                        this._executeBaseContextCommand('$copy')
+                        store.commit('poster/PASTE_WIDGET')
+                        this.hasCopiedOnDrag = true
+                    }
+                },
+                onDragStop() {
+                    this.hasCopiedOnDrag = false
                 },
                 onRotate(e) {
                     this.dragInfo.rotateZ = (e > 0 ? e : 360 + e) % 360
@@ -199,7 +212,9 @@ export class BackgroundWidget extends Widget {
             componentName: 'background-widget',
             icon: 'icon-background',
             lock: false,
-            visible: true
+            visible: true,
+            couldAddToActive: false,
+            replicable: false
         }, config)
         super(config)
         this.src = config.src
@@ -218,7 +233,9 @@ export class DrawRectWidget extends Widget {
             icon: 'icon-rect',
             lock: false,
             visible: true,
-            layerPanelVisible: false
+            layerPanelVisible: false,
+            replicable: false,
+            couldAddToActive: false
         }, config)
         super(config)
         this.drawing = true

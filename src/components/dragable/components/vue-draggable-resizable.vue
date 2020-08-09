@@ -616,7 +616,7 @@ export default {
         if (this.axis === 'y' || this.axis === 'both') {
           this.top = Math.round(this.elmY / this.grid[1]) * this.grid[1]
         }
-        this.$emit('dragging', this.left, this.top)
+        this.$emit('dragging', this.left, this.top, e)
       } else if (this.rotating) {
         const y = mouseY - this.lastCenterY
         const x = mouseX - this.lastCenterX

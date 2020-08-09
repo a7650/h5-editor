@@ -18,6 +18,7 @@
     @dragging="onDrag"
     @resizing="onResize"
     @rotating="onRotate"
+    @dragstop="onDragStop"
   >
     <div class="content" :style="rectStyleFilter" />
     <portal v-if="isActive" to="widgetControl">

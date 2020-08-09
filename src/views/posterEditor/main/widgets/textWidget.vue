@@ -20,6 +20,7 @@
     @resizing="onResize"
     @rotating="onRotate"
     @dblclick.native="openEditing"
+    @dragstop="onDragStop"
   >
     <div
       v-if="!isEditing"
