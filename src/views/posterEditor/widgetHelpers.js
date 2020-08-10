@@ -2,6 +2,8 @@ import uniqueId from 'lodash/uniqueId'
 import { mapGetters, mapActions } from 'poster/poster.vuex'
 import { baseCommandStrat, baseMenuList } from './commandStrat'
 import store from '@/store'
+import { getCopyData } from './commandStrat'
+
 const defaultWidgetConfig = {
     id: '', // 组件id
     type: '', // 类型
@@ -140,8 +142,12 @@ export class Widget {
                     this.dragInfo.y = y
                     // ctrl快捷键拖动复制
                     if (!this.hasCopiedOnDrag && e.ctrlKey) {
-                        this._executeBaseContextCommand('$copy')
+                        const lastCopiedWidgets = store.state.poster.copiedWidgets
+                        const copyData = getCopyData(this.item, this._self)
+                        copyData.componentState.count = -1 // 粘贴的时候计算得出count为0，使粘贴的组件的位置和原先位置重合
+                        store.commit('poster/COPY_WIDGET', copyData)
                         store.commit('poster/PASTE_WIDGET')
+                        store.commit('poster/COPY_WIDGET', lastCopiedWidgets) // 恢复之前复制的组件
                         this.hasCopiedOnDrag = true
                     }
                 },

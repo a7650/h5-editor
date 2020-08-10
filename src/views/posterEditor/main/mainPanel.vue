@@ -101,5 +101,8 @@ export default {
     /* position: absolute;
     top: 0; */
   }
+  .custom-contextmenu{
+    z-index: 999;
+  }
 }
 </style>

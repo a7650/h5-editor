@@ -12,7 +12,11 @@ const state = {
     posterItems: [], // 组件列表
     activeItems: [], // 当前选中的组件
     layerPanelOpened: false, // 是否打开图层面板
-    copiedWidgets: null // 当前复制的组件 WidgetItem[]
+    copiedWidgets: null, // 当前复制的组件 WidgetItem[]
+    referenceLine: { // 参考线
+        col: [],
+        row: []
+    }
 }
 
 const getters = {
@@ -71,7 +75,7 @@ const mutations = {
     // 复制组件
     [MTS.COPY_WIDGET](state, item) {
         const items = Array.isArray(item) ? item : [item]
-        const finalItems = items.filter(i => i.replicable)
+        const finalItems = items.filter(i => i && i.replicable)
         state.copiedWidgets = finalItems.length > 0 ? finalItems : null
     },
     // 粘贴组件
@@ -82,6 +86,12 @@ const mutations = {
                 state.posterItems.push(new CopiedWidget(item))
             })
         }
+    },
+    [MTS.ADD_REFERENCE_LINE](state, { type, position }) {
+        state.referenceLine[type].push(position)
+    },
+    [MTS.REMOVE_REFERENCE_LINE](state, { type, index }) {
+        state.referenceLine[type].splice(index, 1)
     }
 }
 

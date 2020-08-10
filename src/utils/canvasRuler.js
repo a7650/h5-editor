@@ -21,7 +21,8 @@ const ruler = {
             background: params.background || false,
             color: params.color || false,
             markColor: params.markColor || '#FFCC33',
-            isConstant: params.isConstant || false
+            isConstant: params.isConstant || false,
+            startGap: params.startGap || 0
         }
         const elNode = initParams.el instanceof HTMLElement ? initParams.el : document.querySelector(initParams.el)
         if (!elNode) {
@@ -71,7 +72,7 @@ const ruler = {
                 cxt.strokeStyle = initParams.color ? initParams.color : '#bbb'
                 cxt.lineWidth = 1
                 cxt.lineCap = 'round'
-                const x = division * i - count * division
+                const x = division * i - count * division + initParams.startGap
                 cxt.moveTo(x, initParams.height)
                 cxt.lineTo(x, Math.floor(initParams.height * 0.8))
                 if (i % 5 === 0) {
@@ -91,6 +92,17 @@ const ruler = {
                 cxt.restore()
                 cxt.closePath()
             }
+            // 底部线条
+            cxt.beginPath()
+            cxt.save()
+            cxt.strokeStyle = initParams.color ? initParams.color : '#bbb'
+            cxt.lineWidth = 1
+            cxt.lineCap = 'round'
+            cxt.moveTo(0, initParams.height - 1)
+            cxt.lineTo(winWidth, initParams.height - 1)
+            cxt.stroke()
+            cxt.restore()
+            cxt.closePath()
         }
         if (window.devicePixelRatio) {
             canvas.style.transform = 'scale(' + 1 / window.devicePixelRatio + ')'
@@ -179,6 +191,16 @@ const ruler = {
                 cxt.restore()
                 cxt.closePath()
             }
+            cxt.beginPath()
+            cxt.save()
+            cxt.strokeStyle = initParams.color ? initParams.color : '#bbb'
+            cxt.lineWidth = 1
+            cxt.lineCap = 'round'
+            cxt.moveTo(initParams.width - 1, 0)
+            cxt.lineTo(initParams.width - 1, winHeight)
+            cxt.stroke()
+            cxt.restore()
+            cxt.closePath()
         }
         if (window.devicePixelRatio) {
             canvas.style.transform = 'scale(' + 1 / window.devicePixelRatio + ')'
