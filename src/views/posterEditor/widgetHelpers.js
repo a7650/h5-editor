@@ -3,6 +3,7 @@ import { mapGetters, mapActions } from 'poster/poster.vuex'
 import { baseCommandStrat, baseMenuList } from './commandStrat'
 import store from '@/store'
 import { getCopyData } from './commandStrat'
+import { max } from 'lodash'
 
 const defaultWidgetConfig = {
     id: '', // 组件id
@@ -45,6 +46,12 @@ export class Widget {
             baseMenuList: Widget.getBaseMenuList(),
             contextMenu: true // 使用右键菜单功能
         }, options)
+
+        let hasCopiedOnDrag = false // 拖动过程中是否执行过复制
+        let canvasSize = null
+        let canvasPosition = null
+        let referenceLineMap = null // 参考线位置（相对于画布的位置）{col:[],row:[]}
+
         return {
             data() {
                 return {
@@ -55,8 +62,7 @@ export class Widget {
                         x: 0,
                         y: 0,
                         rotateZ: 0
-                    },
-                    hasCopiedOnDrag: false // 拖动过程中是否执行过复制
+                    }
                 }
             },
             props: {
@@ -138,21 +144,93 @@ export class Widget {
                     this.dragInfo.y = y
                 },
                 onDrag(x, y, e) {
-                    this.dragInfo.x = x
-                    this.dragInfo.y = y
                     // ctrl快捷键拖动复制
-                    if (!this.hasCopiedOnDrag && e.ctrlKey) {
+                    if (!hasCopiedOnDrag && e.ctrlKey) {
                         const lastCopiedWidgets = store.state.poster.copiedWidgets
                         const copyData = getCopyData(this.item, this._self)
                         copyData.componentState.count = -1 // 粘贴的时候计算得出count为0，使粘贴的组件的位置和原先位置重合
                         store.commit('poster/COPY_WIDGET', copyData)
                         store.commit('poster/PASTE_WIDGET')
                         store.commit('poster/COPY_WIDGET', lastCopiedWidgets) // 恢复之前复制的组件
-                        this.hasCopiedOnDrag = true
+                        hasCopiedOnDrag = true
                     }
+                    // 参考线吸附对齐
+                    canvasSize = canvasSize || store.state.poster.canvasSize
+                    canvasPosition = canvasPosition || store.state.poster.canvasPosition
+                    if (!referenceLineMap) {
+                        referenceLineMap = Widget.getReferenceLineMap(canvasSize, canvasPosition, store.state.poster.referenceLine)
+                    }
+                    const maxX = x + this.dragInfo.w
+                    const maxY = y + this.dragInfo.h
+                    const widgetSelfLine = {
+                        row: [y, parseInt((y + maxY) / 2), maxY], // left - center - right
+                        col: [x, parseInt((x + maxX) / 2), maxX]
+                    }
+                    let newX = null
+                    let newY = null
+                    const matchedLine = {
+                        row: widgetSelfLine.row
+                            .map((i, index) => {
+                                let match = null
+                                Object.values(referenceLineMap.row).forEach(referItem => {
+                                    if (i >= referItem.min && i <= referItem.max) {
+                                        match = referItem.value
+                                    }
+                                })
+                                if (match !== null) {
+                                    if (index === 0) {
+                                        newY = match
+                                    } else if (index === 1) {
+                                        newY = parseInt(match - this.dragInfo.h / 2)
+                                    } else if (index === 2) {
+                                        newY = parseInt(match - this.dragInfo.h)
+                                    }
+                                }
+                                return match
+                            })
+                            .filter(i => i !== null),
+                        col: widgetSelfLine.col
+                            .map((i, index) => {
+                                let match = null
+                                Object.values(referenceLineMap.col).forEach(referItem => {
+                                    if (i >= referItem.min && i <= referItem.max) {
+                                        match = referItem.value
+                                    }
+                                })
+                                if (match !== null) {
+                                    if (index === 0) {
+                                        newX = match
+                                    } else if (index === 1) {
+                                        newX = parseInt(match - this.dragInfo.w / 2)
+                                    } else if (index === 2) {
+                                        newX = parseInt(match - this.dragInfo.w)
+                                    }
+                                }
+                                return match
+                            })
+                            .filter(i => i !== null)
+                    }
+                    if (newX !== null) {
+                        this.dragInfo.x = newX
+                    } else {
+                        this.dragInfo.x = x
+                    }
+                    if (newY !== null) {
+                        this.dragInfo.y = newY
+                    } else {
+                        this.dragInfo.y = y
+                    }
+                    store.commit('poster/SET_MATCHED_LINE', {
+                        row: matchedLine.row.map(i => (i + canvasPosition.top)),
+                        col: matchedLine.col.map(i => (i + canvasPosition.left))
+                    })
                 },
                 onDragStop() {
-                    this.hasCopiedOnDrag = false
+                    hasCopiedOnDrag = false
+                    canvasSize = null
+                    canvasPosition = null
+                    referenceLineMap = null
+                    store.commit('poster/REMOVE_MATCHED_LINE')
                 },
                 onRotate(e) {
                     this.dragInfo.rotateZ = (e > 0 ? e : 360 + e) % 360
@@ -188,8 +266,31 @@ export class Widget {
             }
         }
     }
+
     static getBaseMenuList() {
         return baseMenuList
+    }
+
+    static getReferenceLineMap(canvasSize, canvasPosition, userLine/** 用户定义的referenceLine */) {
+        const { width, height } = canvasSize
+        const { top, left } = canvasPosition
+        const referenceLine = {
+            row: [...userLine.row, top, top + height, top + parseInt(height / 2)],
+            col: [...userLine.col, left, left + width, left + parseInt(width / 2)]
+        }
+        const finalReferenceLine = {
+            row: referenceLine.row.map(i => (i - top)),
+            col: referenceLine.col.map(i => (i - left))
+        }
+        const referenceLineMap = {
+            row: finalReferenceLine.row.reduce((pre, cur) => {
+                return Object.assign(pre, { [cur]: { min: cur - 5, max: cur + 5, value: cur }})
+            }, {}),
+            col: finalReferenceLine.col.reduce((pre, cur) => {
+                return Object.assign(pre, { [cur]: { min: cur - 5, max: cur + 5, value: cur }})
+            }, {})
+        }
+        return referenceLineMap
     }
 }
 

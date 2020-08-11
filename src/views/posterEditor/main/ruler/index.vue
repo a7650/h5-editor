@@ -52,17 +52,19 @@
         </div>
       </div>
     </div>
+    <matched-line />
   </div>
 </template>
 
 <script>
 import ruler from '@/utils/canvasRuler'
 import { mapMutations, mapState } from 'poster/poster.vuex'
-
+import matchedLine from './matchedLine'
 const LEFT_SIDE_WIDTH = 260 // 左侧边栏的宽度
 const TOP_RULER_HEIGHT = 22 // 顶部标尺高度
 
 export default {
+  components: { matchedLine },
   data() {
     return {
       topMoving: false,

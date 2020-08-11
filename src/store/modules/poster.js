@@ -8,15 +8,20 @@ const state = {
         width: null,
         height: null
     },
+    canvasPosition: {
+        top: null,
+        left: null
+    },
     background: null,
     posterItems: [], // 组件列表
     activeItems: [], // 当前选中的组件
     layerPanelOpened: false, // 是否打开图层面板
     copiedWidgets: null, // 当前复制的组件 WidgetItem[]
-    referenceLine: { // 参考线
-        col: [],
-        row: []
-    }
+    referenceLine: { // 参考线,用户定义的参考线
+        row: [],
+        col: []
+    },
+    matchedLine: null // 匹配到的参考西安 {row:[],col:[]}
 }
 
 const getters = {
@@ -31,6 +36,9 @@ const getters = {
 const mutations = {
     [MTS.SET_CANVAS_SIZE](state, data) {
         state.canvasSize = data
+    },
+    [MTS.SET_CANVAS_POSITION](state, data) {
+        state.canvasPosition = data
     },
     [MTS.ADD_BACKGROUND](state, item) {
         state.background = item
@@ -92,6 +100,12 @@ const mutations = {
     },
     [MTS.REMOVE_REFERENCE_LINE](state, { type, index }) {
         state.referenceLine[type].splice(index, 1)
+    },
+    [MTS.SET_MATCHED_LINE](state, data) {
+        state.matchedLine = data
+    },
+    [MTS.REMOVE_MATCHED_LINE](state) {
+        state.matchedLine = null
     }
 }
 

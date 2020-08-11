@@ -214,8 +214,8 @@ export default {
   computed: {
     style() {
       return {
-        top: this.top + 'px',
-        left: this.left + 'px',
+        top: this.y + 'px',
+        left: this.x + 'px',
         width: this.width + 'px',
         height: this.height + 'px',
         transform: 'rotate(' + this.rotate + 'deg)',

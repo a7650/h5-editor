@@ -10,6 +10,7 @@
 import mainPanel from './mainPanel'
 import _throttle from 'lodash/throttle'
 import rulerComponent from './ruler'
+import { mapMutations } from 'poster/poster.vuex'
 export default {
   components: { mainPanel, rulerComponent },
   data() {
@@ -34,6 +35,7 @@ export default {
     window.removeEventListener('resize', this.getMaskSizeThrottle)
   },
   methods: {
+    ...mapMutations(['SET_CANVAS_POSITION']),
     getMaskSize() {
       const mainRef = this.$refs.main
       const panelRef = this.$refs.mainPanel.$el
@@ -44,6 +46,11 @@ export default {
         panelRef.clientHeight -
         50 +
         1}px ${(mainRef.clientWidth - panelRef.clientWidth) / 2}px`
+      const canvasPosition = {
+        top: parseInt(panelRef.offsetTop),
+        left: parseInt(panelRef.offsetLeft)
+      }
+      this.SET_CANVAS_POSITION(canvasPosition)
     }
   }
 }
