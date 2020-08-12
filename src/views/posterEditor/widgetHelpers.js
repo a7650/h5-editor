@@ -3,7 +3,6 @@ import { mapGetters, mapActions } from 'poster/poster.vuex'
 import { baseCommandStrat, baseMenuList } from './commandStrat'
 import store from '@/store'
 import { getCopyData } from './commandStrat'
-import { max } from 'lodash'
 
 const defaultWidgetConfig = {
     id: '', // 组件id
@@ -22,6 +21,8 @@ const defaultWidgetConfig = {
     couldAddToActive: true, // 是否可被添加进activeItems
     componentState: null // Function 复制组件时有效，返回结果为为复制时原组件内部的data；componentState.count为复制的次数
 }
+
+const dragItemPosition = {}
 
 // 组件父类
 export class Widget {
@@ -114,6 +115,9 @@ export class Widget {
                     })
                 }
             },
+            beforeDestroy() {
+                delete dragItemPosition[this.item.id]
+            },
             watch: {
                 activeItemIds(newVal) {
                     if (newVal.includes(this.item.id)) {
@@ -142,10 +146,12 @@ export class Widget {
                     this.dragInfo.h = h
                     this.dragInfo.x = x
                     this.dragInfo.y = y
+                    dragItemPosition[this.item.id] = this.dragInfo
+                    // this.onDrag(x, y)
                 },
                 onDrag(x, y, e) {
                     // ctrl快捷键拖动复制
-                    if (!hasCopiedOnDrag && e.ctrlKey) {
+                    if (!hasCopiedOnDrag && e && e.ctrlKey) {
                         const lastCopiedWidgets = store.state.poster.copiedWidgets
                         const copyData = getCopyData(this.item, this._self)
                         copyData.componentState.count = -1 // 粘贴的时候计算得出count为0，使粘贴的组件的位置和原先位置重合
@@ -158,7 +164,12 @@ export class Widget {
                     canvasSize = canvasSize || store.state.poster.canvasSize
                     canvasPosition = canvasPosition || store.state.poster.canvasPosition
                     if (!referenceLineMap) {
-                        referenceLineMap = Widget.getReferenceLineMap(canvasSize, canvasPosition, store.state.poster.referenceLine)
+                        referenceLineMap = Widget.getReferenceLineMap(
+                            canvasSize,
+                            canvasPosition,
+                            store.state.poster.referenceLine,
+                            Object.assign({}, dragItemPosition, { [this.item.id]: null })
+                        )
                     }
                     const maxX = x + this.dragInfo.w
                     const maxY = y + this.dragInfo.h
@@ -220,6 +231,7 @@ export class Widget {
                     } else {
                         this.dragInfo.y = y
                     }
+                    dragItemPosition[this.item.id] = this.dragInfo
                     store.commit('poster/SET_MATCHED_LINE', {
                         row: matchedLine.row.map(i => (i + canvasPosition.top)),
                         col: matchedLine.col.map(i => (i + canvasPosition.left))
@@ -271,16 +283,35 @@ export class Widget {
         return baseMenuList
     }
 
-    static getReferenceLineMap(canvasSize, canvasPosition, userLine/** 用户定义的referenceLine */) {
+    static getReferenceLineMap(canvasSize, canvasPosition, userLine/** 用户定义的referenceLine */, dragItemPosition) {
         const { width, height } = canvasSize
         const { top, left } = canvasPosition
         const referenceLine = {
             row: [...userLine.row, top, top + height, top + parseInt(height / 2)],
             col: [...userLine.col, left, left + width, left + parseInt(width / 2)]
         }
+        const widgetLine = {
+            row: [],
+            col: []
+        }
+        Object.values(dragItemPosition).forEach(dragInfo => {
+            if (dragInfo) {
+                const { x, y, w, h } = dragInfo
+                widgetLine.row.push(y, parseInt(y + h / 2), y + h)
+                widgetLine.col.push(x, parseInt(x + w / 2), x + w)
+            }
+        })
+
+        console.log(widgetLine)
         const finalReferenceLine = {
-            row: referenceLine.row.map(i => (i - top)),
-            col: referenceLine.col.map(i => (i - left))
+            row: [
+                ...referenceLine.row.map(i => (i - top)),
+                ...widgetLine.row
+            ],
+            col: [
+                ...referenceLine.col.map(i => (i - left)),
+                ...widgetLine.col
+            ]
         }
         const referenceLineMap = {
             row: finalReferenceLine.row.reduce((pre, cur) => {

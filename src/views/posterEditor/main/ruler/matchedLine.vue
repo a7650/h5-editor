@@ -33,17 +33,18 @@ export default {
   position: absolute;
   z-index: 99;
   &.column {
-    width: 3px;
+    width: 0px;
+    border-left: 1px dashed #ff0000;
     height: 5000px;
-    margin-left: -2px;
+    /* margin-left: -2px; */
     top: 0;
-    background: linear-gradient(
+    /* background: linear-gradient(
       90deg,
       transparent 33.3%,
       #eceef0 0,
       #ff0000 66.6%,
       transparent 0
-    );
+    ); */
     .tip {
       top: 30px;
       left: 10px;
@@ -51,16 +52,17 @@ export default {
   }
   &.row {
     width: 5000px;
-    height: 3px;
-    margin-top: -2px;
+    height: 0px;
+    /* margin-top: -2px; */
     left: 0;
-    background: linear-gradient(
+    border-top: 1px dashed #ff0000;
+    /* background: linear-gradient(
       0deg,
       transparent 33.3%,
       #eceef0 0,
       #ff0000 66.6%,
       transparent 0
-    );
+    ); */
     .tip {
       top: -30px;
       left: 30px;

@@ -41,11 +41,9 @@ export default {
       const panelRef = this.$refs.mainPanel.$el
       this.maskBorderWidth = `${50}px ${(mainRef.clientWidth -
         panelRef.clientWidth) /
-        2 +
-        1}px ${mainRef.clientHeight -
+        2}px ${mainRef.clientHeight -
         panelRef.clientHeight -
-        50 +
-        1}px ${(mainRef.clientWidth - panelRef.clientWidth) / 2}px`
+        50}px ${(mainRef.clientWidth - panelRef.clientWidth) / 2}px`
       const canvasPosition = {
         top: parseInt(panelRef.offsetTop),
         left: parseInt(panelRef.offsetLeft)

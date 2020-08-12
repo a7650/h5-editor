@@ -14,12 +14,14 @@
     :lock="item.lock"
     :active.sync="isActive"
     class="drag-item"
+    :class="{solid:item.isSolid}"
     deselect-cancel=".poster-editor_deactivated-ignore"
     @activated="activated"
     @deactivated="deactivated"
     @dragging="onDrag"
     @resizing="onResize"
     @rotating="onRotate"
+    @dragstop="onDragStop"
   >
     <div
       v-if="item.isSolid"
@@ -122,8 +124,8 @@ export default {
 <style lang="scss" scoped>
 .drag-item {
   user-select: none;
-  img {
-    /* drag */
+  &.solid:hover{
+      border-color: transparent !important;
   }
 }
 </style>
