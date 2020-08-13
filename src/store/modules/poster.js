@@ -16,6 +16,7 @@ const state = {
     posterItems: [], // 组件列表
     activeItems: [], // 当前选中的组件
     layerPanelOpened: false, // 是否打开图层面板
+    referenceLineOpened: true, // 是否打开参考线
     copiedWidgets: null, // 当前复制的组件 WidgetItem[]
     referenceLine: { // 参考线,用户定义的参考线
         row: [],
@@ -73,6 +74,10 @@ const mutations = {
     [MTS.SET_LAYER_PANEL](state, flag) {
         state.layerPanelOpened = !!flag
     },
+    // 设置参考线的可见状态
+    [MTS.SET_REFERENCE_LINE_VISIBLE](state, flag) {
+        state.referenceLineOpened = !!flag
+    },
     // 设置某个组件的data
     [MTS.SET_WIDGET_CONFIG](state, { item, cb }) {
         const target = state.posterItems.find(i => i.id === item.id)
@@ -95,11 +100,20 @@ const mutations = {
             })
         }
     },
+    // 添加参考线
     [MTS.ADD_REFERENCE_LINE](state, { type, position }) {
         state.referenceLine[type].push(position)
     },
+    // 删除参考线
     [MTS.REMOVE_REFERENCE_LINE](state, { type, index }) {
         state.referenceLine[type].splice(index, 1)
+    },
+    // 清空参考线
+    [MTS.REMOVE_ALL_REFERENCE_LINE](state) {
+        state.referenceLine = {
+            row: [],
+            col: []
+        }
     },
     [MTS.SET_MATCHED_LINE](state, data) {
         state.matchedLine = data

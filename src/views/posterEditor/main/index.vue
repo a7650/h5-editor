@@ -55,7 +55,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .poster-editor-main {
-  background-color: rgb(211, 211, 211);
+  background-color: #d6d6d6;
   position: relative;
   overflow: hidden;
   .mask {

@@ -7,7 +7,9 @@
       <control-component />
     </div>
     <!-- 图层面板 -->
-    <layer-panel v-if="layerPanelOpened" />
+    <transition name="el-zoom-in-center">
+      <layer-panel v-if="layerPanelOpened" />
+    </transition>
   </div>
 </template>
 
@@ -58,7 +60,7 @@ export default {
       }
       const keyCode = e.keyCode
       if (keyCode === DELETE_KEY && this.activeItemIds.length > 0) {
-      // 删除
+        // 删除
         this.replacePosterItems(
           this.posterItems.filter(
             (item) => !this.activeItemIds.includes(item.id)
@@ -67,11 +69,15 @@ export default {
       } else if (keyCode === PASTE_KEY && e.ctrlKey && this.copiedWidgets) {
         // 粘贴
         this.PASTE_WIDGET()
-      } else if (keyCode === COPY_KEY && e.ctrlKey && this.activeItemIds.length > 0) {
+      } else if (
+        keyCode === COPY_KEY &&
+        e.ctrlKey &&
+        this.activeItemIds.length > 0
+      ) {
         // 复制
         const copiedWidgets = []
         const widgetRefs = this.mainPanelRef.$refs
-        this.activeItemIds.forEach(itemId => {
+        this.activeItemIds.forEach((itemId) => {
           const widgetRef = widgetRefs[itemId][0]
           copiedWidgets.push(getCopyData(widgetRef.item, widgetRef._self))
         })

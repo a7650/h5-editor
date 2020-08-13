@@ -707,7 +707,7 @@ export default {
   position: absolute;
   box-sizing: content-box;
   border: 1px dashed transparent;
-  transition: border .2s;
+  /* transition: border .2s; */
   &.dragging,
   &.active,
   &.lock {
@@ -732,10 +732,10 @@ export default {
   box-sizing: border-box;
   display: none;
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   font-size: 1px;
-  border-radius: 5px;
+  border-radius: 50%;
   background: #fff;
   border: 1px solid $colorTheme;
 }
@@ -748,9 +748,10 @@ export default {
   left: 50%;
   margin-left: -10px;
   background-color: #fff;
-  box-shadow: 0 0 6px rgb(114, 114, 114);
+  box-shadow: 0 0 6px rgba(160, 160, 160,.6);
   line-height: 20px;
   text-align: center;
+  font-size: 13px;
   cursor: url(../rotate.png) -8 -8, pointer;
   &.rotating::before {
     content: '';
@@ -772,7 +773,7 @@ export default {
     position: absolute;
   }
 }
-$handle-item-pos: 5px;
+$handle-item-pos: 4px;
 .handle-tl {
   left: 0 - $handle-item-pos;
   top: 0 - $handle-item-pos;
@@ -780,7 +781,6 @@ $handle-item-pos: 5px;
 .handle-tm {
   top: 0 - $handle-item-pos;
   left: 50%;
-  margin-left: 0 - $handle-item-pos;
 }
 .handle-tr {
   right: 0 - $handle-item-pos;
@@ -793,7 +793,6 @@ $handle-item-pos: 5px;
 .handle-bm {
   bottom: 0 - $handle-item-pos;
   left: 50%;
-  margin-left: 0 - $handle-item-pos;
 }
 .handle-br {
   bottom: 0 - $handle-item-pos;

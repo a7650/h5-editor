@@ -192,7 +192,7 @@ export default {
   },
   watch: {
     inDragInfo: {
-      handler() {
+      handler(newVal, oldVal) {
         this.$emit('dragInfoChange', this.inDragInfo)
       },
       deep: true

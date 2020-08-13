@@ -96,7 +96,8 @@ export default {
       text-align: center;
       line-height: 60px;
       font-size: 24px;
-      transition: 0.4s;
+      transition: 0.2s;
+      border-radius: 2px;
       &:hover,
       &.active {
         background-color: $colorTheme;

@@ -1,18 +1,38 @@
 <template>
   <div class="extend-side-bar">
-    <ul class="list">
-      <el-tooltip effect="dark" content="图层" placement="left">
-        <li class="item" :class="{active:layerPanelOpened}" @click="openLayer">
+    <div class="list">
+      <el-tooltip effect="dark" content="图层面板" placement="left">
+        <div
+          class="item"
+          :class="{ active: layerPanelOpened }"
+          @click="openLayer"
+        >
           <i class="icon-layer" />
-        </li>
+        </div>
       </el-tooltip>
-    </ul>
+      <el-tooltip effect="dark" content="参考线" placement="left">
+        <el-popover
+          placement="left"
+          title="参考线"
+          width="200"
+          trigger="click"
+          transition="el-zoom-in-center"
+        >
+          <reference-line />
+          <div slot="reference" class="item">
+            <i class="icon-grid" />
+          </div>
+        </el-popover>
+      </el-tooltip>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState } from 'poster/poster.vuex'
+import referenceLine from './referenceLine'
 export default {
+  components: { referenceLine },
   data() {
     return {}
   },
@@ -22,7 +42,7 @@ export default {
   methods: {
     // 打开图层面板
     openLayer() {
-      this.$store.commit('poster/SET_LAYER_PANEL', true)
+      this.$store.commit('poster/SET_LAYER_PANEL', !this.layerPanelOpened)
     }
   }
 }
@@ -37,11 +57,13 @@ export default {
     text-align: center;
     line-height: 50px;
     cursor: pointer;
-    transition: 0.2s;
+    /* transition: 0.2s; */
+    border-radius: 4px;
     i {
-      font-size: 24px;
+      font-size: 18px;
     }
-    &:hover,&.active {
+    &:hover,
+    &.active {
       background-color: $colorTheme;
       color: #fff;
     }

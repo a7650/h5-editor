@@ -114,6 +114,7 @@ export class Widget {
                         }
                     })
                 }
+                this.dragRef = this.$refs.drag
             },
             beforeDestroy() {
                 delete dragItemPosition[this.item.id]
@@ -161,81 +162,94 @@ export class Widget {
                         hasCopiedOnDrag = true
                     }
                     // 参考线吸附对齐
-                    canvasSize = canvasSize || store.state.poster.canvasSize
-                    canvasPosition = canvasPosition || store.state.poster.canvasPosition
-                    if (!referenceLineMap) {
-                        referenceLineMap = Widget.getReferenceLineMap(
-                            canvasSize,
-                            canvasPosition,
-                            store.state.poster.referenceLine,
-                            Object.assign({}, dragItemPosition, { [this.item.id]: null })
-                        )
-                    }
-                    const maxX = x + this.dragInfo.w
-                    const maxY = y + this.dragInfo.h
-                    const widgetSelfLine = {
-                        row: [y, parseInt((y + maxY) / 2), maxY], // left - center - right
-                        col: [x, parseInt((x + maxX) / 2), maxX]
-                    }
-                    let newX = null
-                    let newY = null
-                    const matchedLine = {
-                        row: widgetSelfLine.row
-                            .map((i, index) => {
-                                let match = null
-                                Object.values(referenceLineMap.row).forEach(referItem => {
-                                    if (i >= referItem.min && i <= referItem.max) {
-                                        match = referItem.value
+                    if (!e.altKey) {
+                        canvasSize = canvasSize || store.state.poster.canvasSize
+                        canvasPosition = canvasPosition || store.state.poster.canvasPosition
+                        if (!referenceLineMap) {
+                            referenceLineMap = Widget.getReferenceLineMap(
+                                canvasSize,
+                                canvasPosition,
+                                store.state.poster.referenceLine,
+                                Object.assign({}, dragItemPosition, { [this.item.id]: null })
+                            )
+                        }
+                        const maxX = x + this.dragInfo.w
+                        const maxY = y + this.dragInfo.h
+                        const widgetSelfLine = {
+                            row: [y, parseInt((y + maxY) / 2), maxY], // left - center - right
+                            col: [x, parseInt((x + maxX) / 2), maxX]
+                        }
+                        let newX = null
+                        let newY = null
+                        const matchedLine = {
+                            row: widgetSelfLine.row
+                                .map((i, index) => {
+                                    let match = null
+                                    Object.values(referenceLineMap.row).forEach(referItem => {
+                                        if (i >= referItem.min && i <= referItem.max) {
+                                            match = referItem.value
+                                        }
+                                    })
+                                    if (match !== null) {
+                                        if (index === 0) {
+                                            newY = match
+                                        } else if (index === 1) {
+                                            newY = parseInt(match - this.dragInfo.h / 2)
+                                        } else if (index === 2) {
+                                            newY = parseInt(match - this.dragInfo.h)
+                                        }
                                     }
+                                    return match
                                 })
-                                if (match !== null) {
-                                    if (index === 0) {
-                                        newY = match
-                                    } else if (index === 1) {
-                                        newY = parseInt(match - this.dragInfo.h / 2)
-                                    } else if (index === 2) {
-                                        newY = parseInt(match - this.dragInfo.h)
+                                .filter(i => i !== null),
+                            col: widgetSelfLine.col
+                                .map((i, index) => {
+                                    let match = null
+                                    Object.values(referenceLineMap.col).forEach(referItem => {
+                                        if (i >= referItem.min && i <= referItem.max) {
+                                            match = referItem.value
+                                        }
+                                    })
+                                    if (match !== null) {
+                                        if (index === 0) {
+                                            newX = match
+                                        } else if (index === 1) {
+                                            newX = parseInt(match - this.dragInfo.w / 2)
+                                        } else if (index === 2) {
+                                            newX = parseInt(match - this.dragInfo.w)
+                                        }
                                     }
-                                }
-                                return match
-                            })
-                            .filter(i => i !== null),
-                        col: widgetSelfLine.col
-                            .map((i, index) => {
-                                let match = null
-                                Object.values(referenceLineMap.col).forEach(referItem => {
-                                    if (i >= referItem.min && i <= referItem.max) {
-                                        match = referItem.value
-                                    }
+                                    return match
                                 })
-                                if (match !== null) {
-                                    if (index === 0) {
-                                        newX = match
-                                    } else if (index === 1) {
-                                        newX = parseInt(match - this.dragInfo.w / 2)
-                                    } else if (index === 2) {
-                                        newX = parseInt(match - this.dragInfo.w)
-                                    }
-                                }
-                                return match
-                            })
-                            .filter(i => i !== null)
-                    }
-                    if (newX !== null) {
-                        this.dragInfo.x = newX
+                                .filter(i => i !== null)
+                        }
+                        if (newX !== null) {
+                            this.dragInfo.x = newX
+                            if (this.dragRef) {
+                                this.dragRef.elmX = newX
+                                this.dragRef.left = newX
+                            }
+                        } else {
+                            this.dragInfo.x = x
+                        }
+                        if (newY !== null) {
+                            this.dragInfo.y = newY
+                            if (this.dragRef) {
+                                this.dragRef.elmY = newY
+                                this.dragRef.top = newY
+                            }
+                        } else {
+                            this.dragInfo.y = y
+                        }
+                        dragItemPosition[this.item.id] = this.dragInfo
+                        store.commit('poster/SET_MATCHED_LINE', {
+                            row: matchedLine.row.map(i => (i + canvasPosition.top)),
+                            col: matchedLine.col.map(i => (i + canvasPosition.left))
+                        })
                     } else {
                         this.dragInfo.x = x
-                    }
-                    if (newY !== null) {
-                        this.dragInfo.y = newY
-                    } else {
                         this.dragInfo.y = y
                     }
-                    dragItemPosition[this.item.id] = this.dragInfo
-                    store.commit('poster/SET_MATCHED_LINE', {
-                        row: matchedLine.row.map(i => (i + canvasPosition.top)),
-                        col: matchedLine.col.map(i => (i + canvasPosition.left))
-                    })
                 },
                 onDragStop() {
                     hasCopiedOnDrag = false
@@ -286,10 +300,15 @@ export class Widget {
     static getReferenceLineMap(canvasSize, canvasPosition, userLine/** 用户定义的referenceLine */, dragItemPosition) {
         const { width, height } = canvasSize
         const { top, left } = canvasPosition
+        if (!store.state.poster.referenceLineOpened) {
+            userLine = { row: [], col: [] }
+        }
+        // 用户定义的参考线和画布参考线
         const referenceLine = {
             row: [...userLine.row, top, top + height, top + parseInt(height / 2)],
             col: [...userLine.col, left, left + width, left + parseInt(width / 2)]
         }
+        // 组件参考线
         const widgetLine = {
             row: [],
             col: []
@@ -301,8 +320,6 @@ export class Widget {
                 widgetLine.col.push(x, parseInt(x + w / 2), x + w)
             }
         })
-
-        console.log(widgetLine)
         const finalReferenceLine = {
             row: [
                 ...referenceLine.row.map(i => (i - top)),

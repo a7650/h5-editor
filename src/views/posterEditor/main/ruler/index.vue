@@ -1,21 +1,26 @@
 <template>
   <div class="poster-ruler">
-    <div
-      v-for="(item, index) in referenceLine.col"
-      :key="'col' + index"
-      class="reference-line column"
-      :style="{ left: item + 'px' }"
-      @dblclick="removeReferenceLine('col', index)"
-      @mousedown="colHandleDown($event, index)"
-    />
-    <div
-      v-for="(item, index) in referenceLine.row"
-      :key="'row' + index"
-      class="reference-line row"
-      :style="{ top: item + 'px' }"
-      @dblclick="removeReferenceLine('row', index)"
-      @mousedown="rowHandleDown($event, index)"
-    />
+    <template v-if="referenceLineOpened">
+      <!-- 纵向参考线 -->
+      <div
+        v-for="(item, index) in referenceLine.col"
+        :key="'col' + index"
+        class="reference-line column"
+        :style="{ left: item + 'px' }"
+        @dblclick="removeReferenceLine('col', index)"
+        @mousedown="colHandleDown($event, index)"
+      />
+      <!-- 横向参考线 -->
+      <div
+        v-for="(item, index) in referenceLine.row"
+        :key="'row' + index"
+        class="reference-line row"
+        :style="{ top: item + 'px' }"
+        @dblclick="removeReferenceLine('row', index)"
+        @mousedown="rowHandleDown($event, index)"
+      />
+    </template>
+    <!-- 顶部标尺 -->
     <div
       ref="topRuler"
       class="top-ruler"
@@ -34,6 +39,7 @@
         </div>
       </div>
     </div>
+    <!-- 左侧标尺 -->
     <div
       ref="leftRuler"
       class="left-ruler"
@@ -52,6 +58,7 @@
         </div>
       </div>
     </div>
+    <!-- 动态匹配的参考线 -->
     <matched-line />
   </div>
 </template>
@@ -74,7 +81,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['referenceLine']),
+    ...mapState(['referenceLine', 'referenceLineOpened']),
     columnXInRuler() {
       return this.columnX - TOP_RULER_HEIGHT
     },
