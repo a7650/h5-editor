@@ -14,7 +14,7 @@ export function getCopyData(item, vm) {
 }
 
 /**
- * $开头表示是内部指令，以便和组件自定义指令区分
+ * $开头表示是内部命令，以便和组件自定义命令区分
  */
 export const baseCommandStrat = {
     $moveToTop(item) {
@@ -39,7 +39,7 @@ export const baseCommandStrat = {
         store.dispatch('poster/unlockItem', item)
     },
     $copy(item, vm) {
-        store.commit('poster/COPY_WIDGET', getCopyData(item, vm))
+        store.dispatch('poster/copyWidget', getCopyData(item, vm))
     }
 }
 

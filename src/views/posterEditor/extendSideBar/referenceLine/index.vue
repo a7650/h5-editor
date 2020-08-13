@@ -20,13 +20,13 @@ export default {
         return this.$store.state.poster.referenceLineOpened
       },
       set(val) {
-        this.$store.commit('poster/SET_REFERENCE_LINE_VISIBLE', val)
+        this.$store.dispatch('poster/setReferenceLineVisible', val)
       }
     }
   },
   methods: {
       removeAll() {
-        this.$store.commit('poster/REMOVE_ALL_REFERENCE_LINE')
+        this.$store.dispatch('poster/removeAllReferenceLine')
       }
   }
 }

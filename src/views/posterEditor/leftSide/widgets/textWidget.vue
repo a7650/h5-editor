@@ -11,7 +11,7 @@
 
 <script>
 import { mapActions } from 'poster/poster.vuex'
-import { TextWidget } from '../../widgetHelpers'
+import { TextWidget } from '../../widgetConstructor'
 export default {
   data() {
     return {}

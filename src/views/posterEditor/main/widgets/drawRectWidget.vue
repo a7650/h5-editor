@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { RectWidget } from 'poster/widgetHelpers'
+import { RectWidget } from 'poster/widgetConstructor'
 import { clickoutside } from 'poster/poster.directives'
 // import textControl from 'poster/control/widgets/textControl'
 import { mapState, mapActions } from 'poster/poster.vuex'

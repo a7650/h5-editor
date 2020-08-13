@@ -11,7 +11,7 @@
 
 <script>
 import { mapActions } from 'poster/poster.vuex'
-import { DrawRectWidget } from '../../widgetHelpers'
+import { DrawRectWidget } from '../../widgetConstructor'
 export default {
   data() {
     return {}

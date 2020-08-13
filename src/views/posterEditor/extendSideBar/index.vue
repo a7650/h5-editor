@@ -42,7 +42,7 @@ export default {
   methods: {
     // 打开图层面板
     openLayer() {
-      this.$store.commit('poster/SET_LAYER_PANEL', !this.layerPanelOpened)
+      this.$store.dispatch('poster/setLayerPanel', !this.layerPanelOpened)
     }
   }
 }

@@ -7,7 +7,7 @@
         :key="'col' + index"
         class="reference-line column"
         :style="{ left: item + 'px' }"
-        @dblclick="removeReferenceLine('col', index)"
+        @dblclick="removeReferenceLine({type:'col', index})"
         @mousedown="colHandleDown($event, index)"
       />
       <!-- 横向参考线 -->
@@ -16,7 +16,7 @@
         :key="'row' + index"
         class="reference-line row"
         :style="{ top: item + 'px' }"
-        @dblclick="removeReferenceLine('row', index)"
+        @dblclick="removeReferenceLine({type:'row', index})"
         @mousedown="rowHandleDown($event, index)"
       />
     </template>
@@ -65,7 +65,7 @@
 
 <script>
 import ruler from '@/utils/canvasRuler'
-import { mapMutations, mapState } from 'poster/poster.vuex'
+import { mapState, mapActions } from 'poster/poster.vuex'
 import matchedLine from './matchedLine'
 const LEFT_SIDE_WIDTH = 260 // 左侧边栏的宽度
 const TOP_RULER_HEIGHT = 22 // 顶部标尺高度
@@ -106,15 +106,12 @@ export default {
     })
   },
   methods: {
-    ...mapMutations(['ADD_REFERENCE_LINE', 'REMOVE_REFERENCE_LINE']),
+    ...mapActions(['addReferenceLine', 'removeReferenceLine']),
     addColumn() {
-      this.ADD_REFERENCE_LINE({ type: 'col', position: this.columnX })
+      this.addReferenceLine({ type: 'col', position: this.columnX })
     },
     addRow() {
-      this.ADD_REFERENCE_LINE({ type: 'row', position: this.rowY })
-    },
-    removeReferenceLine(type, index) {
-      this.REMOVE_REFERENCE_LINE({ type, index })
+      this.addReferenceLine({ type: 'row', position: this.rowY })
     },
     topMouseEnter(e) {
       this.topMoving = true
@@ -160,7 +157,7 @@ export default {
       document.body.style.cursor = 'col-resize'
       const mouseMoveFn = (_e) => {
         if (!invoked) {
-          this.REMOVE_REFERENCE_LINE({ type: 'col', index })
+          this.removeReferenceLine({ type: 'col', index })
           this.topMouseEnter(_e)
           invoked = true
         }
@@ -185,7 +182,7 @@ export default {
       document.body.style.cursor = 'row-resize'
       const mouseMoveFn = (_e) => {
         if (!invoked) {
-          this.REMOVE_REFERENCE_LINE({ type: 'row', index })
+          this.removeReferenceLine({ type: 'row', index })
           this.leftMouseEnter(_e)
           invoked = true
         }

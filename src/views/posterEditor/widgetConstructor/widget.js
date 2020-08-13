@@ -1,8 +1,7 @@
 import uniqueId from 'lodash/uniqueId'
 import { mapGetters, mapActions } from 'poster/poster.vuex'
-import { baseCommandStrat, baseMenuList } from './commandStrat'
+import { baseCommandStrat, baseMenuList, getCopyData } from './helpers/commandStrat'
 import store from '@/store'
-import { getCopyData } from './commandStrat'
 
 const defaultWidgetConfig = {
     id: '', // 组件id
@@ -24,8 +23,56 @@ const defaultWidgetConfig = {
 
 const dragItemPosition = {}
 
+function getBaseMenuList() {
+    return baseMenuList
+}
+
+function getReferenceLineMap(canvasSize, canvasPosition, userLine/** 用户定义的referenceLine */, dragItemPosition) {
+    const { width, height } = canvasSize
+    const { top, left } = canvasPosition
+    if (!store.state.poster.referenceLineOpened) {
+        userLine = { row: [], col: [] }
+    }
+    // 用户定义的参考线和画布参考线
+    const referenceLine = {
+        row: [...userLine.row, top, top + height, top + parseInt(height / 2)],
+        col: [...userLine.col, left, left + width, left + parseInt(width / 2)]
+    }
+    // 组件参考线
+    const widgetLine = {
+        row: [],
+        col: []
+    }
+    Object.values(dragItemPosition).forEach(dragInfo => {
+        if (dragInfo) {
+            const { x, y, w, h } = dragInfo
+            widgetLine.row.push(y, parseInt(y + h / 2), y + h)
+            widgetLine.col.push(x, parseInt(x + w / 2), x + w)
+        }
+    })
+    const finalReferenceLine = {
+        row: [
+            ...referenceLine.row.map(i => (i - top)),
+            ...widgetLine.row
+        ],
+        col: [
+            ...referenceLine.col.map(i => (i - left)),
+            ...widgetLine.col
+        ]
+    }
+    const referenceLineMap = {
+        row: finalReferenceLine.row.reduce((pre, cur) => {
+            return Object.assign(pre, { [cur]: { min: cur - 5, max: cur + 5, value: cur }})
+        }, {}),
+        col: finalReferenceLine.col.reduce((pre, cur) => {
+            return Object.assign(pre, { [cur]: { min: cur - 5, max: cur + 5, value: cur }})
+        }, {})
+    }
+    return referenceLineMap
+}
+
 // 组件父类
-export class Widget {
+export default class Widget {
     constructor(config = defaultWidgetConfig) {
         const item = Object.assign({}, defaultWidgetConfig, config, {
             id: uniqueId(config.typeLabel + '-')
@@ -35,16 +82,14 @@ export class Widget {
             this[key] = item[key]
         })
     }
-    /**
-     * 各个子组件继承的mixin
-     */
+
     static mixin(options) {
         options = Object.assign({}, {
             invokeFunctionMap: {
                 getMenuList: 'getMenuList',
                 executeContextCommand: 'executeContextCommand'
             },
-            baseMenuList: Widget.getBaseMenuList(),
+            baseMenuList: getBaseMenuList(),
             contextMenu: true // 使用右键菜单功能
         }, options)
 
@@ -101,7 +146,7 @@ export class Widget {
                     this._self.$el.addEventListener('contextmenu', (e) => {
                         const menuList = [...(this.getMenuList() || []), ...this._baseMenuList]
                         const isLock = this.item.lock
-                        if (!(this.item instanceof BackgroundWidget)) {
+                        if (!(this.item.type === 'background')) {
                             menuList.unshift({ label: isLock ? '解除锁定' : '锁定', command: isLock ? '$unlock' : '$lock' })
                         }
                         if (menuList.length > 0) {
@@ -156,9 +201,9 @@ export class Widget {
                         const lastCopiedWidgets = store.state.poster.copiedWidgets
                         const copyData = getCopyData(this.item, this._self)
                         copyData.componentState.count = -1 // 粘贴的时候计算得出count为0，使粘贴的组件的位置和原先位置重合
-                        store.commit('poster/COPY_WIDGET', copyData)
-                        store.commit('poster/PASTE_WIDGET')
-                        store.commit('poster/COPY_WIDGET', lastCopiedWidgets) // 恢复之前复制的组件
+                        store.dispatch('poster/copyWidget', copyData)
+                        store.dispatch('poster/pasteWidget')
+                        store.dispatch('poster/copyWidget', lastCopiedWidgets) // 恢复之前复制的组件
                         hasCopiedOnDrag = true
                     }
                     // 参考线吸附对齐
@@ -166,7 +211,7 @@ export class Widget {
                         canvasSize = canvasSize || store.state.poster.canvasSize
                         canvasPosition = canvasPosition || store.state.poster.canvasPosition
                         if (!referenceLineMap) {
-                            referenceLineMap = Widget.getReferenceLineMap(
+                            referenceLineMap = getReferenceLineMap(
                                 canvasSize,
                                 canvasPosition,
                                 store.state.poster.referenceLine,
@@ -242,7 +287,7 @@ export class Widget {
                             this.dragInfo.y = y
                         }
                         dragItemPosition[this.item.id] = this.dragInfo
-                        store.commit('poster/SET_MATCHED_LINE', {
+                        store.dispatch('poster/setMatchedLine', {
                             row: matchedLine.row.map(i => (i + canvasPosition.top)),
                             col: matchedLine.col.map(i => (i + canvasPosition.left))
                         })
@@ -256,7 +301,7 @@ export class Widget {
                     canvasSize = null
                     canvasPosition = null
                     referenceLineMap = null
-                    store.commit('poster/REMOVE_MATCHED_LINE')
+                    store.dispatch('poster/removeMatchedLine')
                 },
                 onRotate(e) {
                     this.dragInfo.rotateZ = (e > 0 ? e : 360 + e) % 360
@@ -292,154 +337,4 @@ export class Widget {
             }
         }
     }
-
-    static getBaseMenuList() {
-        return baseMenuList
-    }
-
-    static getReferenceLineMap(canvasSize, canvasPosition, userLine/** 用户定义的referenceLine */, dragItemPosition) {
-        const { width, height } = canvasSize
-        const { top, left } = canvasPosition
-        if (!store.state.poster.referenceLineOpened) {
-            userLine = { row: [], col: [] }
-        }
-        // 用户定义的参考线和画布参考线
-        const referenceLine = {
-            row: [...userLine.row, top, top + height, top + parseInt(height / 2)],
-            col: [...userLine.col, left, left + width, left + parseInt(width / 2)]
-        }
-        // 组件参考线
-        const widgetLine = {
-            row: [],
-            col: []
-        }
-        Object.values(dragItemPosition).forEach(dragInfo => {
-            if (dragInfo) {
-                const { x, y, w, h } = dragInfo
-                widgetLine.row.push(y, parseInt(y + h / 2), y + h)
-                widgetLine.col.push(x, parseInt(x + w / 2), x + w)
-            }
-        })
-        const finalReferenceLine = {
-            row: [
-                ...referenceLine.row.map(i => (i - top)),
-                ...widgetLine.row
-            ],
-            col: [
-                ...referenceLine.col.map(i => (i - left)),
-                ...widgetLine.col
-            ]
-        }
-        const referenceLineMap = {
-            row: finalReferenceLine.row.reduce((pre, cur) => {
-                return Object.assign(pre, { [cur]: { min: cur - 5, max: cur + 5, value: cur }})
-            }, {}),
-            col: finalReferenceLine.col.reduce((pre, cur) => {
-                return Object.assign(pre, { [cur]: { min: cur - 5, max: cur + 5, value: cur }})
-            }, {})
-        }
-        return referenceLineMap
-    }
 }
-
-// 图片Widget
-export class ImageWidget extends Widget {
-    constructor(config) {
-        config = Object.assign({}, config, {
-            type: 'image',
-            typeLabel: '图片',
-            componentName: 'image-widget',
-            icon: 'el-icon-picture',
-            lock: false,
-            visible: true
-        })
-        super(config)
-        this.src = config.src
-    }
-}
-
-// 背景Widget
-export class BackgroundWidget extends Widget {
-    constructor(config) {
-        config = Object.assign({}, {
-            type: 'background',
-            typeLabel: '背景',
-            componentName: 'background-widget',
-            icon: 'icon-background',
-            lock: false,
-            visible: true,
-            couldAddToActive: false,
-            replicable: false
-        }, config)
-        super(config)
-        this.src = config.src
-        this.isSolid = !!config.isSolid // 是否是纯色背景
-        this.backgroundColor = config.backgroundColor || '#fff'
-    }
-}
-
-// 绘制矩形（矩形前置组件）
-export class DrawRectWidget extends Widget {
-    constructor(config) {
-        config = Object.assign({}, {
-            type: 'rect',
-            typeLabel: '矩形',
-            componentName: 'draw-rect-widget',
-            icon: 'icon-rect',
-            lock: false,
-            visible: true,
-            layerPanelVisible: false,
-            replicable: false,
-            couldAddToActive: false
-        }, config)
-        super(config)
-        this.drawing = true
-    }
-}
-
-// 矩形Widget
-export class RectWidget extends Widget {
-    constructor(config) {
-        config = Object.assign({}, {
-            type: 'rect',
-            typeLabel: '矩形',
-            componentName: 'rect-widget',
-            icon: 'icon-rect',
-            lock: false,
-            visible: true
-        }, config)
-        super(config)
-    }
-}
-
-// 文本Widget
-export class TextWidget extends Widget {
-    constructor(config) {
-        config = Object.assign({}, {
-            type: 'text',
-            typeLabel: '文本',
-            componentName: 'text-widget',
-            icon: 'icon-text',
-            lock: false,
-            visible: true,
-            text: '双击编辑文本'
-        }, config)
-        super(config)
-        this.text = config.text
-    }
-}
-
-// 复制Widget
-export class CopiedWidget extends Widget {
-    constructor(config) {
-        config = Object.assign({}, config,
-            {
-                typeLabel: config.typeLabel + '-copy',
-                isCopied: true
-            }
-        )
-        super(config)
-        config.componentState.count = (config.componentState.count || 0) + 1
-    }
-}
-

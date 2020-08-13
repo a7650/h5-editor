@@ -20,7 +20,7 @@
 
 <script>
 import { mapActions, mapState } from 'poster/poster.vuex'
-import { BackgroundWidget } from '../../widgetHelpers'
+import { BackgroundWidget } from '../../widgetConstructor'
 export default {
   data() {
     return {

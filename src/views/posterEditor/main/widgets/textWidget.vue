@@ -53,7 +53,7 @@
 
 <script>
 import vueDraggableResizable from '@/components/dragable/components/vue-draggable-resizable'
-import { TextWidget } from 'poster/widgetHelpers'
+import { TextWidget } from 'poster/widgetConstructor'
 import { clickoutside } from 'poster/poster.directives'
 import textControl from 'poster/control/widgets/textControl'
 import { mapState, mapActions } from 'poster/poster.vuex'

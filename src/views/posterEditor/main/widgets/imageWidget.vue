@@ -41,7 +41,7 @@
 <script>
 import vueDraggableResizable from '@/components/dragable/components/vue-draggable-resizable'
 import imageControl from '../../control/widgets/imageControl'
-import { ImageWidget } from 'poster/widgetHelpers'
+import { ImageWidget } from 'poster/widgetConstructor'
 // import { mapGetters, mapActions } from 'poster/poster.vuex'
 export default {
   components: { vueDraggableResizable, imageControl },

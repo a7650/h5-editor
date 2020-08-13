@@ -25,7 +25,7 @@ import backgroundWidget from './widgets/backgroundWidget'
 import textWidget from './widgets/textWidget'
 import rectWidget from './widgets/rectWidget'
 import { mapActions } from 'poster/poster.vuex'
-import { BackgroundWidget } from 'poster/widgetHelpers'
+import { BackgroundWidget } from 'poster/widgetConstructor'
 export default {
   components: { imageWidget, backgroundWidget, textWidget, rectWidget },
   data() {

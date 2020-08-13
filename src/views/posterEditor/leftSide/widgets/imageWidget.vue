@@ -12,7 +12,7 @@
 
 <script>
 import { mapActions } from 'poster/poster.vuex'
-import { ImageWidget } from '../../widgetHelpers'
+import { ImageWidget } from '../../widgetConstructor'
 export default {
   data() {
     return {}

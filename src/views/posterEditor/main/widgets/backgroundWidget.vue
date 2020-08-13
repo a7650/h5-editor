@@ -47,14 +47,13 @@
 
 <script>
 import vueDraggableResizable from '@/components/dragable/components/vue-draggable-resizable'
-import imageControl from '../../control/widgets/imageControl'
-import { mapGetters, mapActions, mapState, mapMutations } from 'poster/poster.vuex'
-import { BackgroundWidget } from 'poster/widgetHelpers'
+import { mapGetters, mapActions, mapState } from 'poster/poster.vuex'
+import { BackgroundWidget } from 'poster/widgetConstructor'
 
 const baseMenuList = []
 
 export default {
-  components: { vueDraggableResizable, imageControl },
+  components: { vueDraggableResizable },
   mixins: [BackgroundWidget.mixin({ baseMenuList })],
   data() {
     return {
@@ -77,8 +76,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['removeBackground', 'setBackgroundConfig']),
-    ...mapMutations(['PASTE_WIDGET']),
+    ...mapActions(['removeBackground', 'setBackgroundConfig', 'pasteWidget']),
     /**
      * @mixin
      */
@@ -96,7 +94,7 @@ export default {
           config.lock = false
         })
       } else if (command === 'paste') {
-        this.PASTE_WIDGET()
+        this.pasteWidget()
       }
     },
     /**

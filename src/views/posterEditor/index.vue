@@ -14,13 +14,13 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions, mapMutations } from './poster.vuex'
+import { mapState, mapGetters, mapActions } from './poster.vuex'
 import controlComponent from './control/index'
 import mainComponent from './main/index'
 import leftSide from './leftSide/index'
 import extendSideBar from './extendSideBar'
 import layerPanel from './extendSideBar/layerPanel'
-import { getCopyData } from './commandStrat'
+import { getCopyData } from './widgetConstructor/helpers/commandStrat'
 
 const DELETE_KEY = 8
 const COPY_KEY = 67
@@ -52,8 +52,7 @@ export default {
     document.removeEventListener('keydown', this.keydownHandle)
   },
   methods: {
-    ...mapActions(['replacePosterItems']),
-    ...mapMutations(['PASTE_WIDGET', 'COPY_WIDGET']),
+    ...mapActions(['replacePosterItems', 'pasteWidget', 'copyWidget']),
     keydownHandle(e) {
       if (e.target !== this.body) {
         return
@@ -68,7 +67,7 @@ export default {
         )
       } else if (keyCode === PASTE_KEY && e.ctrlKey && this.copiedWidgets) {
         // 粘贴
-        this.PASTE_WIDGET()
+        this.pasteWidget()
       } else if (
         keyCode === COPY_KEY &&
         e.ctrlKey &&
@@ -81,7 +80,7 @@ export default {
           const widgetRef = widgetRefs[itemId][0]
           copiedWidgets.push(getCopyData(widgetRef.item, widgetRef._self))
         })
-        this.COPY_WIDGET(copiedWidgets)
+        this.copyWidget(copiedWidgets)
       }
     }
   }

@@ -35,7 +35,7 @@
 <script>
 import vueDraggableResizable from '@/components/dragable/components/vue-draggable-resizable'
 import rectControl from '../../control/widgets/rectControl'
-import { RectWidget } from 'poster/widgetHelpers'
+import { RectWidget } from 'poster/widgetConstructor'
 // import { mapGetters, mapActions } from 'poster/poster.vuex'
 export default {
   components: { vueDraggableResizable, rectControl },

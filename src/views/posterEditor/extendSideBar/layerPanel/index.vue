@@ -55,7 +55,6 @@ export default {
   },
   methods: {
     ...mapActions([
-      'replaceActiveItems',
       'setLayerPanel',
       'replacePosterItems'
     ]),
