@@ -3,6 +3,7 @@
     <main-panel ref="mainPanel" />
     <div class="mask" :style="maskStyle" />
     <ruler-component />
+    <bottom-bar />
   </div>
 </template>
 
@@ -11,8 +12,10 @@ import mainPanel from './mainPanel'
 import _throttle from 'lodash/throttle'
 import rulerComponent from './ruler'
 import { mapMutations } from 'poster/poster.vuex'
+import bottomBar from './bottomBar'
+
 export default {
-  components: { mainPanel, rulerComponent },
+  components: { mainPanel, rulerComponent, bottomBar },
   data() {
     return {
       count: 1,

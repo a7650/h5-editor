@@ -1,7 +1,22 @@
 <template>
   <div class="extend-side-bar">
     <div class="list">
-      <el-tooltip effect="dark" content="图层面板" placement="left">
+      <el-tooltip effect="dark" content="撤销 ctrl+z" placement="left" transition="el-zoom-in-center">
+        <div
+          class="item"
+        >
+          <i class="icon-undo" />
+        </div>
+      </el-tooltip>
+      <el-tooltip effect="dark" content="恢复 ctrl+shift+z" placement="left" transition="el-zoom-in-center">
+        <div
+          style="transform:rotateY(180deg)"
+          class="item"
+        >
+          <i class="icon-undo" />
+        </div>
+      </el-tooltip>
+      <el-tooltip effect="dark" content="图层面板 ctrl+L" placement="left" transition="el-zoom-in-center">
         <div
           class="item"
           :class="{ active: layerPanelOpened }"
@@ -10,7 +25,7 @@
           <i class="icon-layer" />
         </div>
       </el-tooltip>
-      <el-tooltip effect="dark" content="参考线" placement="left">
+      <el-tooltip effect="dark" content="参考线 ctrl+h" placement="left" transition="el-zoom-in-center">
         <el-popover
           placement="left"
           title="参考线"
@@ -23,6 +38,34 @@
             <i class="icon-grid" />
           </div>
         </el-popover>
+      </el-tooltip>
+      <el-tooltip effect="dark" content="数据备份 ctrl+s" placement="left" transition="el-zoom-in-center">
+        <div
+          class="item"
+        >
+          <i class="el-icon-document-copy" />
+        </div>
+      </el-tooltip>
+      <el-tooltip effect="dark" content="生成H5代码" placement="left" transition="el-zoom-in-center">
+        <div
+          class="item"
+        >
+          <i class="icon-h5" />
+        </div>
+      </el-tooltip>
+      <el-tooltip effect="dark" content="生成海报" placement="left" transition="el-zoom-in-center">
+        <div
+          class="item"
+        >
+          <i class="icon-poster" />
+        </div>
+      </el-tooltip>
+      <el-tooltip effect="dark" content="编辑器设置" placement="left" transition="el-zoom-in-center">
+        <div
+          class="item"
+        >
+          <i class="el-icon-set-up" />
+        </div>
       </el-tooltip>
     </div>
   </div>
@@ -61,11 +104,16 @@ export default {
     border-radius: 4px;
     i {
       font-size: 18px;
+      &.icon-undo{
+        font-size: 14px;
+      }
+      &.el-icon-set-up{
+        font-size: 22px;
+      }
     }
     &:hover,
     &.active {
-      background-color: $colorTheme;
-      color: #fff;
+      color: $colorTheme;
     }
   }
 }

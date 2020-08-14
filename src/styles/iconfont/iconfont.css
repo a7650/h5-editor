@@ -1,58 +1,70 @@
-@font-face{
+@font-face {
   font-family: 'music-icon';
   src: url('./iconfont.eot?2qevqt');
   src: url('./iconfont.eot?2qevqt#iefix') format('embedded-opentype'),
-        url('./iconfont.ttf?2qevqt') format('truetype'),
-      url('./iconfont.woff?2qevqt') format('woff'),
-          url('./iconfont.svg?2qevqt#music-icon') format('svg');
+    url('./iconfont.ttf?2qevqt') format('truetype'),
+    url('./iconfont.woff?2qevqt') format('woff'),
+    url('./iconfont.svg?2qevqt#music-icon') format('svg');
   font-weight: normal;
-  font-style: normal
+  font-style: normal;
 }
 
-[class^="icon-"], [class*=" icon-"]{
+[class^='icon-'],
+[class*=' icon-'] {
   /* use !important to prevent issues with browser extensions that change fonts */
-font-family: 'music-icon' !important;
+  font-family: 'music-icon' !important;
   speak: none;
   font-style: normal;
-font-weight: normal;
+  font-weight: normal;
   font-variant: normal;
-text-transform: none;
+  text-transform: none;
   line-height: 1;
 
- /* Better Font Rendering =========== */
- -webkit-font-smoothing: antialiased;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-poster:before {
+  content: '\e6b0';
+}
+
+.icon-h5:before {
+  content: '\e61a';
+}
+
+.icon-undo:before {
+  content: '\e613';
+}
+
 .icon-grid:before {
-  content: "\e626";
+  content: '\e626';
 }
 
 .icon-rect:before {
-  content: "\e648";
+  content: '\e648';
 }
 
 .icon-text:before {
-  content: "\e61d";
+  content: '\e61d';
 }
 
 .icon-background:before {
-  content: "\e609";
+  content: '\e609';
 }
 
 .icon-layer:before {
-  content: "\e612";
+  content: '\e612';
 }
 
 .icon-align-left:before {
-  content: "\e60d";
+  content: '\e60d';
 }
 
 .icon-align-center:before {
-  content: "\e6c2";
+  content: '\e6c2';
 }
 
 .icon-align-right:before {
-  content: "\e6c4";
+  content: '\e6c4';
 }
-

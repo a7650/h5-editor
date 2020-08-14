@@ -8,6 +8,7 @@
           effect="dark"
           :content="item.name"
           placement="right"
+          transition="el-zoom-in-center"
         >
           <i :class="item.icon" />
         </el-tooltip>

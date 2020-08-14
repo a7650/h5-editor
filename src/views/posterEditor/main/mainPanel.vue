@@ -33,23 +33,15 @@
 </template>
 
 <script>
-import imageWidget from './widgets/imageWidget'
-import backgroundWidget from './widgets/backgroundWidget'
-import textWidget from './widgets/textWidget'
-import drawRectWidget from './widgets/drawRectWidget'
-import rectWidget from './widgets/rectWidget'
 import { mapState, mapMutations } from '../poster.vuex'
 import customContextmenu from '@/components/customContextmenu'
 import { clickoutside } from 'poster/poster.directives'
+import exportWidgets from './exportWidgets'
 
 export default {
   components: {
     customContextmenu,
-    imageWidget,
-    backgroundWidget,
-    textWidget,
-    drawRectWidget,
-    rectWidget
+    ...exportWidgets
   },
   directives: { clickoutside },
   data() {

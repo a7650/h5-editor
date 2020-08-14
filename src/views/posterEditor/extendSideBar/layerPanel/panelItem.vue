@@ -59,7 +59,6 @@ export default {
     } else {
       this.rename = this.item.id
     }
-    console.log(this.rename, this.item)
   },
   methods: {
     ...mapActions([

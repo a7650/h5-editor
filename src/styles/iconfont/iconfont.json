@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "9981982",
+      "name": "海报",
+      "font_class": "poster",
+      "unicode": "e6b0",
+      "unicode_decimal": 59056
+    },
+    {
+      "icon_id": "11459046",
+      "name": "h5",
+      "font_class": "h5",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "3894497",
+      "name": "撤销",
+      "font_class": "undo",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
       "icon_id": "8929803",
       "name": "网格",
       "font_class": "grid",

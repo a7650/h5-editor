@@ -25,7 +25,8 @@ import { getCopyData } from './widgetConstructor/helpers/commandStrat'
 const DELETE_KEY = 8
 const COPY_KEY = 67
 const PASTE_KEY = 86
-
+const LAYER_PANEL_KEY = 76
+const REFERENCE_LINE_KEY = 72
 export default {
   components: {
     controlComponent,
@@ -39,7 +40,8 @@ export default {
       'posterItems',
       'layerPanelOpened',
       'activeItems',
-      'copiedWidgets'
+      'copiedWidgets',
+      'referenceLineOpened'
     ]),
     ...mapGetters(['activeItemIds'])
   },
@@ -52,12 +54,19 @@ export default {
     document.removeEventListener('keydown', this.keydownHandle)
   },
   methods: {
-    ...mapActions(['replacePosterItems', 'pasteWidget', 'copyWidget']),
+    ...mapActions([
+      'replacePosterItems',
+      'pasteWidget',
+      'copyWidget',
+      'setLayerPanel',
+      'setReferenceLineVisible'
+    ]),
     keydownHandle(e) {
       if (e.target !== this.body) {
         return
       }
       const keyCode = e.keyCode
+      console.log(keyCode)
       if (keyCode === DELETE_KEY && this.activeItemIds.length > 0) {
         // 删除
         this.replacePosterItems(
@@ -81,6 +90,12 @@ export default {
           copiedWidgets.push(getCopyData(widgetRef.item, widgetRef._self))
         })
         this.copyWidget(copiedWidgets)
+      } else if (keyCode === LAYER_PANEL_KEY && e.ctrlKey) {
+        e.preventDefault()
+        this.setLayerPanel(!this.layerPanelOpened)
+      } else if (keyCode === REFERENCE_LINE_KEY && e.ctrlKey) {
+        e.preventDefault()
+        this.setReferenceLineVisible(!this.referenceLineOpened)
       }
     }
   }
