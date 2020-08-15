@@ -207,8 +207,7 @@ export default {
       rotating: false,
       enabled: this.active,
       handle: null,
-      zIndex: this.z,
-      passive: false
+      zIndex: this.z
     }
   },
   computed: {
@@ -388,16 +387,14 @@ export default {
         ) {
           return
         }
-        // debugger
-        this.elDownHandler()
+        this.elDownHandler(e)
       }
     },
-    elDownHandler(isPassive /** 是否被动触发，即程序触发 */) {
-      this.passive = !!isPassive
+    elDownHandler(e) {
       this.reviewDimensions()
+      this.$emit('activated', e)
       if (!this.enabled) {
         this.enabled = true
-        this.$emit('activated')
         this.$emit('update:active', true)
       }
       if (this.draggable) {
@@ -460,14 +457,12 @@ export default {
       this.lastElmW = this.elmW
       this.lastElmH = this.elmH
       this.resizing = true
-      this.passive = false
     },
     handleRotateDown(handle, e) {
       const { top, left, width, height } = this.$el.getBoundingClientRect()
       this.lastCenterX = window.pageXOffset + left + width / 2
       this.lastCenterY = window.pageYOffset + top + height / 2
       this.rotating = true
-      this.passive = false
     },
     handleDown(handle, e) {
       this.handle = handle
@@ -529,7 +524,7 @@ export default {
       window.requestAnimationFrame(animate)
     },
     handleMove(e) {
-      if (!this.enabled || this.passive) {
+      if (!this.enabled) {
         return
       }
       const { x: mouseX, y: mouseY } = this.getMouseCoordinate(e)
@@ -714,7 +709,7 @@ export default {
     user-select: none;
   }
   &:hover {
-    border-color:$colorTheme;
+    border-color: $colorTheme;
   }
   &.active {
     border-color: $colorTheme;
@@ -748,7 +743,7 @@ export default {
   left: 50%;
   margin-left: -10px;
   background-color: #fff;
-  box-shadow: 0 0 6px rgba(160, 160, 160,.6);
+  box-shadow: 0 0 6px rgba(160, 160, 160, 0.6);
   line-height: 20px;
   text-align: center;
   font-size: 13px;

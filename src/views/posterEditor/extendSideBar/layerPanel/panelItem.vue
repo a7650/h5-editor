@@ -66,16 +66,26 @@ export default {
       'lockItem',
       'unlockItem',
       'toggleItemVisible',
-      'replaceActiveItems'
+      'replaceActiveItems',
+      'addActiveItem',
+      'removeActiveItem'
     ]),
     saveName() {
       this.isEditing = false
     },
-    select() {
-      if (this.isEditing || this.activeItemIds.includes(this.item.id)) {
+    select(e) {
+      if (this.isEditing) {
         return
       }
-      this.replaceActiveItems([this.item])
+      if (e.ctrlKey) {
+        if (this.activeItemIds.includes(this.item.id)) {
+          this.removeActiveItem(this.item)
+        } else {
+          this.addActiveItem(this.item)
+        }
+      } else {
+        this.replaceActiveItems([this.item])
+      }
     },
     remove() {
       this.removeItem(this.item)

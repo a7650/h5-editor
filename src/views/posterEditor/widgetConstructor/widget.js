@@ -97,7 +97,7 @@ export default class Widget {
         let canvasSize = null
         let canvasPosition = null
         let referenceLineMap = null // 参考线位置（相对于画布的位置）{col:[],row:[]}
-
+        let moving = false
         return {
             data() {
                 return {
@@ -166,22 +166,24 @@ export default class Widget {
             },
             watch: {
                 activeItemIds(newVal) {
-                    if (newVal.includes(this.item.id)) {
-                        if (!this.isActive) {
-                            this.activated()
-                        }
-                    } else {
-                        if (this.isActive) {
-                            this.deactivated()
-                        }
-                    }
+                    this.isActive = newVal.includes(this.item.id)
                 }
             },
             methods: {
                 ...mapActions(['addActiveItem', 'replaceActiveItems', 'removeActiveItem']),
-                activated() {
+                activated(e) {
                     this.isActive = true
-                    this.replaceActiveItems([this.item])
+                    if (e) {
+                        if (e.ctrlKey) {
+                            if (this.activeItemIds.includes(this.item)) {
+                               this.deactivated()
+                            } else {
+                                this.addActiveItem(this.item)
+                            }
+                        } else {
+                            this.replaceActiveItems([this.item])
+                        }
+                    }
                 },
                 deactivated() {
                     this.isActive = false
@@ -196,6 +198,7 @@ export default class Widget {
                     // this.onDrag(x, y)
                 },
                 onDrag(x, y, e) {
+                    moving = true
                     // ctrl快捷键拖动复制
                     if (!hasCopiedOnDrag && e && e.ctrlKey) {
                         const lastCopiedWidgets = store.state.poster.copiedWidgets
@@ -297,11 +300,14 @@ export default class Widget {
                     }
                 },
                 onDragStop() {
-                    hasCopiedOnDrag = false
-                    canvasSize = null
-                    canvasPosition = null
-                    referenceLineMap = null
-                    store.dispatch('poster/removeMatchedLine')
+                    if (moving) {
+                        moving = false
+                        hasCopiedOnDrag = false
+                        canvasSize = null
+                        canvasPosition = null
+                        referenceLineMap = null
+                        store.dispatch('poster/removeMatchedLine')
+                    }
                 },
                 onRotate(e) {
                     this.dragInfo.rotateZ = (e > 0 ? e : 360 + e) % 360
