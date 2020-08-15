@@ -324,7 +324,7 @@ export default {
     this.elmY = parseInt(this.$el.style.top)
     this.elmW = this.$el.offsetWidth || this.$el.clientWidth
     this.elmH = this.$el.offsetHeight || this.$el.clientHeight
-    this.reviewDimensions()
+    // this.reviewDimensions()
   },
   beforeDestroy() {
     document.documentElement.removeEventListener(
@@ -392,8 +392,8 @@ export default {
     },
     elDownHandler(e) {
       this.reviewDimensions()
-      this.$emit('activated', e)
       if (!this.enabled) {
+        this.$emit('activated', e)
         this.enabled = true
         this.$emit('update:active', true)
       }
@@ -629,7 +629,7 @@ export default {
         this.$emit('resizestop', this.left, this.top, this.width, this.height)
       } else if (this.dragging) {
         this.dragging = false
-        this.$emit('dragstop', this.left, this.top)
+        this.$emit('dragstop', e)
       } else if (this.rotating) {
         this.rotating = false
         this.$emit('rotatestop', this.rotate)

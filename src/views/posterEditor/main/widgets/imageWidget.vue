@@ -55,8 +55,7 @@ export default {
         const imgRef = this.$refs.image
         const width = imgRef.naturalWidth
         const height = imgRef.naturalHeight
-        this.dragInfo.w = 100
-        this.dragInfo.h = parseInt((100 * height) / width)
+        this.updateDragInfo({ w: 100, h: parseInt((100 * height) / width) })
       }
     }
   }

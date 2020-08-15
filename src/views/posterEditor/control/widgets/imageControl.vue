@@ -83,13 +83,15 @@ export default {
   data() {
     return {
       activeNames: ['image', 'position'],
-      inDragInfo: {}
+      inDragInfo: null
     }
   },
   watch: {
     inDragInfo: {
-      handler() {
-        this.$emit('dragInfoChange', this.inDragInfo)
+      handler(newVal, oldVal) {
+        if (oldVal) {
+          this.$emit('dragInfoChange', this.inDragInfo)
+        }
       },
       deep: true
     }

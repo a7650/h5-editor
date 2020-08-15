@@ -14,7 +14,7 @@
     :lock="item.lock"
     :active.sync="isActive"
     class="drag-item"
-    :class="{solid:item.isSolid}"
+    :class="{ solid: item.isSolid }"
     deselect-cancel=".poster-editor_deactivated-ignore"
     @activated="activated"
     @deactivated="deactivated"
@@ -49,7 +49,7 @@
 import vueDraggableResizable from '@/components/dragable/components/vue-draggable-resizable'
 import { mapGetters, mapActions, mapState } from 'poster/poster.vuex'
 import { BackgroundWidget } from 'poster/widgetConstructor'
-
+import { clickoutside } from 'poster/poster.directives'
 const baseMenuList = []
 
 export default {
@@ -61,22 +61,39 @@ export default {
       resizable: true
     }
   },
+  directives: { clickoutside },
   computed: {
     ...mapGetters(['activeItemIds']),
-    ...mapState(['canvasSize', 'copiedWidgets'])
+    ...mapState(['canvasSize', 'copiedWidgets']),
+    dragInfo: {
+      get() {
+        return this.item.dragInfo
+      },
+      set(val) {
+        this.item.dragInfo = val
+      }
+    }
   },
-  created() {
-    this.dragInfo.w = this.canvasSize.width
-    this.dragInfo.h = this.canvasSize.height
-    this.dragInfo.x = 0
-    this.dragInfo.y = 0
+  mounted() {
+    this.setDragInfo({
+      w: this.canvasSize.width,
+      h: this.canvasSize.height,
+      x: 0,
+      y: 0
+    })
     if (this.item.isSolid) {
       this.resizable = false
       this.draggable = false
     }
   },
   methods: {
-    ...mapActions(['removeBackground', 'setBackgroundConfig', 'pasteWidget']),
+    ...mapActions([
+      'removeBackground',
+      'setBackgroundConfig',
+      'pasteWidget',
+      'replaceActiveItems',
+      'selectAllItems'
+    ]),
     /**
      * @mixin
      */
@@ -95,6 +112,8 @@ export default {
         })
       } else if (command === 'paste') {
         this.pasteWidget()
+      } else if (command === 'selectAll') {
+        this.selectAllItems()
       }
     },
     /**
@@ -102,7 +121,7 @@ export default {
      * @return {MenuItem[]}
      */
     getMenuList() {
-      const menuList = []
+      const menuList = [{ label: '全选', command: 'selectAll' }]
       if (this.copiedWidgets) {
         menuList.unshift({ label: '粘贴', command: 'paste' })
       }
@@ -115,15 +134,35 @@ export default {
         menuList.push({ label: '删除', command: 'remove' })
       }
       return menuList
-    }
+    },
+    activated() {
+      this.isActive = true
+      this.replaceActiveItems([])
+    },
+    deactivated() {
+      this.isActive = false
+    },
+    setDragInfo(dragInfo) {
+      this.dragInfo = Object.assign({}, this.dragInfo, dragInfo)
+    },
+    onDrag(x, y) {
+      this.setDragInfo({ x, y })
+    },
+    onResize(x, y, w, h) {
+      this.setDragInfo({ x, y, w, h })
+    },
+    onRotate(e) {
+      this.setDragInfo({ rotateZ: (e > 0 ? e : 360 + e) % 360 })
+    },
+    onDragStop() {}
   }
 }
 </script>
 <style lang="scss" scoped>
 .drag-item {
   user-select: none;
-  &.solid:hover{
-      border-color: transparent !important;
+  &.solid:hover {
+    border-color: transparent !important;
   }
 }
 </style>

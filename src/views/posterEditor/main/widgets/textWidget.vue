@@ -93,10 +93,12 @@ export default {
   },
   created() {
     if (!this.item.isCopied) {
-      this.dragInfo.w = 160
-      this.dragInfo.h = 50
-      this.dragInfo.x = (this.canvasSize.width - 160) / 2
-      this.dragInfo.y = 200
+      this.updateDragInfo({
+        w: 160,
+        h: 50,
+        x: (this.canvasSize.width - 160) / 2,
+        y: 200
+      })
       this.text = this.item.text
     }
   },

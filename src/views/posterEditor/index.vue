@@ -66,7 +66,6 @@ export default {
         return
       }
       const keyCode = e.keyCode
-      console.log(keyCode)
       if (keyCode === DELETE_KEY && this.activeItemIds.length > 0) {
         // 删除
         this.replacePosterItems(

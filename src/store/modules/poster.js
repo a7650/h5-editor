@@ -154,6 +154,7 @@ const actions = {
         commit(MTS.SET_BACKGROUND_CONFIG, cb)
     },
     addItem({ commit }, item) {
+        commit(MTS.REPLACE_ACTIVE_ITEMS, [item])
         commit(MTS.ADD_ITEM, item)
     },
     removeItem({ commit, getters }, item) {
@@ -181,8 +182,43 @@ const actions = {
     replaceActiveItems({ commit }, items) {
         commit(MTS.REPLACE_ACTIVE_ITEMS, items)
     },
+    selectAllItems({ commit, state }) {
+        commit(MTS.REPLACE_ACTIVE_ITEMS, state.posterItems)
+    },
     setLayerPanel({ commit }, flag) {
         commit(MTS.SET_LAYER_PANEL, flag)
+    },
+    updateDragInfo({ state }, { dragInfo, widgetId }) {
+        const widgetItem = state.posterItems.find(i => i.id === widgetId)
+        if (!widgetItem) {
+            return
+        }
+        // if (isMoving) {
+        const preDragInfo = widgetItem.dragInfo
+        const activeItems = state.activeItems
+        dragInfo = Object.assign({}, preDragInfo, dragInfo)
+        if (activeItems.length > 0) {
+            const diffDragInfo = {
+                w: dragInfo.w - preDragInfo.w,
+                h: dragInfo.h - preDragInfo.h,
+                x: dragInfo.x - preDragInfo.x,
+                y: dragInfo.y - preDragInfo.y,
+                rotateZ: dragInfo.rotateZ - preDragInfo.rotateZ
+            }
+            activeItems.forEach(item => {
+                const { x, y, w, h, rotateZ } = item.dragInfo
+                item.dragInfo = {
+                    x: x + diffDragInfo.x,
+                    y: y + diffDragInfo.y,
+                    w: w + diffDragInfo.w,
+                    h: h + diffDragInfo.h,
+                    rotateZ: rotateZ + diffDragInfo.rotateZ
+                }
+            })
+        }
+        // } else {
+        //     widgetItem.dragInfo = Object.assign({}, widgetItem.dragInfo, dragInfo)
+        // }
     },
     setWidgetConfig({ commit }, { item, cb }) {
         commit(MTS.SET_WIDGET_CONFIG, { item, cb })
