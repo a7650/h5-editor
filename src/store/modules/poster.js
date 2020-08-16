@@ -3,6 +3,7 @@ import * as MTS from './poster.mutations'
 import { Widget, BackgroundWidget, CopiedWidget } from 'poster/widgetConstructor'
 import { arrMoveTop, arrMoveUpper, arrMoveLower, arrMoveBottom } from '@/utils/posterUtils'
 import _set from 'lodash/set'
+import { changeCompositionPositionHandler } from './helpers'
 
 const state = {
     canvasSize: {
@@ -231,6 +232,14 @@ const actions = {
         if (widgetItem) {
             _set(widgetItem.wState, keyPath, value)
         }
+    },
+    // 更改组合的位置
+    changeCompositionPosition({ state }, type) {
+        const activeItems = state.activeItems
+        /**
+         * @sideEffect
+         */
+        changeCompositionPositionHandler(activeItems, type, state.canvasSize)
     },
     setWidgetConfig({ commit }, { item, cb }) {
         commit(MTS.SET_WIDGET_CONFIG, { item, cb })

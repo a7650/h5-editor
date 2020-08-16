@@ -11,5 +11,7 @@ export default {}
   background-color: rgb(236, 238, 240);
   box-sizing: border-box;
   padding: 10px 20px;
+  font-size: 13px;
+  color: #303133;
 }
 </style>

@@ -20,7 +20,6 @@
               </setting-item>
             </template>
           </setting-row>
-
           <setting-item label="对齐方式">
             <radio-group v-model="inTextAlign" :list="textAlignList">
               <template #left>

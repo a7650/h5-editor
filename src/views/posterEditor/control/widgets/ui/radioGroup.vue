@@ -7,7 +7,7 @@
         class="item"
         :class="{ active: current === item.value }"
         :title="item.label"
-        @click="$emit('currentLabelChange', item.value)"
+        @click="$emit('change', item.value)"
       >
         <slot :name="item.value">
           {{ item.label }}
@@ -20,7 +20,7 @@
 <script>
 export default {
   model: {
-    event: 'currentLabelChange',
+    event: 'change',
     prop: 'current'
   },
   props: {

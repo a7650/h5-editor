@@ -11,6 +11,8 @@
 .setting-item {
   margin-bottom: 10px;
   .label {
+    height: 24px;
+    line-height: 24px;
   }
   .content {
     display: flex;
