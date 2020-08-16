@@ -201,6 +201,8 @@ const actions = {
         const preDragInfo = widgetItem.dragInfo
         const activeItems = state.activeItems
         dragInfo = Object.assign({}, preDragInfo, dragInfo)
+        console.log('pre', JSON.parse(JSON.stringify(preDragInfo)))
+        console.log('cur', JSON.parse(JSON.stringify(dragInfo)))
         if (updateSelfOnly) {
             widgetItem.dragInfo = Object.assign({}, widgetItem.dragInfo, dragInfo)
         } else if (activeItems.length > 0) {

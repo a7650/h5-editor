@@ -397,6 +397,8 @@ export default {
         this.enabled = true
         this.$emit('update:active', true)
       }
+      this.elmX = this.left
+      this.elmY = this.top
       if (this.draggable) {
         this.lastElmX = this.elmX
         this.lastElmY = this.elmY
