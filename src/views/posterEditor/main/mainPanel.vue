@@ -60,7 +60,7 @@ export default {
       this.contextmenuPosition.x = x
       this.contextmenuPosition.y = y
       this.menuList = menuList
-      this._currentContextMenuWidgetVm = vm
+      this._currentContextmenuWidgetVm = vm
       this.contextmenuVisible = true
     },
     closeContextmenu() {
@@ -69,7 +69,7 @@ export default {
     // 执行右键命令
     executeContextCommand(commandItem) {
       this.closeContextmenu()
-      const vm = this._currentContextMenuWidgetVm
+      const vm = this._currentContextmenuWidgetVm
       if (vm && vm.executeContextCommand) {
         vm._executeContextCommand(commandItem)
       }

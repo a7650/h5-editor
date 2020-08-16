@@ -94,7 +94,7 @@ export default class Widget {
         executeContextCommand: 'executeContextCommand'
       },
       baseMenuList: getBaseMenuList(),
-      contextMenu: true // 使用右键菜单功能
+      contextmenu: true // 使用右键菜单功能
     }, options)
 
     let hasCopiedOnDrag = false // 拖动过程中是否执行过复制
@@ -147,12 +147,13 @@ export default class Widget {
           this.updateDragInfo({
             x: this.dragInfo.x + count * 10,
             y: this.dragInfo.y + count * 10
-          })
+          }, true/** updateSelfOnly */)
+          console.log(this.dragInfo, count)
           this.isActive = false
         }
       },
       mounted() {
-        if (options.contextMenu) {
+        if (options.contextmenu) {
           this._self.$el.addEventListener('contextmenu', (e) => {
             const menuList = [...(this.getMenuList() || []), ...this._baseMenuList]
             const isLock = this.item.lock
@@ -177,7 +178,9 @@ export default class Widget {
       watch: {
         activeItemIds: {
           handler(newVal) {
-            this.isActive = newVal.includes(this.item.id)
+            if (this.item.couldAddToActive) {
+              this.isActive = newVal.includes(this.item.id)
+            }
           },
           immediate: true
         }
@@ -329,8 +332,8 @@ export default class Widget {
         onRotate(e) {
           this.updateDragInfo({ rotateZ: (e > 0 ? e : 360 + e) % 360 })
         },
-        updateDragInfo(dragInfo) {
-          this.$store.dispatch('poster/updateDragInfo', { dragInfo, widgetId: this.item.id })
+        updateDragInfo(dragInfo, updateSelfOnly = false) {
+          this.$store.dispatch('poster/updateDragInfo', { dragInfo, widgetId: this.item.id, updateSelfOnly })
         },
         // 获取菜单列表
         getMenuList() {

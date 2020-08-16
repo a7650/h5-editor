@@ -38,19 +38,19 @@
         </template>
         <setting-content>
           <setting-item label="宽度">
-            <input v-model.number="inDragInfo.w" type="number">
+            <input v-model.number="dragInfo.w" type="number">
           </setting-item>
           <setting-item label="高度">
-            <input v-model.number="inDragInfo.h" type="number">
+            <input v-model.number="dragInfo.h" type="number">
           </setting-item>
           <setting-item label="距顶部距离">
-            <input v-model.number="inDragInfo.y" type="number">
+            <input v-model.number="dragInfo.y" type="number">
           </setting-item>
           <setting-item label="距左侧距离">
-            <input v-model.number="inDragInfo.x" type="number">
+            <input v-model.number="dragInfo.x" type="number">
           </setting-item>
           <setting-item label="旋转角度">
-            <input v-model.number="inDragInfo.rotateZ" type="number">
+            <input v-model.number="dragInfo.rotateZ" type="number">
           </setting-item>
         </setting-content>
       </el-collapse-item>
@@ -59,63 +59,13 @@
 </template>
 
 <script>
-import settingContent from './ui/settingContent'
-import settingItem from './ui/settingItem'
-import settingRow from './ui/settingRow'
-import radioGroup from './ui/radioGroup'
+import { commonMixin } from './common/mixins'
 
 export default {
-  components: { settingContent, settingItem, settingRow, radioGroup },
-  props: {
-    dragInfo: {
-      type: Object,
-      default() {
-        return {
-          w: 0,
-          h: 0,
-          x: 0,
-          y: 0,
-          rotateZ: 0
-        }
-      }
-    },
-    borderColor: {
-      type: String,
-      default: ''
-    },
-    borderWidth: {
-      type: Number,
-      default: 0
-    },
-    borderStyle: {
-      type: String,
-      default: ''
-    },
-    backgroundColor: {
-      type: String,
-      default: ''
-    },
-    borderTopLeftRadius: {
-      type: Number,
-      default: 0
-    },
-    borderTopRightRadius: {
-      type: Number,
-      default: 0
-    },
-    borderBottomLeftRadius: {
-      type: Number,
-      default: 0
-    },
-    borderBottomRightRadius: {
-      type: Number,
-      default: 0
-    }
-  },
+  mixins: [commonMixin],
   data() {
     return {
       activeNames: ['position', 'borderAndBackground'],
-      inDragInfo: {},
       borderStyleList: [
         { label: '实线', value: 'solid' },
         { label: '虚线', value: 'dashed' },
@@ -127,79 +77,68 @@ export default {
   computed: {
     inBorderColor: {
       get() {
-        return this.borderColor
+        return this.style.borderColor
       },
       set(val) {
-        this.$emit('update:borderColor', val)
+        this.updateStyle('borderColor', val)
       }
     },
     inBorderWidth: {
       get() {
-        return this.borderWidth
+        return this.style.borderWidth
       },
       set(val) {
-        this.$emit('update:borderWidth', val)
+        this.updateStyle('borderWidth', val)
       }
     },
     inBorderStyle: {
       get() {
-        return this.borderStyle
+        return this.style.borderStyle
       },
       set(val) {
-        this.$emit('update:borderStyle', val)
+        this.updateStyle('borderStyle', val)
       }
     },
     inBackgroundColor: {
       get() {
-        return this.backgroundColor
+        return this.style.backgroundColor
       },
       set(val) {
-        this.$emit('update:backgroundColor', val)
+        this.updateStyle('backgroundColor', val)
       }
     },
     inBorderTopLeftRadius: {
       get() {
-        return this.borderTopLeftRadius
+        return this.style.borderTopLeftRadius
       },
       set(val) {
-        this.$emit('update:borderTopLeftRadius', val)
+        this.updateStyle('borderTopLeftRadius', val)
       }
     },
     inBorderTopRightRadius: {
       get() {
-        return this.borderTopRightRadius
+        return this.style.borderTopRightRadius
       },
       set(val) {
-        this.$emit('update:borderTopRightRadius', val)
+        this.updateStyle('borderTopRightRadius', val)
       }
     },
     inBorderBottomLeftRadius: {
       get() {
-        return this.borderBottomLeftRadius
+        return this.style.borderBottomLeftRadius
       },
       set(val) {
-        this.$emit('update:borderBottomLeftRadius', val)
+        this.updateStyle('borderBottomLeftRadius', val)
       }
     },
     inBorderBottomRightRadius: {
       get() {
-        return this.borderBottomRightRadius
+        return this.style.borderBottomRightRadius
       },
       set(val) {
-        this.$emit('update:borderBottomRightRadius', val)
+        this.updateStyle('borderBottomRightRadius', val)
       }
     }
-  },
-  watch: {
-    inDragInfo: {
-      handler(newVal, oldVal) {
-        this.$emit('dragInfoChange', this.inDragInfo)
-      },
-      deep: true
-    }
-  },
-  created() {
-    this.inDragInfo = this.$deepCopy(this.dragInfo)
   }
 }
 </script>

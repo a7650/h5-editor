@@ -22,12 +22,7 @@
   >
     <div class="content" :style="rectStyleFilter" />
     <portal v-if="isActive" to="widgetControl">
-      <rect-control
-        :key="item.id"
-        v-bind.sync="rectStyle"
-        :drag-info="dragInfo"
-        @dragInfoChange="dragInfo = $event"
-      />
+      <rect-control :key="item.id" :item="item" />
     </portal>
   </vue-draggable-resizable>
 </template>
@@ -41,27 +36,17 @@ export default {
   components: { vueDraggableResizable, rectControl },
   mixins: [RectWidget.mixin()],
   data() {
-    return {
-      rectStyle: {
-        borderColor: '',
-        borderWidth: 0, // px
-        borderStyle: '',
-        backgroundColor: '#2d51cc',
-        borderTopLeftRadius: 0,
-        borderTopRightRadius: 0,
-        borderBottomLeftRadius: 0,
-        borderBottomRightRadius: 0
-      }
-    }
+    return {}
   },
   computed: {
     rectStyleFilter() {
-      return Object.assign({}, this.rectStyle, {
-        borderWidth: this.rectStyle.borderWidth + 'px',
-        borderTopLeftRadius: this.rectStyle.borderTopLeftRadius + '%',
-        borderTopRightRadius: this.rectStyle.borderTopRightRadius + '%',
-        borderBottomLeftRadius: this.rectStyle.borderBottomLeftRadius + '%',
-        borderBottomRightRadius: this.rectStyle.borderBottomRightRadius + '%'
+      const style = this.wState.style
+      return Object.assign({}, style, {
+        borderWidth: style.borderWidth + 'px',
+        borderTopLeftRadius: style.borderTopLeftRadius + '%',
+        borderTopRightRadius: style.borderTopRightRadius + '%',
+        borderBottomLeftRadius: style.borderBottomLeftRadius + '%',
+        borderBottomRightRadius: style.borderBottomRightRadius + '%'
       })
     }
   },
@@ -72,6 +57,7 @@ export default {
 .drag-item {
   user-select: none;
   .content {
+    box-sizing: border-box;
     width: 100%;
     height: 100%;
   }

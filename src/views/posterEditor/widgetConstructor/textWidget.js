@@ -10,9 +10,22 @@ export default class TextWidget extends Widget {
             icon: 'icon-text',
             lock: false,
             visible: true,
-            text: '双击编辑文本'
+            wState: {
+                text: '双击编辑文本',
+                style: {
+                    color: '#000',
+                    textAlign: 'center',
+                    fontSize: 14, // px
+                    padding: 0, // px
+                    borderColor: '#000',
+                    borderWidth: 0, // px
+                    borderStyle: 'solid',
+                    lineHeight: 100, // %
+                    letterSpacing: 0, // %
+                    backgroundColor: ''
+                }
+            }
         }, config)
         super(config)
-        this.text = config.text
     }
 }

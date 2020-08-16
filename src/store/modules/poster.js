@@ -2,6 +2,7 @@ import * as MTS from './poster.mutations'
 // import { Message } from 'element-ui'
 import { Widget, BackgroundWidget, CopiedWidget } from 'poster/widgetConstructor'
 import { arrMoveTop, arrMoveUpper, arrMoveLower, arrMoveBottom } from '@/utils/posterUtils'
+import _set from 'lodash/set'
 
 const state = {
     canvasSize: {
@@ -119,6 +120,7 @@ const mutations = {
                 state.posterItems.push(new CopiedWidget(item))
             })
         }
+        console.log('posterItems', JSON.parse(JSON.stringify(state.posterItems)))
     },
     // 添加参考线
     [MTS.ADD_REFERENCE_LINE](state, { type, position }) {
@@ -188,7 +190,8 @@ const actions = {
     setLayerPanel({ commit }, flag) {
         commit(MTS.SET_LAYER_PANEL, flag)
     },
-    updateDragInfo({ state }, { dragInfo, widgetId }) {
+    // 更新组件位置、大小等
+    updateDragInfo({ state }, { dragInfo, widgetId, updateSelfOnly = false }) {
         const widgetItem = state.posterItems.find(i => i.id === widgetId)
         if (!widgetItem) {
             return
@@ -197,7 +200,9 @@ const actions = {
         const preDragInfo = widgetItem.dragInfo
         const activeItems = state.activeItems
         dragInfo = Object.assign({}, preDragInfo, dragInfo)
-        if (activeItems.length > 0) {
+        if (updateSelfOnly) {
+            widgetItem.dragInfo = Object.assign({}, widgetItem.dragInfo, dragInfo)
+        } else if (activeItems.length > 0) {
             const diffDragInfo = {
                 w: dragInfo.w - preDragInfo.w,
                 h: dragInfo.h - preDragInfo.h,
@@ -219,6 +224,13 @@ const actions = {
         // } else {
         //     widgetItem.dragInfo = Object.assign({}, widgetItem.dragInfo, dragInfo)
         // }
+    },
+    // 更新组件state
+    updateWidgetState({ state }, { keyPath, value, widgetId }) {
+        const widgetItem = state.posterItems.find(i => i.id === widgetId)
+        if (widgetItem) {
+            _set(widgetItem.wState, keyPath, value)
+        }
     },
     setWidgetConfig({ commit }, { item, cb }) {
         commit(MTS.SET_WIDGET_CONFIG, { item, cb })

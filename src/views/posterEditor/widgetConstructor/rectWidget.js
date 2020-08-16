@@ -9,7 +9,19 @@ export default class RectWidget extends Widget {
             componentName: 'rect-widget',
             icon: 'icon-rect',
             lock: false,
-            visible: true
+            visible: true,
+            wState: {
+                style: {
+                    borderColor: '#000',
+                    borderWidth: 0, // px
+                    borderStyle: 'solid',
+                    backgroundColor: '#2d51cc',
+                    borderTopLeftRadius: 0,
+                    borderTopRightRadius: 0,
+                    borderBottomLeftRadius: 0,
+                    borderBottomRightRadius: 0
+                }
+            }
         }, config)
         super(config)
     }

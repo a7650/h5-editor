@@ -23,7 +23,7 @@
               宽度
             </div>
             <div class="content">
-              <input v-model.number="inDragInfo.w" type="number">
+              <input v-model.number="dragInfo.w" type="number">
             </div>
           </div>
           <div class="setting-item">
@@ -31,7 +31,7 @@
               高度
             </div>
             <div class="content">
-              <input v-model.number="inDragInfo.h" type="number">
+              <input v-model.number="dragInfo.h" type="number">
             </div>
           </div>
           <div class="setting-item">
@@ -39,7 +39,7 @@
               左侧距离
             </div>
             <div class="content">
-              <input v-model.number="inDragInfo.x" type="number">
+              <input v-model.number="dragInfo.x" type="number">
             </div>
           </div>
           <div class="setting-item">
@@ -47,7 +47,7 @@
               顶部距离
             </div>
             <div class="content">
-              <input v-model.number="inDragInfo.y" type="number">
+              <input v-model.number="dragInfo.y" type="number">
             </div>
           </div>
           <div class="setting-item">
@@ -55,7 +55,7 @@
               旋转角度
             </div>
             <div class="content">
-              <input v-model.number="inDragInfo.rotateZ" type="number">
+              <input v-model.number="dragInfo.rotateZ" type="number">
             </div>
           </div>
         </div>
@@ -65,41 +65,15 @@
 </template>
 
 <script>
+import { commonMixin } from './common/mixins'
+
 export default {
-  props: {
-    dragInfo: {
-      type: Object,
-      default() {
-        return {
-          w: 0,
-          h: 0,
-          x: 0,
-          y: 0,
-          rotateZ: 0
-        }
-      }
-    }
-  },
+  mixins: [commonMixin],
   data() {
     return {
-      activeNames: ['image', 'position'],
-      inDragInfo: null
+      activeNames: ['image', 'position']
     }
-  },
-  watch: {
-    inDragInfo: {
-      handler(newVal, oldVal) {
-        if (oldVal) {
-          this.$emit('dragInfoChange', this.inDragInfo)
-        }
-      },
-      deep: true
-    }
-  },
-  created() {
-    this.inDragInfo = this.$deepCopy(this.dragInfo)
-  },
-  methods: {}
+  }
 }
 </script>
 <style lang="scss" scoped>

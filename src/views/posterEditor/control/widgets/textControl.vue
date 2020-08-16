@@ -84,19 +84,19 @@
         </template>
         <setting-content>
           <setting-item label="宽度">
-            <input v-model.number="inDragInfo.w" type="number">
+            <input v-model.number="dragInfo.w" type="number">
           </setting-item>
           <setting-item label="高度">
-            <input v-model.number="inDragInfo.h" type="number">
+            <input v-model.number="dragInfo.h" type="number">
           </setting-item>
           <setting-item label="距顶部距离">
-            <input v-model.number="inDragInfo.y" type="number">
+            <input v-model.number="dragInfo.y" type="number">
           </setting-item>
           <setting-item label="距左侧距离">
-            <input v-model.number="inDragInfo.x" type="number">
+            <input v-model.number="dragInfo.x" type="number">
           </setting-item>
           <setting-item label="旋转角度">
-            <input v-model.number="inDragInfo.rotateZ" type="number">
+            <input v-model.number="dragInfo.rotateZ" type="number">
           </setting-item>
         </setting-content>
       </el-collapse-item>
@@ -105,71 +105,12 @@
 </template>
 
 <script>
-import settingContent from './ui/settingContent'
-import settingItem from './ui/settingItem'
-import settingRow from './ui/settingRow'
-import radioGroup from './ui/radioGroup'
-
+import { commonMixin } from './common/mixins'
 export default {
-  components: { settingContent, settingItem, settingRow, radioGroup },
-  props: {
-    dragInfo: {
-      type: Object,
-      default() {
-        return {
-          w: 0,
-          h: 0,
-          x: 0,
-          y: 0,
-          rotateZ: 0
-        }
-      }
-    },
-    color: {
-      type: String,
-      default: '#000'
-    },
-    fontSize: {
-      type: Number,
-      default: 14
-    },
-    padding: {
-      type: Number,
-      default: 0
-    },
-    borderColor: {
-      type: String,
-      default: ''
-    },
-    borderWidth: {
-      type: Number,
-      default: 0
-    },
-    borderStyle: {
-      type: String,
-      default: ''
-    },
-    lineHeight: {
-      type: Number,
-      default: 1
-    },
-    letterSpacing: {
-      type: Number,
-      default: 0
-    },
-    textAlign: {
-      type: String,
-      default: 'center'
-    },
-    backgroundColor: {
-      type: String,
-      default: ''
-    }
-  },
+  mixins: [commonMixin],
   data() {
     return {
       activeNames: ['text', 'position', 'borderAndBackground'],
-      inDragInfo: {},
       textAlignList: [
         { label: '左对齐', value: 'left' },
         { label: '居中', value: 'center' },
@@ -186,96 +127,86 @@ export default {
   computed: {
     inColor: {
       get() {
-        return this.color
+        return this.style.color
       },
       set(val) {
-        this.$emit('update:color', val)
+        this.updateStyle('color', val)
       }
     },
     inFontSize: {
       get() {
-        return this.fontSize
+        return this.style.fontSize
       },
       set(val) {
-        this.$emit('update:fontSize', val)
+        this.updateStyle('fontSize', val)
       }
     },
     inPadding: {
       get() {
-        return this.padding
+        return this.style.padding
       },
       set(val) {
-        this.$emit('update:padding', val)
+        this.updateStyle('padding', val)
       }
     },
     inBorderColor: {
       get() {
-        return this.borderColor
+        return this.style.borderColor
       },
       set(val) {
-        this.$emit('update:borderColor', val)
+        this.updateStyle('borderColor', val)
       }
     },
     inBorderWidth: {
       get() {
-        return this.borderWidth
+        return this.style.borderWidth
       },
       set(val) {
-        this.$emit('update:borderWidth', val)
+        this.updateStyle('borderWidth', val)
       }
     },
     inBorderStyle: {
       get() {
-        return this.borderStyle
+        return this.style.borderStyle
       },
       set(val) {
-        this.$emit('update:borderStyle', val)
+        this.updateStyle('borderStyle', val)
       }
     },
     inLineHeight: {
       get() {
-        return this.lineHeight
+        return this.style.lineHeight
       },
       set(val) {
-        this.$emit('update:lineHeight', val)
+        this.updateStyle('lineHeight', val)
       }
     },
     inLetterSpacing: {
       get() {
-        return this.letterSpacing
+        return this.style.letterSpacing
       },
       set(val) {
-        this.$emit('update:letterSpacing', val)
+        this.updateStyle('letterSpacing', val)
       }
     },
     inTextAlign: {
       get() {
-        return this.textAlign
+        return this.style.textAlign
       },
       set(val) {
-        this.$emit('update:textAlign', val)
+        this.updateStyle('textAlign', val)
       }
     },
     inBackgroundColor: {
       get() {
-        return this.backgroundColor
+        return this.style.backgroundColor
       },
       set(val) {
-        this.$emit('update:backgroundColor', val)
+        this.updateStyle('backgroundColor', val)
       }
     }
   },
-  watch: {
-    inDragInfo: {
-      handler() {
-        this.$emit('dragInfoChange', this.inDragInfo)
-      },
-      deep: true
-    }
-  },
-  created() {
-    this.inDragInfo = this.$deepCopy(this.dragInfo)
-  }
+  methods: {}
 }
 </script>
 <style lang="scss" scoped>

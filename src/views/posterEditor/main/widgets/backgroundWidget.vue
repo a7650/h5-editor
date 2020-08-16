@@ -49,7 +49,6 @@
 import vueDraggableResizable from '@/components/dragable/components/vue-draggable-resizable'
 import { mapGetters, mapActions, mapState } from 'poster/poster.vuex'
 import { BackgroundWidget } from 'poster/widgetConstructor'
-import { clickoutside } from 'poster/poster.directives'
 const baseMenuList = []
 
 export default {
@@ -61,7 +60,6 @@ export default {
       resizable: true
     }
   },
-  directives: { clickoutside },
   computed: {
     ...mapGetters(['activeItemIds']),
     ...mapState(['canvasSize', 'copiedWidgets']),
@@ -71,6 +69,13 @@ export default {
       },
       set(val) {
         this.item.dragInfo = val
+      }
+    }
+  },
+  watch: {
+    activeItemIds(newVal) {
+      if (newVal.length > 0) {
+        this.isActive = false
       }
     }
   },

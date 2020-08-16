@@ -41,12 +41,7 @@
       {{ text }}
     </div>
     <portal v-if="isActive" to="widgetControl">
-      <text-control
-        :key="item.id"
-        :drag-info="dragInfo"
-        v-bind.sync="textStyle"
-        @dragInfoChange="dragInfo = $event"
-      />
+      <text-control :key="item.id" :item="item" />
     </portal>
   </vue-draggable-resizable>
 </template>
@@ -63,31 +58,22 @@ export default {
   directives: { clickoutside },
   data() {
     return {
-      isEditing: false,
-      text: '',
-      textStyle: {
-        color: '#000',
-        textAlign: 'center',
-        fontSize: 14, // px
-        padding: 0, // px
-        borderColor: '#000',
-        borderWidth: 0, // px
-        borderStyle: 'solid',
-        lineHeight: 100, // %
-        letterSpacing: 0, // %
-        backgroundColor: ''
-      }
+      isEditing: false
     }
   },
   computed: {
     ...mapState(['canvasSize']),
+    text() {
+      return this.wState.text
+    },
     textStyleFilter() {
-      return Object.assign({}, this.textStyle, {
-        fontSize: this.textStyle.fontSize + 'px',
-        padding: this.textStyle.padding + 'px',
-        borderWidth: this.textStyle.borderWidth + 'px',
-        lineHeight: this.textStyle.lineHeight + '%',
-        letterSpacing: this.textStyle.letterSpacing + 'px'
+      const textStyle = this.wState.style
+      return Object.assign({}, textStyle, {
+        fontSize: textStyle.fontSize + 'px',
+        padding: textStyle.padding + 'px',
+        borderWidth: textStyle.borderWidth + 'px',
+        lineHeight: textStyle.lineHeight + '%',
+        letterSpacing: textStyle.letterSpacing + 'px'
       })
     }
   },
@@ -99,11 +85,10 @@ export default {
         x: (this.canvasSize.width - 160) / 2,
         y: 200
       })
-      this.text = this.item.text
     }
   },
   methods: {
-    ...mapActions(['setWidgetConfig']),
+    ...mapActions(['setWidgetConfig', 'updateWidgetState']),
     getMenuList() {
       return []
     },
@@ -118,11 +103,14 @@ export default {
         selection.addRange(range)
       })
     },
-    saveText() {
-      const ref = this.$refs.textContainer
-      this.text = ref.innerText
+    saveText(text) {
+      const ref = text || this.$refs.textContainer
       this.isEditing = false
-      this.setWidgetConfig({ item: this.item, cb: (i) => (i.text = this.text) })
+      this.updateWidgetState({
+        keyPath: 'text',
+        value: ref.innerText,
+        widgetId: this.item.id
+      })
     }
   }
 }

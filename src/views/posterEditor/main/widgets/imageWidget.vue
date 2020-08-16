@@ -31,8 +31,7 @@
     <portal v-if="isActive" to="widgetControl">
       <image-control
         :key="item.id"
-        :drag-info="dragInfo"
-        @dragInfoChange="dragInfo = $event"
+        :item="item"
       />
     </portal>
   </vue-draggable-resizable>

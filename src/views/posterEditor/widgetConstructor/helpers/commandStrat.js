@@ -6,7 +6,8 @@ import store from '@/store'
 export function getCopyData(item, vm) {
     const stateJson = JSON.stringify(vm.$data)
     return {
-        ...item,
+        ...JSON.parse(JSON.stringify(item)),
+        initHook: item.initHook,
         componentState: function() {
             return JSON.parse(stateJson)
         }

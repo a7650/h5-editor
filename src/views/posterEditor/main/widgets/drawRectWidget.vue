@@ -28,7 +28,7 @@ import { clickoutside } from 'poster/poster.directives'
 import { mapState, mapActions } from 'poster/poster.vuex'
 export default {
   directives: { clickoutside },
-  mixins: [RectWidget.mixin({ openContextMenu: false })],
+  mixins: [RectWidget.mixin({ openContextmenu: false })],
   data() {
     return {
       drawing: false,
@@ -101,11 +101,11 @@ export default {
       this.draggingRectStyle = null
       this.addItem(
         new RectWidget({
-          initHook(vm) {
-            vm.dragInfo.w = Math.max(50, rectInfo.width)
-            vm.dragInfo.h = Math.max(50, rectInfo.height)
-            vm.dragInfo.y = rectInfo.top
-            vm.dragInfo.x = rectInfo.left
+          dragInfo: {
+            w: Math.max(50, rectInfo.width),
+            h: Math.max(50, rectInfo.height),
+            y: rectInfo.top,
+            x: rectInfo.left
           }
         })
       )
@@ -154,14 +154,14 @@ export default {
     color: $colorText;
     @include no-wrap;
   }
-  @keyframes fade{
-    0%{
+  @keyframes fade {
+    0% {
       opacity: 1;
     }
-    50%{
+    50% {
       opacity: 0;
     }
-    100%{
+    100% {
       opacity: 1;
     }
   }
