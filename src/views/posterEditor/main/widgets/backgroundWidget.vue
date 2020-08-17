@@ -16,12 +16,15 @@
     class="drag-item"
     :class="{ solid: item.isSolid }"
     deselect-cancel=".poster-editor_deactivated-ignore"
+    @
     @activated="activated"
     @deactivated="deactivated"
     @dragging="onDrag"
     @resizing="onResize"
     @rotating="onRotate"
     @dragstop="onDragStop"
+    @rotatestop="onRotateStop"
+    @resizestop="onResizeStop"
   >
     <div
       v-if="item.isSolid"

@@ -1,5 +1,8 @@
 import _cloneDeep from 'lodash/cloneDeep'
 
+// 最多保留之前的n步
+const MAX_STACK_LEN = 30
+
 const state = {
     preStack: [],
     nextStack: [],
@@ -7,7 +10,6 @@ const state = {
 }
 
 const actions = {
-    //
     push({ state, rootState }) {
         const posterState = rootState.poster
         const snapshotState = {
@@ -16,9 +18,12 @@ const actions = {
             referenceLine: posterState.referenceLine
         }
         state.preStack.push(_cloneDeep(snapshotState))
+        if (state.preStack.length > MAX_STACK_LEN) {
+            state.preStack.shift()
+        }
         state.nextStack = []
+        console.warn('history-push', state.preStack)
     },
-    // 撤销
     undo({ state, rootState }) {
         if (state.preStack.length > 0) {
             const preState = state.preStack.pop()
@@ -33,7 +38,6 @@ const actions = {
             rootState.poster.activeItems = []
         }
     },
-    // 恢复
     redo({ state, rootState }) {
         if (state.nextStack.length > 0) {
             const nextState = state.nextStack.shift()

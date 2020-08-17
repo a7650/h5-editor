@@ -179,6 +179,7 @@ const actions = {
         commit(MTS.REMOVE_ITEM, item)
     },
     replacePosterItems({ commit, dispatch }, items) {
+        dispatch('history/push')
         commit(MTS.REPLACE_POSTER_ITEMS, items)
         commit(MTS.REPLACE_ACTIVE_ITEMS, [])
     },

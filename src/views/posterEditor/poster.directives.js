@@ -38,14 +38,6 @@ export const drag = {
                 // 获取移动后div的位置：鼠标位置-divx/divy
                 const l = Math.min(Math.max(e.clientX - divx, minLeft), maxLeft)
                 const t = Math.min(Math.max(e.clientY - divy, minTop), maxTop)
-                // if (t - minTop <= 20) {
-                //     t = minTop
-                // }
-                // if (l - minLeft <= 20) {
-                //     l = minLeft
-                // } else if (maxLeft - l <= 20) {
-                //     l = maxLeft
-                // }
                 parentNode.style.left = l + 'px'
                 parentNode.style.top = t + 'px'
             }

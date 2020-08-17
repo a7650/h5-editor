@@ -11,7 +11,7 @@
       @keydown.enter="saveName"
     >
     <div v-else class="name" @dblclick="isEditing = true">
-      {{ rename || item.text }}
+      {{ rename }}
     </div>
     <div class="handle">
       <i
@@ -55,7 +55,7 @@ export default {
   },
   created() {
     if (this.item.type === 'text') {
-      this.rename = ''
+      this.rename = this.item.wState.text
     } else {
       this.rename = this.item.id
     }

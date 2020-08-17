@@ -101,7 +101,6 @@ export default class Widget {
     let canvasSize = null
     let canvasPosition = null
     let referenceLineMap = null // 参考线位置（相对于画布的位置）{col:[],row:[]}
-    let moving = false
     return {
       data() {
         return {
@@ -210,13 +209,20 @@ export default class Widget {
           this.removeActiveItem(this.item)
         },
         onResize(x, y, w, h) {
+          if (!this.resizing) {
+            this.resizing = true
+            store.dispatch('poster/history/push')
+          }
           this.updateDragInfo({ x, y, w, h })
           dragItemPosition[this.item.id] = this.dragInfo
           // this.onDrag(x, y)
         },
+        onResizeStop() {
+          this.resizing = false
+        },
         onDrag(x, y, e) {
-          if (!moving) {
-            moving = true
+          if (!this.moving) {
+            this.moving = true
             store.dispatch('poster/history/push')
           }
           // ctrl快捷键拖动复制
@@ -321,8 +327,8 @@ export default class Widget {
           }
         },
         onDragStop(e) {
-          if (moving) {
-            moving = false
+          if (this.moving) {
+            this.moving = false
             hasCopiedOnDrag = false
             canvasSize = null
             canvasPosition = null
@@ -333,7 +339,14 @@ export default class Widget {
           }
         },
         onRotate(e) {
+          if (!this.rotating) {
+            this.rotating = true
+            store.dispatch('poster/history/push')
+          }
           this.updateDragInfo({ rotateZ: (e > 0 ? e : 360 + e) % 360 })
+        },
+        onRotateStop() {
+          this.rotating = false
         },
         updateDragInfo(dragInfo, updateSelfOnly = false) {
           this.$store.dispatch('poster/updateDragInfo', { dragInfo, widgetId: this.item.id, updateSelfOnly })

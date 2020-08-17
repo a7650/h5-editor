@@ -13,15 +13,19 @@
       :item="background"
       @openContextmenu="openContextmenu"
     />
-    <component
-      :is="item.componentName"
+    <widget-container
       v-for="item in posterItems"
       v-show="item.visible"
-      :ref="item.id"
       :key="item.id"
       :item="item"
-      @openContextmenu="openContextmenu"
-    />
+    >
+      <component
+        :is="item.componentName"
+        :ref="item.id"
+        :item="item"
+        @openContextmenu="openContextmenu"
+      />
+    </widget-container>
     <custom-contextmenu
       v-if="contextmenuVisible"
       v-clickoutside="closeContextmenu"
@@ -36,11 +40,13 @@
 import { mapState, mapMutations } from '../poster.vuex'
 import customContextmenu from '@/components/customContextmenu'
 import { clickoutside } from 'poster/poster.directives'
+import widgetContainer from './widgets/widgetContainer'
 import exportWidgets from './exportWidgets'
 
 export default {
   components: {
     customContextmenu,
+    widgetContainer,
     ...exportWidgets
   },
   directives: { clickoutside },
@@ -93,7 +99,7 @@ export default {
     /* position: absolute;
     top: 0; */
   }
-  .custom-contextmenu{
+  .custom-contextmenu {
     z-index: 999;
   }
 }

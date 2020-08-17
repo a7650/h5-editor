@@ -22,12 +22,12 @@ import extendSideBar from './extendSideBar'
 import layerPanel from './extendSideBar/layerPanel'
 import { getCopyData } from './widgetConstructor/helpers/commandStrat'
 
-const DELETE_KEY = 8
-const COPY_KEY = 67
-const PASTE_KEY = 86
-const LAYER_PANEL_KEY = 76
-const REFERENCE_LINE_KEY = 72
-const UNDO_KEY = 90
+const DELETE_KEY = 8 // delete
+const COPY_KEY = 67 // c
+const PASTE_KEY = 86 // v
+const LAYER_PANEL_KEY = 76 // l
+const REFERENCE_LINE_KEY = 72 // h
+const UNDO_KEY = 90 // z
 
 export default {
   components: {
@@ -73,39 +73,50 @@ export default {
         return
       }
       const keyCode = e.keyCode
-      if (keyCode === DELETE_KEY && this.activeItemIds.length > 0) {
-        // 删除
-        this.replacePosterItems(
-          this.posterItems.filter(
-            (item) => !this.activeItemIds.includes(item.id)
-          )
-        )
-      } else if (keyCode === PASTE_KEY && e.ctrlKey && this.copiedWidgets) {
-        // 粘贴
-        this.pasteWidget()
-      } else if (
-        keyCode === COPY_KEY &&
-        e.ctrlKey &&
-        this.activeItemIds.length > 0
-      ) {
-        // 复制
-        const copiedWidgets = []
-        const widgetRefs = this.mainPanelRef.$refs
-        this.activeItemIds.forEach((itemId) => {
-          const widgetRef = widgetRefs[itemId][0]
-          copiedWidgets.push(getCopyData(widgetRef.item, widgetRef._self))
-        })
-        this.copyWidget(copiedWidgets)
-      } else if (keyCode === LAYER_PANEL_KEY && e.ctrlKey) {
-        e.preventDefault()
-        this.setLayerPanel(!this.layerPanelOpened)
-      } else if (keyCode === REFERENCE_LINE_KEY && e.ctrlKey) {
-        e.preventDefault()
-        this.setReferenceLineVisible(!this.referenceLineOpened)
-      } else if (keyCode === UNDO_KEY && e.ctrlKey && e.shiftKey) {
-        this.redo()
-      } else if (keyCode === UNDO_KEY && e.ctrlKey) {
-        this.undo()
+      const ctrl = e.ctrlKey || e.metaKey
+      const shift = e.shiftKey
+      switch (true) {
+        case keyCode === DELETE_KEY:
+          if (this.activeItemIds.length > 0) {
+            this.replacePosterItems(
+              this.posterItems.filter(
+                (item) => !this.activeItemIds.includes(item.id)
+              )
+            )
+          }
+          break
+        case keyCode === PASTE_KEY && ctrl:
+          if (this.copiedWidgets) {
+            this.pasteWidget()
+          }
+          break
+        case keyCode === COPY_KEY && ctrl:
+          if (this.activeItemIds.length > 0) {
+            const copiedWidgets = []
+            const widgetRefs = this.mainPanelRef.$refs
+            this.activeItemIds.forEach((itemId) => {
+              const widgetRef = widgetRefs[itemId][0]
+              copiedWidgets.push(getCopyData(widgetRef.item, widgetRef._self))
+            })
+            this.copyWidget(copiedWidgets)
+          }
+          break
+        case keyCode === LAYER_PANEL_KEY && ctrl:
+          e.preventDefault()
+          this.setLayerPanel(!this.layerPanelOpened)
+          break
+        case keyCode === REFERENCE_LINE_KEY && ctrl:
+          e.preventDefault()
+          this.setReferenceLineVisible(!this.referenceLineOpened)
+          break
+        case keyCode === UNDO_KEY && ctrl && shift:
+          this.redo()
+          break
+        case keyCode === UNDO_KEY && ctrl:
+          this.undo()
+          break
+        default:
+          break
       }
     }
   }
