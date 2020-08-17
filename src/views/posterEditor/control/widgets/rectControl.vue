@@ -17,16 +17,36 @@
             <radio-group v-model="inBorderStyle" :list="borderStyleList" />
           </setting-item>
           <setting-item label="左上角弧度">
-            <el-slider v-model="inBorderTopLeftRadius" style="width:100%" />
+            <el-slider
+              v-model="inBorderTopLeftRadius"
+              style="width:100%"
+              @input="borderRadiusInput('tl')"
+              @change="borderRadiusChange"
+            />
           </setting-item>
           <setting-item label="右上角弧度">
-            <el-slider v-model="inBorderTopRightRadius" style="width:100%" />
+            <el-slider
+              v-model="inBorderTopRightRadius"
+              style="width:100%"
+              @input="borderRadiusInput('tr')"
+              @change="borderRadiusChange"
+            />
           </setting-item>
           <setting-item label="左下角弧度">
-            <el-slider v-model="inBorderBottomLeftRadius" style="width:100%" />
+            <el-slider
+              v-model="inBorderBottomLeftRadius"
+              style="width:100%"
+              @input="borderRadiusInput('bl')"
+              @change="borderRadiusChange"
+            />
           </setting-item>
           <setting-item label="右下角弧度">
-            <el-slider v-model="inBorderBottomRightRadius" style="width:100%" />
+            <el-slider
+              v-model="inBorderBottomRightRadius"
+              style="width:100%"
+              @input="borderRadiusInput('br')"
+              @change="borderRadiusChange"
+            />
           </setting-item>
         </setting-content>
       </el-collapse-item>
@@ -71,7 +91,8 @@ export default {
         { label: '虚线', value: 'dashed' },
         { label: '双线', value: 'double ' },
         { label: '点线', value: 'dotted ' }
-      ]
+      ],
+      borderRadiusInit: {}
     }
   },
   computed: {
@@ -112,7 +133,7 @@ export default {
         return this.style.borderTopLeftRadius
       },
       set(val) {
-        this.updateStyle('borderTopLeftRadius', val)
+        this.updateStyle('borderTopLeftRadius', val, false /** pushHistory */)
       }
     },
     inBorderTopRightRadius: {
@@ -120,7 +141,7 @@ export default {
         return this.style.borderTopRightRadius
       },
       set(val) {
-        this.updateStyle('borderTopRightRadius', val)
+        this.updateStyle('borderTopRightRadius', val, false /** pushHistory */)
       }
     },
     inBorderBottomLeftRadius: {
@@ -128,7 +149,11 @@ export default {
         return this.style.borderBottomLeftRadius
       },
       set(val) {
-        this.updateStyle('borderBottomLeftRadius', val)
+        this.updateStyle(
+          'borderBottomLeftRadius',
+          val,
+          false /** pushHistory */
+        )
       }
     },
     inBorderBottomRightRadius: {
@@ -136,8 +161,30 @@ export default {
         return this.style.borderBottomRightRadius
       },
       set(val) {
-        this.updateStyle('borderBottomRightRadius', val)
+        this.updateStyle(
+          'borderBottomRightRadius',
+          val,
+          false /** pushHistory */
+        )
       }
+    }
+  },
+  methods: {
+    borderRadiusInput(flag) {
+      // el-slider初始化时会派发input事件
+      // 所以在初始化时候忽略该事件
+      // 防止往撤销的历史栈里添加数据
+      if (!this.borderRadiusInit[flag]) {
+        this.borderRadiusInit[flag] = true
+        return
+      }
+      if (!this.borderRadiusDragging) {
+        this.borderRadiusDragging = true
+        this.pushHistory()
+      }
+    },
+    borderRadiusChange() {
+      this.borderRadiusDragging = false
     }
   }
 }

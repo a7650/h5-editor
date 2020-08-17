@@ -26,11 +26,15 @@ export const commonMixin = {
     },
     methods: {
         ...mapActions(['updateWidgetState']),
-        updateStyle(styleKey, value) {
+        ...mapActions({
+            'pushHistory': 'history/push'
+        }),
+        updateStyle(styleKey, value, pushHistory = true) {
             this.updateWidgetState({
                 keyPath: 'style.' + styleKey,
                 value,
-                widgetId: this.item.id
+                widgetId: this.item.id,
+                pushHistory
             })
         }
     }

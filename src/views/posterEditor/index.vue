@@ -27,6 +27,8 @@ const COPY_KEY = 67
 const PASTE_KEY = 86
 const LAYER_PANEL_KEY = 76
 const REFERENCE_LINE_KEY = 72
+const UNDO_KEY = 90
+
 export default {
   components: {
     controlComponent,
@@ -49,6 +51,7 @@ export default {
     document.addEventListener('keydown', this.keydownHandle)
     this.body = document.body
     this.mainPanelRef = this.$refs.main.$refs.mainPanel
+    // this.$store.dispatch('poster/history/push')
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.keydownHandle)
@@ -61,6 +64,10 @@ export default {
       'setLayerPanel',
       'setReferenceLineVisible'
     ]),
+    ...mapActions({
+      undo: 'history/undo',
+      redo: 'history/redo'
+    }),
     keydownHandle(e) {
       if (e.target !== this.body) {
         return
@@ -95,6 +102,10 @@ export default {
       } else if (keyCode === REFERENCE_LINE_KEY && e.ctrlKey) {
         e.preventDefault()
         this.setReferenceLineVisible(!this.referenceLineOpened)
+      } else if (keyCode === UNDO_KEY && e.ctrlKey && e.shiftKey) {
+        this.redo()
+      } else if (keyCode === UNDO_KEY && e.ctrlKey) {
+        this.undo()
       }
     }
   }

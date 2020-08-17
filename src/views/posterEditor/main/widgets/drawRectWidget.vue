@@ -2,7 +2,6 @@
   <div class="rect-widget">
     <div
       v-if="drawing"
-      v-clickoutside="removeSelf"
       class="drawing-container"
       :class="{ dragging: dragging }"
       :style="{
@@ -86,7 +85,11 @@ export default {
       this.draggingRectStyle.top = top + 'px'
       this.draggingRectStyle.left = left + 'px'
     },
-    dragEnd() {
+    dragEnd(e) {
+      if (e.button === 2) {
+        this.removeSelf()
+        return
+      }
       if (!this.dragging) {
         return
       }
@@ -99,6 +102,7 @@ export default {
         left: parseInt(this.draggingRectStyle.left)
       }
       this.draggingRectStyle = null
+      this.removeSelf()
       this.addItem(
         new RectWidget({
           dragInfo: {
@@ -109,7 +113,6 @@ export default {
           }
         })
       )
-      this.removeSelf()
     }
   }
 }

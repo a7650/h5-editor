@@ -22,6 +22,7 @@ export function changeCompositionPositionHandler(activeItems, type, canvasSize) 
                 item.dragInfo.x = canvasSize.width - item.dragInfo.w
             })
             break
-        default: break
+        default: return false
     }
+    return true
 }

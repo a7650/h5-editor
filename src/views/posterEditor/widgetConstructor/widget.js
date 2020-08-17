@@ -215,7 +215,10 @@ export default class Widget {
           // this.onDrag(x, y)
         },
         onDrag(x, y, e) {
-          moving = true
+          if (!moving) {
+            moving = true
+            store.dispatch('poster/history/push')
+          }
           // ctrl快捷键拖动复制
           if (!hasCopiedOnDrag && e && e.ctrlKey) {
             const lastCopiedWidgets = store.state.poster.copiedWidgets

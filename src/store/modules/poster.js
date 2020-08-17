@@ -4,6 +4,7 @@ import { Widget, BackgroundWidget, CopiedWidget } from 'poster/widgetConstructor
 import { arrMoveTop, arrMoveUpper, arrMoveLower, arrMoveBottom } from '@/utils/posterUtils'
 import _set from 'lodash/set'
 import { changeCompositionPositionHandler } from './helpers'
+import history from './history'
 
 const state = {
     canvasSize: {
@@ -121,7 +122,6 @@ const mutations = {
                 state.posterItems.push(new CopiedWidget(item))
             })
         }
-        console.log('posterItems', JSON.parse(JSON.stringify(state.posterItems)))
     },
     // 添加参考线
     [MTS.ADD_REFERENCE_LINE](state, { type, position }) {
@@ -147,39 +147,48 @@ const mutations = {
 }
 
 const actions = {
-    addBackground({ commit }, item) {
+    addBackground({ state, commit, dispatch }, item) {
+        if (state.background) {
+            dispatch('history/push')
+        }
         commit(MTS.ADD_BACKGROUND, item)
     },
-    removeBackground({ commit }) {
+    removeBackground({ commit, dispatch }) {
+        dispatch('history/push')
         commit(MTS.REMOVE_BACKGROUND)
     },
-    setBackgroundConfig({ state, commit }, cb) {
+    setBackgroundConfig({ state, commit, dispatch }, cb) {
+        dispatch('history/push')
         commit(MTS.SET_BACKGROUND_CONFIG, cb)
     },
-    addItem({ commit }, item) {
-        commit(MTS.REPLACE_ACTIVE_ITEMS, [item])
-        commit(MTS.ADD_ITEM, item)
+    addItem({ commit, dispatch }, item) {
+        if (item instanceof Widget) {
+            dispatch('history/push')
+            commit(MTS.REPLACE_ACTIVE_ITEMS, [item])
+            commit(MTS.ADD_ITEM, item)
+        }
     },
-    removeItem({ commit, getters }, item) {
+    removeItem({ commit, getters, dispatch }, item) {
         if (item.lock) {
             return
         }
         if (getters.activeItemIds.includes(item.id)) {
             commit(MTS.REMOVE_ACTIVE_ITEM, item)
         }
+        dispatch('history/push')
         commit(MTS.REMOVE_ITEM, item)
     },
-    replacePosterItems({ commit }, items) {
+    replacePosterItems({ commit, dispatch }, items) {
         commit(MTS.REPLACE_POSTER_ITEMS, items)
         commit(MTS.REPLACE_ACTIVE_ITEMS, [])
     },
-    addActiveItem({ commit, getters }, item) {
+    addActiveItem({ commit, getters, dispatch }, item) {
         if (getters.activeItemIds.includes(item.id)) {
             return
         }
         commit(MTS.ADD_ACTIVE_ITEM, item)
     },
-    removeActiveItem({ commit }, item) {
+    removeActiveItem({ commit, dispatch }, item) {
         commit(MTS.REMOVE_ACTIVE_ITEM, item)
     },
     replaceActiveItems({ commit }, items) {
@@ -201,8 +210,6 @@ const actions = {
         const preDragInfo = widgetItem.dragInfo
         const activeItems = state.activeItems
         dragInfo = Object.assign({}, preDragInfo, dragInfo)
-        console.log('pre', JSON.parse(JSON.stringify(preDragInfo)))
-        console.log('cur', JSON.parse(JSON.stringify(dragInfo)))
         if (updateSelfOnly) {
             widgetItem.dragInfo = Object.assign({}, widgetItem.dragInfo, dragInfo)
         } else if (activeItems.length > 0) {
@@ -229,15 +236,20 @@ const actions = {
         // }
     },
     // 更新组件state
-    updateWidgetState({ state }, { keyPath, value, widgetId }) {
+    updateWidgetState({ state, dispatch }, { keyPath, value, widgetId, pushHistory = true }) {
         const widgetItem = state.posterItems.find(i => i.id === widgetId)
         if (widgetItem) {
+            // 某些操作不添加进历史记录栈
+            if (pushHistory) {
+                dispatch('history/push')
+            }
             _set(widgetItem.wState, keyPath, value)
         }
     },
     // 更改组合的位置
-    changeCompositionPosition({ state }, type) {
+    changeCompositionPosition({ state, dispatch }, type) {
         const activeItems = state.activeItems
+        dispatch('history/push')
         /**
          * @sideEffect
          */
@@ -258,25 +270,29 @@ const actions = {
     toggleItemVisible({ commit }, { item, visible }) {
         commit(MTS.SET_WIDGET_CONFIG, { item, cb: (i) => (i.visible = !!visible) })
     },
-    widgetMoveToTop({ commit, state }, item) {
+    widgetMoveToTop({ commit, state, dispatch }, item) {
+        dispatch('history/push')
         commit(
             MTS.REPLACE_POSTER_ITEMS,
             arrMoveBottom(state.posterItems, state.posterItems.findIndex(i => i.id === item.id))
         )
     },
-    widgetMoveToUpper({ commit, state }, item) {
+    widgetMoveToUpper({ commit, state, dispatch }, item) {
+        dispatch('history/push')
         commit(
             MTS.REPLACE_POSTER_ITEMS,
             arrMoveLower(state.posterItems, state.posterItems.findIndex(i => i.id === item.id))
         )
     },
-    widgetMoveToLower({ commit, state }, item) {
+    widgetMoveToLower({ commit, state, dispatch }, item) {
+        dispatch('history/push')
         commit(
             MTS.REPLACE_POSTER_ITEMS,
             arrMoveUpper(state.posterItems, state.posterItems.findIndex(i => i.id === item.id))
         )
     },
-    widgetMoveToBottom({ commit, state }, item) {
+    widgetMoveToBottom({ commit, state, dispatch }, item) {
+        dispatch('history/push')
         commit(
             MTS.REPLACE_POSTER_ITEMS,
             arrMoveTop(state.posterItems, state.posterItems.findIndex(i => i.id === item.id))
@@ -285,16 +301,20 @@ const actions = {
     copyWidget({ commit }, item) {
         commit(MTS.COPY_WIDGET, item)
     },
-    pasteWidget({ commit }) {
+    pasteWidget({ commit, dispatch }) {
+        dispatch('history/push')
         commit(MTS.PASTE_WIDGET)
     },
-    addReferenceLine({ commit }, item) {
+    addReferenceLine({ commit, dispatch }, item) {
+        dispatch('history/push')
         commit(MTS.ADD_REFERENCE_LINE, item)
     },
-    removeReferenceLine({ commit }, item) {
+    removeReferenceLine({ commit, dispatch }, item) {
+        dispatch('history/push')
         commit(MTS.REMOVE_REFERENCE_LINE, item)
     },
-    removeAllReferenceLine({ commit }) {
+    removeAllReferenceLine({ commit, dispatch }) {
+        dispatch('history/push')
         commit(MTS.REMOVE_ALL_REFERENCE_LINE)
     },
     setReferenceLineVisible({ commit }, flag) {
@@ -313,5 +333,8 @@ export default {
     state,
     getters,
     mutations,
-    actions
+    actions,
+    modules: {
+        history
+    }
 }
