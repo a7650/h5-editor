@@ -1,29 +1,5 @@
 <template>
-  <vue-draggable-resizable
-    ref="drag"
-    :w="dragInfo.w"
-    :h="dragInfo.h"
-    :x="dragInfo.x"
-    :y="dragInfo.y"
-    :r="dragInfo.rotateZ"
-    :min-width="10"
-    :min-height="10"
-    :resizable="true"
-    :lock="item.lock"
-    :active.sync="isActive"
-    class="drag-item"
-    deselect-cancel=".poster-editor_deactivated-ignore"
-    :draggable="!isEditing"
-    @activated="activated"
-    @deactivated="deactivated"
-    @dragging="onDrag"
-    @resizing="onResize"
-    @rotating="onRotate"
-    @dblclick.native="openEditing"
-    @dragstop="onDragStop"
-    @rotatestop="onRotateStop"
-    @resizestop="onResizeStop"
-  >
+  <div class="widget text">
     <div
       v-if="!isEditing"
       class="text-container"
@@ -45,19 +21,18 @@
     <portal v-if="isActive" to="widgetControl">
       <text-control :key="item.id" :item="item" />
     </portal>
-  </vue-draggable-resizable>
+  </div>
 </template>
 
 <script>
-import vueDraggableResizable from '@/components/dragable/components/vue-draggable-resizable'
 import { TextWidget } from 'poster/widgetConstructor'
 import { clickoutside } from 'poster/poster.directives'
 import textControl from 'poster/control/widgets/textControl'
 import { mapState, mapActions } from 'poster/poster.vuex'
 export default {
-  components: { vueDraggableResizable, textControl },
-  mixins: [TextWidget.mixin()],
+  components: { textControl },
   directives: { clickoutside },
+  mixins: [TextWidget.widgetMixin()],
   data() {
     return {
       isEditing: false
@@ -77,6 +52,11 @@ export default {
         lineHeight: textStyle.lineHeight + '%',
         letterSpacing: textStyle.letterSpacing + 'px'
       })
+    }
+  },
+  watch: {
+    isEditing(newVal) {
+      this.$emit('draggableChange', !newVal)
     }
   },
   created() {

@@ -1,13 +1,8 @@
 <template>
-  <div class="rect-widget">
+  <div class="draw-rect-widget">
     <div
-      v-if="drawing"
       class="drawing-container"
       :class="{ dragging: dragging }"
-      :style="{
-        width: canvasSize.width + 'px',
-        height: canvasSize.height + 'px'
-      }"
       @mousedown="dragStart"
       @mousemove="moving"
       @mouseup="dragEnd"
@@ -27,10 +22,17 @@ import { clickoutside } from 'poster/poster.directives'
 import { mapState, mapActions } from 'poster/poster.vuex'
 export default {
   directives: { clickoutside },
-  mixins: [RectWidget.mixin({ openContextmenu: false })],
+  props: {
+    item: {
+      type: Object,
+      default() {
+        return {}
+      }
+    }
+  },
+  // mixins: [RectWidget.widgetMixin({ openContextmenu: false })],
   data() {
     return {
-      drawing: false,
       dragging: false,
       drawInfo: null,
       draggingRectStyle: null
@@ -39,17 +41,10 @@ export default {
   computed: {
     ...mapState(['canvasSize'])
   },
-  created() {
-    this.drawing = this.item.drawing
-    if (this.drawing) {
-      this.dragInfo.w = this.canvasSize.width
-      this.dragInfo.h = this.canvasSize.height
-    }
-  },
   methods: {
-    ...mapActions(['setWidgetConfig', 'removeItem', 'addItem']),
+    ...mapActions(['setWidgetConfig', 'removeAssistWidget', 'addItem']),
     removeSelf() {
-      this.removeItem(this.item)
+      this.removeAssistWidget(this.item)
     },
     dragStart(e) {
       this.dragging = true
@@ -118,11 +113,20 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.draw-rect-widget {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
 .drawing-container {
   background-color: rgba($color: #fff, $alpha: 0.8);
   box-sizing: border-box;
   border: 1px dashed $colorTheme;
   cursor: crosshair;
+  width: 100%;
+  height: 100%;
   position: absolute;
   left: 0;
   top: 0;

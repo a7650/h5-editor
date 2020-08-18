@@ -75,6 +75,10 @@ function getReferenceLineMap(canvasSize, canvasPosition, userLine/** 用户定�
   return referenceLineMap
 }
 
+function updateDragInfo(dragInfo, updateSelfOnly = false) {
+  this.$store.dispatch('poster/updateDragInfo', { dragInfo, widgetId: this.item.id, updateSelfOnly })
+}
+
 // 组件父类
 export default class Widget {
   constructor(config) {
@@ -87,15 +91,8 @@ export default class Widget {
     })
   }
 
-  static mixin(options) {
-    options = Object.assign({}, {
-      invokeFunctionMap: {
-        getMenuList: 'getMenuList',
-        executeContextCommand: 'executeContextCommand'
-      },
-      baseMenuList: getBaseMenuList(),
-      contextmenu: true // 使用右键菜单功能
-    }, options)
+  static superMixin(options) {
+    options = Object.assign({}, {}, options)
 
     let hasCopiedOnDrag = false // 拖动过程中是否执行过复制
     let canvasSize = null
@@ -132,45 +129,6 @@ export default class Widget {
           }
         }
       },
-      created() {
-        // 执行initHook
-        if (this.item.initHook && typeof this.item.initHook === 'function') {
-          this.item.initHook(this._self)
-        }
-        // 初始化菜单
-        this._baseMenuList = options.baseMenuList
-        // 复制组件初始化数据
-        if (this.item.isCopied) {
-          Object.assign(this.$data, this.item.componentState())
-          const count = this.item.componentState.count
-          this.updateDragInfo({
-            x: this.dragInfo.x + count * 10,
-            y: this.dragInfo.y + count * 10
-          }, true/** updateSelfOnly */)
-          console.log(this.dragInfo, count)
-          this.isActive = false
-        }
-      },
-      mounted() {
-        if (options.contextmenu) {
-          this._self.$el.addEventListener('contextmenu', (e) => {
-            const menuList = [...(this.getMenuList() || []), ...this._baseMenuList]
-            const isLock = this.item.lock
-            if (!(this.item.type === 'background')) {
-              menuList.unshift({ label: isLock ? '解除锁定' : '锁定', command: isLock ? '$unlock' : '$lock' })
-            }
-            if (menuList.length > 0) {
-              this.$emit('openContextmenu', {
-                x: e.pageX,
-                y: e.pageY,
-                menuList,
-                vm: this._self
-              })
-            }
-          })
-        }
-        this.dragRef = this.$refs.drag
-      },
       beforeDestroy() {
         delete dragItemPosition[this.item.id]
       },
@@ -183,6 +141,9 @@ export default class Widget {
           },
           immediate: true
         }
+      },
+      mounted() {
+        this.dragRef = this.$refs.drag
       },
       methods: {
         ...mapActions(
@@ -228,7 +189,7 @@ export default class Widget {
           // ctrl快捷键拖动复制
           if (!hasCopiedOnDrag && e && e.ctrlKey) {
             const lastCopiedWidgets = store.state.poster.copiedWidgets
-            const copyData = getCopyData(this.item, this._self)
+            const copyData = getCopyData(this.item, this.$slots.default[0])
             copyData.componentState.count = -1 // 粘贴的时候计算得出count为0，使粘贴的组件的位置和原先位置重合
             store.dispatch('poster/copyWidget', copyData)
             store.dispatch('poster/pasteWidget')
@@ -348,9 +309,83 @@ export default class Widget {
         onRotateStop() {
           this.rotating = false
         },
-        updateDragInfo(dragInfo, updateSelfOnly = false) {
-          this.$store.dispatch('poster/updateDragInfo', { dragInfo, widgetId: this.item.id, updateSelfOnly })
+        updateDragInfo: updateDragInfo
+      }
+    }
+  }
+
+  static widgetMixin(options) {
+    options = Object.assign({}, {
+      baseMenuList: getBaseMenuList(),
+      contextmenu: true // 使用右键菜单功能
+    }, options)
+    return {
+      props: {
+        item: {
+          type: Object,
+          default() {
+            return {}
+          }
         },
+        isActive: {
+          type: Boolean,
+          default: false
+        }
+      },
+      computed: {
+        wState() {
+          return this.item.wState
+        },
+        dragInfo: {
+          get() {
+            return this.item.dragInfo
+          },
+          set(val) {
+            this.updateDragInfo(val)
+          }
+        }
+      },
+      created() {
+        // 执行initHook
+        if (this.item.initHook && typeof this.item.initHook === 'function') {
+          this.item.initHook(this._self)
+        }
+        // 初始化菜单
+        this._baseMenuList = options.baseMenuList
+        // 复制组件初始化数据
+        if (this.item.isCopied) {
+          Object.assign(this.$data, this.item.componentState())
+          const count = this.item.componentState.count
+          this.updateDragInfo({
+            x: this.dragInfo.x + count * 10,
+            y: this.dragInfo.y + count * 10
+          }, true/** updateSelfOnly */)
+        }
+      },
+      mounted() {
+        // 背景是自带drag，其他组件是嵌套在dragContainer里面
+        const dragRef = this.$refs.drag || this.$parent
+        if (options.contextmenu) {
+          dragRef.$el.addEventListener('contextmenu', (e) => {
+            const menuList = [...(this.getMenuList() || []), ...this._baseMenuList]
+            const isLock = this.item.lock
+            if (this.item.type !== 'background') {
+              menuList.unshift({ label: isLock ? '解除锁定' : '锁定', command: isLock ? '$unlock' : '$lock' })
+            }
+            if (menuList.length > 0) {
+              this.$emit('openContextmenu', {
+                x: e.pageX,
+                y: e.pageY,
+                menuList,
+                vm: this._self
+              })
+            }
+          })
+        }
+        this.dragRef = dragRef
+      },
+      methods: {
+        updateDragInfo: updateDragInfo,
         // 获取菜单列表
         getMenuList() {
           console.warn(`${this.item.type}-${this.item.id}: "getMenuList" is null`)

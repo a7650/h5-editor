@@ -17,9 +17,9 @@ export default {
     return {}
   },
   methods: {
-    ...mapActions(['addItem']),
+    ...mapActions(['addAssistWidget']),
     addRect() {
-      this.addItem(new DrawRectWidget())
+      this.addAssistWidget(new DrawRectWidget())
     }
   }
 }

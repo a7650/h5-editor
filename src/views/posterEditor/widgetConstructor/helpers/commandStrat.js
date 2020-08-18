@@ -4,12 +4,12 @@ import store from '@/store'
  * 获取复制组件的数据
  */
 export function getCopyData(item, vm) {
-    const stateJson = JSON.stringify(vm.$data)
+    const stateJson = vm ? JSON.stringify(vm.$data) : null
     return {
         ...JSON.parse(JSON.stringify(item)),
         initHook: item.initHook,
         componentState: function() {
-            return JSON.parse(stateJson)
+            return stateJson && JSON.parse(stateJson)
         }
     }
 }

@@ -13,19 +13,31 @@
       :item="background"
       @openContextmenu="openContextmenu"
     />
+    <!-- 组件容器 -->
     <widget-container
       v-for="item in posterItems"
       v-show="item.visible"
       :key="item.id"
       :item="item"
     >
-      <component
-        :is="item.componentName"
-        :ref="item.id"
-        :item="item"
-        @openContextmenu="openContextmenu"
-      />
+      <template #default="props">
+        <component
+          :is="item.componentName"
+          :ref="item.id"
+          :item="item"
+          :is-active="props.isActive"
+          @openContextmenu="openContextmenu"
+        />
+      </template>
     </widget-container>
+    <!-- 辅助组件 -->
+    <component
+      :is="item.componentName"
+      v-for="item in assistWidgets"
+      v-show="item.visible"
+      :key="item.id"
+      :item="item"
+    />
     <custom-contextmenu
       v-if="contextmenuVisible"
       v-clickoutside="closeContextmenu"
@@ -58,7 +70,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['posterItems', 'canvasSize', 'background'])
+    ...mapState(['posterItems', 'canvasSize', 'background', 'assistWidgets'])
   },
   methods: {
     ...mapMutations(['SET_CANVAS_SIZE']),

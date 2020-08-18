@@ -1,42 +1,19 @@
 <template>
-  <vue-draggable-resizable
-    ref="drag"
-    :w="dragInfo.w"
-    :h="dragInfo.h"
-    :x="dragInfo.x"
-    :y="dragInfo.y"
-    :r="dragInfo.rotateZ"
-    :minw="1"
-    :minh="1"
-    :resizable="true"
-    :lock="item.lock"
-    :active.sync="isActive"
-    class="drag-item"
-    deselect-cancel=".poster-editor_deactivated-ignore"
-    @activated="activated"
-    @deactivated="deactivated"
-    @dragging="onDrag"
-    @resizing="onResize"
-    @rotating="onRotate"
-    @dragstop="onDragStop"
-    @rotatestop="onRotateStop"
-    @resizestop="onResizeStop"
-  >
-    <div class="content" :style="rectStyleFilter" />
+  <div class="rect-widget" :style="rectStyleFilter">
+    <!-- {{ isActive }} -->
     <portal v-if="isActive" to="widgetControl">
       <rect-control :key="item.id" :item="item" />
     </portal>
-  </vue-draggable-resizable>
+  </div>
 </template>
 
 <script>
-import vueDraggableResizable from '@/components/dragable/components/vue-draggable-resizable'
 import rectControl from '../../control/widgets/rectControl'
 import { RectWidget } from 'poster/widgetConstructor'
 // import { mapGetters, mapActions } from 'poster/poster.vuex'
 export default {
-  components: { vueDraggableResizable, rectControl },
-  mixins: [RectWidget.mixin()],
+  components: { rectControl },
+  mixins: [RectWidget.widgetMixin()],
   data() {
     return {}
   },
@@ -58,7 +35,7 @@ export default {
 <style lang="scss" scoped>
 .drag-item {
   user-select: none;
-  .content {
+  .rect-widget {
     box-sizing: border-box;
     width: 100%;
     height: 100%;

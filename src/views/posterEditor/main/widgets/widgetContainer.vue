@@ -13,7 +13,7 @@
     :active.sync="isActive"
     class="drag-item"
     deselect-cancel=".poster-editor_deactivated-ignore"
-    :draggable="!isEditing"
+    :draggable="draggable"
     @activated="activated"
     @deactivated="deactivated"
     @dragging="onDrag"
@@ -24,7 +24,7 @@
     @rotatestop="onRotateStop"
     @resizestop="onResizeStop"
   >
-    <slot :isActive="isActive" />
+    <slot :isActive="isActive" @draggableChange="draggable=$event" />
   </vue-draggable-resizable>
 </template>
 
@@ -33,7 +33,12 @@ import vueDraggableResizable from '@/components/dragable/components/vue-draggabl
 import { Widget } from 'poster/widgetConstructor'
 export default {
   components: { vueDraggableResizable },
-  mixins: [Widget.mixin()]
+  mixins: [Widget.superMixin()],
+  data() {
+    return {
+      draggable: true
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

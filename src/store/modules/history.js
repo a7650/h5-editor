@@ -22,7 +22,6 @@ const actions = {
             state.preStack.shift()
         }
         state.nextStack = []
-        console.warn('history-push', state.preStack)
     },
     undo({ state, rootState }) {
         if (state.preStack.length > 0) {

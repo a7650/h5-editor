@@ -18,6 +18,7 @@ const state = {
     background: null,
     posterItems: [], // 组件列表
     activeItems: [], // 当前选中的组件
+    assistWidgets: [], // 辅助组件
     layerPanelOpened: false, // 是否打开图层面板
     referenceLineOpened: true, // 是否打开参考线
     copiedWidgets: null, // 当前复制的组件 WidgetItem[]
@@ -93,6 +94,18 @@ const mutations = {
     [MTS.REPLACE_ACTIVE_ITEMS](state, items) {
         state.activeItems = items.filter(i => (!i.lock) && i.couldAddToActive)
     },
+    // 添加辅助组件
+    [MTS.ADD_ASSIST_WIDGET](state, item) {
+        state.assistWidgets.push(item)
+    },
+    // 删除辅助组件
+    [MTS.REMOVE_ASSIST_WIDGET](state, item) {
+        state.assistWidgets = state.assistWidgets.filter(i => i.id !== item.id)
+    },
+    // 替换辅助组件
+    [MTS.REPLACE_ASSIST_WIDGETS](state, items) {
+        state.assistWidgets = items
+    },
     // 设置图层面板的打开关闭状态
     [MTS.SET_LAYER_PANEL](state, flag) {
         state.layerPanelOpened = !!flag
@@ -164,7 +177,9 @@ const actions = {
     addItem({ commit, dispatch }, item) {
         if (item instanceof Widget) {
             dispatch('history/push')
-            commit(MTS.REPLACE_ACTIVE_ITEMS, [item])
+            if (!(item instanceof CopiedWidget)) {
+                commit(MTS.REPLACE_ACTIVE_ITEMS, [item])
+            }
             commit(MTS.ADD_ITEM, item)
         }
     },
@@ -195,11 +210,26 @@ const actions = {
     replaceActiveItems({ commit }, items) {
         commit(MTS.REPLACE_ACTIVE_ITEMS, items)
     },
+    addAssistWidget({ commit }, item) {
+        // dispatch('history/push')
+        commit(MTS.ADD_ASSIST_WIDGET, item)
+    },
+    removeAssistWidget({ commit }, item) {
+        // dispatch('history/push')
+        commit(MTS.REMOVE_ASSIST_WIDGET, item)
+    },
+    replaceAssistWidgets({ commit }, items) {
+        // dispatch('history/push')
+        commit(MTS.REPLACE_ASSIST_WIDGET, items)
+    },
     selectAllItems({ commit, state }) {
         commit(MTS.REPLACE_ACTIVE_ITEMS, state.posterItems)
     },
     setLayerPanel({ commit }, flag) {
         commit(MTS.SET_LAYER_PANEL, flag)
+    },
+    updateBackgroundDragInfo({ state }, dragInfo) {
+        state.background.dragInfo = Object.assign({}, state.background.dragInfo, dragInfo)
     },
     // 更新组件位置、大小等
     updateDragInfo({ state }, { dragInfo, widgetId, updateSelfOnly = false }) {

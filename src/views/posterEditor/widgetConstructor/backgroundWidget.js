@@ -18,4 +18,14 @@ export default class BackgroundWidget extends Widget {
         this.isSolid = !!config.isSolid // 是否是纯色背景
         this.backgroundColor = config.backgroundColor || '#fff'
     }
+
+    static widgetMixin = () => {
+        const { created, mounted, methods, computed } = Widget.widgetMixin({ baseMenuList: [] })
+        return {
+            created,
+            mounted,
+            methods,
+            computed
+        }
+    }
 }

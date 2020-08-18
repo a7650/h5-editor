@@ -8,15 +8,12 @@
     :r="dragInfo.rotateZ"
     :min-width="10"
     :min-height="10"
-    :resizable="resizable"
-    :draggable="draggable"
     :rotatable="false"
     :lock="item.lock"
     :active.sync="isActive"
     class="drag-item"
     :class="{ solid: item.isSolid }"
     deselect-cancel=".poster-editor_deactivated-ignore"
-    @
     @activated="activated"
     @deactivated="deactivated"
     @dragging="onDrag"
@@ -52,13 +49,21 @@
 import vueDraggableResizable from '@/components/dragable/components/vue-draggable-resizable'
 import { mapGetters, mapActions, mapState } from 'poster/poster.vuex'
 import { BackgroundWidget } from 'poster/widgetConstructor'
-const baseMenuList = []
 
 export default {
   components: { vueDraggableResizable },
-  mixins: [BackgroundWidget.mixin({ baseMenuList })],
+  mixins: [BackgroundWidget.widgetMixin()],
+  props: {
+    item: {
+      type: Object,
+      default() {
+        return {}
+      }
+    }
+  },
   data() {
     return {
+      isActive: false,
       draggable: true,
       resizable: true
     }
@@ -78,12 +83,12 @@ export default {
   watch: {
     activeItemIds(newVal) {
       if (newVal.length > 0) {
-        this.isActive = false
+        // this.isActive = false
       }
     }
   },
   mounted() {
-    this.setDragInfo({
+    this.updateBackgroundDragInfo({
       w: this.canvasSize.width,
       h: this.canvasSize.height,
       x: 0,
@@ -100,8 +105,12 @@ export default {
       'setBackgroundConfig',
       'pasteWidget',
       'replaceActiveItems',
-      'selectAllItems'
+      'selectAllItems',
+      'updateBackgroundDragInfo'
     ]),
+    ...mapActions({
+      pushHistory: 'history/push'
+    }),
     /**
      * @mixin
      */
@@ -150,19 +159,36 @@ export default {
     deactivated() {
       this.isActive = false
     },
-    setDragInfo(dragInfo) {
-      this.dragInfo = Object.assign({}, this.dragInfo, dragInfo)
-    },
     onDrag(x, y) {
-      this.setDragInfo({ x, y })
+      if (!this.dragging) {
+        this.pushHistory()
+        this.dragging = true
+      }
+      this.updateBackgroundDragInfo({ x, y })
     },
     onResize(x, y, w, h) {
-      this.setDragInfo({ x, y, w, h })
+      if (!this.resizing) {
+        this.pushHistory()
+        this.resizing = true
+      }
+      this.updateBackgroundDragInfo({ x, y, w, h })
     },
     onRotate(e) {
-      this.setDragInfo({ rotateZ: (e > 0 ? e : 360 + e) % 360 })
+      if (!this.rotating) {
+        this.pushHistory()
+        this.rotating = true
+      }
+      this.updateBackgroundDragInfo({ rotateZ: (e > 0 ? e : 360 + e) % 360 })
     },
-    onDragStop() {}
+    onDragStop() {
+      this.dragging = false
+    },
+    onResizeStop() {
+      this.resizing = false
+    },
+    onRotateStop() {
+      this.rotating = false
+    }
   }
 }
 </script>

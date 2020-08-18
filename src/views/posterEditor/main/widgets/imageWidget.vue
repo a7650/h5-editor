@@ -1,27 +1,5 @@
 <template>
-  <vue-draggable-resizable
-    ref="drag"
-    :w="dragInfo.w"
-    :h="dragInfo.h"
-    :x="dragInfo.x"
-    :y="dragInfo.y"
-    :r="dragInfo.rotateZ"
-    :min-width="10"
-    :min-height="10"
-    :resizable="true"
-    :lock="item.lock"
-    :active.sync="isActive"
-    class="drag-item"
-    deselect-cancel=".poster-editor_deactivated-ignore"
-    @activated="activated"
-    @deactivated="deactivated"
-    @dragging="onDrag"
-    @resizing="onResize"
-    @rotating="onRotate"
-    @dragstop="onDragStop"
-    @rotatestop="onRotateStop"
-    @resizestop="onResizeStop"
-  >
+  <div class="image-widget">
     <img
       ref="image"
       :src="item.src"
@@ -31,22 +9,18 @@
       @load="load"
     >
     <portal v-if="isActive" to="widgetControl">
-      <image-control
-        :key="item.id"
-        :item="item"
-      />
+      <image-control :key="item.id" :item="item" />
     </portal>
-  </vue-draggable-resizable>
+  </div>
 </template>
 
 <script>
-import vueDraggableResizable from '@/components/dragable/components/vue-draggable-resizable'
 import imageControl from '../../control/widgets/imageControl'
 import { ImageWidget } from 'poster/widgetConstructor'
 // import { mapGetters, mapActions } from 'poster/poster.vuex'
 export default {
-  components: { vueDraggableResizable, imageControl },
-  mixins: [ImageWidget.mixin()],
+  components: { imageControl },
+  mixins: [ImageWidget.widgetMixin()],
   data() {
     return {}
   },
