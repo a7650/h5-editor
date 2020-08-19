@@ -5,9 +5,9 @@
         v-for="(item, index) in list"
         :key="index"
         class="item"
-        :class="{ active: current === item.value }"
+        :class="{ active: valueFormat.includes(item.value) }"
         :title="item.label"
-        @click="$emit('change', item.value)"
+        @click="select(item)"
       >
         <slot :name="item.value">
           {{ item.label }}
@@ -21,7 +21,7 @@
 export default {
   model: {
     event: 'change',
-    prop: 'current'
+    prop: 'value'
   },
   props: {
     list: {
@@ -30,9 +30,36 @@ export default {
         return [] // [{label:'',value:''}]
       }
     },
-    current: {
-      type: null,
+    value: {
+      type: [String, Array],
       default: ''
+    }
+  },
+  computed: {
+    valueFormat() {
+      return Array.isArray(this.value) ? this.value : [this.value]
+    }
+  },
+  methods: {
+    select(item) {
+      let finalValue
+      if (typeof this.value === 'string') {
+        finalValue = this.value === item.value ? '' : item.value
+        this.$emit('change', finalValue)
+      } else if (Array.isArray(this.value)) {
+        let operation = ''
+        const value = item.value
+        if (this.value.includes(item.value)) {
+          operation = 'remove'
+          finalValue = this.value.filter((i) => i !== item.value)
+        } else {
+          operation = 'add'
+          finalValue = [...this.value, item.value]
+        }
+        finalValue._operation = operation
+        finalValue._value = value
+        this.$emit('change', finalValue)
+      }
     }
   }
 }
@@ -73,7 +100,9 @@ export default {
         border-radius: 0 4px 4px 0;
         border-right-width: 1px;
       }
-      &:hover,
+      &:hover{
+        background-color: $colorThemeL;
+      }
       &.active {
         background-color: $colorTheme;
         color: #fff;

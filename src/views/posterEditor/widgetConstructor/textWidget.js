@@ -22,7 +22,10 @@ export default class TextWidget extends Widget {
                     borderStyle: 'solid',
                     lineHeight: 100, // %
                     letterSpacing: 0, // %
-                    backgroundColor: ''
+                    backgroundColor: '',
+                    fontWeight: '',
+                    fontStyle: '',
+                    textDecoration: ''
                 }
             }
         }, config)

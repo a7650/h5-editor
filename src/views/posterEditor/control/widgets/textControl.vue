@@ -50,6 +50,21 @@
               </setting-item>
             </template>
           </setting-row>
+          <setting-item label="格式">
+            <radio-group v-model="inTextFormat" :list="textFotmatList">
+              <!-- <template #bold>
+                <i class="icon-align-left" />
+              </template>
+              <template #italic>
+                <i class="icon-align-center" />
+              </template> -->
+            </radio-group>
+            <!-- <el-radio-group v-model="inTextAlign" size="mini">
+              <el-radio-button label="左对齐" />
+              <el-radio-button label="居中" />
+              <el-radio-button label="右对齐" />
+            </el-radio-group> -->
+          </setting-item>
         </setting-content>
       </el-collapse-item>
       <el-collapse-item name="borderAndBackground">
@@ -81,23 +96,7 @@
             位置
           </div>
         </template>
-        <setting-content>
-          <setting-item label="宽度">
-            <input v-model.number="dragInfo.w" type="number">
-          </setting-item>
-          <setting-item label="高度">
-            <input v-model.number="dragInfo.h" type="number">
-          </setting-item>
-          <setting-item label="距顶部距离">
-            <input v-model.number="dragInfo.y" type="number">
-          </setting-item>
-          <setting-item label="距左侧距离">
-            <input v-model.number="dragInfo.x" type="number">
-          </setting-item>
-          <setting-item label="旋转角度">
-            <input v-model.number="dragInfo.rotateZ" type="number">
-          </setting-item>
-        </setting-content>
+        <position-control :drag-info="dragInfo" />
       </el-collapse-item>
     </el-collapse>
   </div>
@@ -114,6 +113,11 @@ export default {
         { label: '左对齐', value: 'left' },
         { label: '居中', value: 'center' },
         { label: '右对齐', value: 'right' }
+      ],
+      textFotmatList: [
+        { label: '粗体', value: 'bold' },
+        { label: '斜体', value: 'italic' },
+        { label: '划线', value: 'line-through' }
       ],
       borderStyleList: [
         { label: '实线', value: 'solid' },
@@ -202,6 +206,33 @@ export default {
       },
       set(val) {
         this.updateStyle('backgroundColor', val)
+      }
+    },
+    inTextFormat: {
+      get() {
+        const result = []
+        if (this.style.fontWeight === 'bold') {
+          result.push('bold')
+        }
+        if (this.style.fontStyle === 'italic') {
+          result.push('italic')
+        }
+        if (this.style.textDecoration === 'line-through') {
+          result.push('line-through')
+        }
+        return result
+      },
+      set(list) {
+        const operation = list._operation
+        const value = list._value
+        const newValue = operation === 'add' ? value : ''
+        if (value === 'bold') {
+          this.updateStyle('fontWeight', newValue)
+        } else if (value === 'italic') {
+          this.updateStyle('fontStyle', newValue)
+        } else if (value === 'line-through') {
+          this.updateStyle('textDecoration', newValue)
+        }
       }
     }
   },

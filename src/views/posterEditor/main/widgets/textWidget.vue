@@ -1,5 +1,5 @@
 <template>
-  <div class="widget text">
+  <div class="text-widget">
     <div
       v-if="!isEditing"
       class="text-container"
@@ -18,7 +18,7 @@
     >
       {{ text }}
     </div>
-    <portal v-if="isActive" to="widgetControl">
+    <portal v-if="isActive" :to="$data.$controlTarget">
       <text-control :key="item.id" :item="item" />
     </portal>
   </div>
@@ -29,6 +29,7 @@ import { TextWidget } from 'poster/widgetConstructor'
 import { clickoutside } from 'poster/poster.directives'
 import textControl from 'poster/control/widgets/textControl'
 import { mapState, mapActions } from 'poster/poster.vuex'
+
 export default {
   components: { textControl },
   directives: { clickoutside },
@@ -69,6 +70,11 @@ export default {
       })
     }
   },
+  mounted() {
+  this.$dragRef.$el.addEventListener('dblclick', () => {
+    this.openEditing()
+  })
+  },
   methods: {
     ...mapActions(['setWidgetConfig', 'updateWidgetState']),
     getMenuList() {
@@ -98,8 +104,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.drag-item {
-  user-select: none;
+.text-widget {
+  width: 100%;
+  height: 100%;
   .text-container {
     box-sizing: border-box;
     margin: 10px;
