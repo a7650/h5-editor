@@ -2,9 +2,16 @@ import settingContent from '../ui/settingContent'
 import settingItem from '../ui/settingItem'
 import settingRow from '../ui/settingRow'
 import radioGroup from '../ui/radioGroup'
+import positionControl from './positionControl'
 import { mapActions } from 'poster/poster.vuex'
 export const commonMixin = {
-    components: { settingContent, settingItem, settingRow, radioGroup },
+    components: {
+        settingContent,
+        settingItem,
+        settingRow,
+        radioGroup,
+        positionControl
+    },
     props: {
         item: {
             type: Object,

@@ -1,7 +1,7 @@
 <template>
   <div class="rect-widget" :style="rectStyleFilter">
     <!-- {{ isActive }} -->
-    <portal v-if="isActive" to="widgetControl">
+    <portal v-if="isActive" :to="$data.$controlTarget">
       <rect-control :key="item.id" :item="item" />
     </portal>
   </div>

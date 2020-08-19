@@ -19,17 +19,8 @@
       v-show="item.visible"
       :key="item.id"
       :item="item"
-    >
-      <template #default="props">
-        <component
-          :is="item.componentName"
-          :ref="item.id"
-          :item="item"
-          :is-active="props.isActive"
-          @openContextmenu="openContextmenu"
-        />
-      </template>
-    </widget-container>
+      @openContextmenu="openContextmenu"
+    />
     <!-- 辅助组件 -->
     <component
       :is="item.componentName"
@@ -53,13 +44,14 @@ import { mapState, mapMutations } from '../poster.vuex'
 import customContextmenu from '@/components/customContextmenu'
 import { clickoutside } from 'poster/poster.directives'
 import widgetContainer from './widgets/widgetContainer'
-import exportWidgets from './exportWidgets'
-
+import backgroundWidget from './widgets/backgroundWidget'
+import drawRectWidget from './assistWidgets/drawRectWidget'
 export default {
   components: {
     customContextmenu,
     widgetContainer,
-    ...exportWidgets
+    backgroundWidget,
+    drawRectWidget
   },
   directives: { clickoutside },
   data() {

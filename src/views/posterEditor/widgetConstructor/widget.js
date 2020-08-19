@@ -91,6 +91,7 @@ export default class Widget {
     })
   }
 
+  // 组件容器mixin
   static superMixin(options) {
     options = Object.assign({}, {}, options)
 
@@ -189,7 +190,7 @@ export default class Widget {
           // ctrl快捷键拖动复制
           if (!hasCopiedOnDrag && e && e.ctrlKey) {
             const lastCopiedWidgets = store.state.poster.copiedWidgets
-            const copyData = getCopyData(this.item, this.$slots.default[0])
+            const copyData = getCopyData(this.item, this.$refs.widget)
             copyData.componentState.count = -1 // 粘贴的时候计算得出count为0，使粘贴的组件的位置和原先位置重合
             store.dispatch('poster/copyWidget', copyData)
             store.dispatch('poster/pasteWidget')
@@ -314,12 +315,18 @@ export default class Widget {
     }
   }
 
+  // 组件mixin
   static widgetMixin(options) {
     options = Object.assign({}, {
       baseMenuList: getBaseMenuList(),
       contextmenu: true // 使用右键菜单功能
     }, options)
     return {
+      data() {
+        return {
+          $controlTarget: 'widgetControl'
+        }
+      },
       props: {
         item: {
           type: Object,
@@ -382,7 +389,7 @@ export default class Widget {
             }
           })
         }
-        this.dragRef = dragRef
+        this.$dragRef = dragRef
       },
       methods: {
         updateDragInfo: updateDragInfo,

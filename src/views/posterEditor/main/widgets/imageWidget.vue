@@ -8,7 +8,7 @@
       ondragstart="return false"
       @load="load"
     >
-    <portal v-if="isActive" to="widgetControl">
+    <portal v-if="isActive" :to="$data.$controlTarget">
       <image-control :key="item.id" :item="item" />
     </portal>
   </div>

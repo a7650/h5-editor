@@ -19,20 +19,28 @@
     @dragging="onDrag"
     @resizing="onResize"
     @rotating="onRotate"
-    @dblclick.native="openEditing"
     @dragstop="onDragStop"
     @rotatestop="onRotateStop"
     @resizestop="onResizeStop"
   >
-    <slot :isActive="isActive" @draggableChange="draggable=$event" />
+    <component
+      :is="item.componentName"
+      ref="widget"
+      :item="item"
+      :is-active="isActive"
+      v-on="$listeners"
+      @draggableChange="draggable = $event"
+    />
   </vue-draggable-resizable>
 </template>
 
 <script>
 import vueDraggableResizable from '@/components/dragable/components/vue-draggable-resizable'
 import { Widget } from 'poster/widgetConstructor'
+import exportWidgets from '../exportWidgets'
+
 export default {
-  components: { vueDraggableResizable },
+  components: { vueDraggableResizable, ...exportWidgets },
   mixins: [Widget.superMixin()],
   data() {
     return {

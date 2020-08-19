@@ -1,3 +1,5 @@
+import { max } from 'lodash'
+
 /**
  * 更改组合（activeitems）的位置
  * @sideEffect
@@ -6,10 +8,17 @@
  * @param {CanvasSize} canvasSize
  */
 export function changeCompositionPositionHandler(activeItems, type, canvasSize) {
+    let minX = activeItems[0].dragInfo.x
+    let maxX = activeItems[0].dragInfo.x
+    activeItems.forEach(item => {
+        minX = Math.min(minX, item.dragInfo.x)
+        maxX = Math.max(maxX, item.dragInfo.x)
+    })
+
     switch (type) {
         case 'alignLeft':
             activeItems.forEach(item => {
-                item.dragInfo.x = 0
+                item.dragInfo.x = minX
             })
             break
         case 'alignCenter':
@@ -19,7 +28,7 @@ export function changeCompositionPositionHandler(activeItems, type, canvasSize) 
             break
         case 'alignRight':
             activeItems.forEach(item => {
-                item.dragInfo.x = canvasSize.width - item.dragInfo.w
+                item.dragInfo.x = maxX
             })
             break
         default: return false

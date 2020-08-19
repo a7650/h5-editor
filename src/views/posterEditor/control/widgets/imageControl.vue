@@ -17,48 +17,7 @@
             位置
           </div>
         </template>
-        <div class="setting-content">
-          <div class="setting-item">
-            <div class="title">
-              宽度
-            </div>
-            <div class="content">
-              <input v-model.number="dragInfo.w" type="number">
-            </div>
-          </div>
-          <div class="setting-item">
-            <div class="title">
-              高度
-            </div>
-            <div class="content">
-              <input v-model.number="dragInfo.h" type="number">
-            </div>
-          </div>
-          <div class="setting-item">
-            <div class="title">
-              左侧距离
-            </div>
-            <div class="content">
-              <input v-model.number="dragInfo.x" type="number">
-            </div>
-          </div>
-          <div class="setting-item">
-            <div class="title">
-              顶部距离
-            </div>
-            <div class="content">
-              <input v-model.number="dragInfo.y" type="number">
-            </div>
-          </div>
-          <div class="setting-item">
-            <div class="title">
-              旋转角度
-            </div>
-            <div class="content">
-              <input v-model.number="dragInfo.rotateZ" type="number">
-            </div>
-          </div>
-        </div>
+        <position-control :drag-info="dragInfo" />
       </el-collapse-item>
     </el-collapse>
   </div>
