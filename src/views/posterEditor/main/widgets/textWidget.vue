@@ -4,7 +4,7 @@
       v-if="!isEditing"
       class="text-container"
       contenteditable="false"
-      :style="textStyleFilter"
+      :style="textStyle"
     >
       {{ text }}
     </div>
@@ -14,7 +14,7 @@
       v-clickoutside="saveText"
       class="text-container editing"
       contenteditable="true"
-      :style="textStyleFilter"
+      :style="textStyle"
     >
       {{ text }}
     </div>
@@ -44,15 +44,8 @@ export default {
     text() {
       return this.wState.text
     },
-    textStyleFilter() {
-      const textStyle = this.wState.style
-      return Object.assign({}, textStyle, {
-        fontSize: textStyle.fontSize + 'px',
-        padding: textStyle.padding + 'px',
-        borderWidth: textStyle.borderWidth + 'px',
-        lineHeight: textStyle.lineHeight + '%',
-        letterSpacing: textStyle.letterSpacing + 'px'
-      })
+    textStyle() {
+      return this.wState.style
     }
   },
   watch: {

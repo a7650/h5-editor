@@ -3,7 +3,7 @@
     <el-button
       class="add-image"
       size="mini"
-      type="primary"
+      type="plain"
       @click="selectImgHandler"
     >添加图片</el-button>
     <input ref="input" type="file" style="display:none" @change="selectImg">

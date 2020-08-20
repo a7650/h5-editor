@@ -220,7 +220,7 @@ const actions = {
     },
     replaceAssistWidgets({ commit }, items) {
         // dispatch('history/push')
-        commit(MTS.REPLACE_ASSIST_WIDGET, items)
+        commit(MTS.REPLACE_ASSIST_WIDGETS, items)
     },
     selectAllItems({ commit, state }) {
         commit(MTS.REPLACE_ACTIVE_ITEMS, state.posterItems)

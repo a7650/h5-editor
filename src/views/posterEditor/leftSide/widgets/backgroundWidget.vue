@@ -11,7 +11,7 @@
     <el-button
       class="add-image"
       size="mini"
-      type="primary"
+      type="plain"
       @click="selectImgHandler"
     >添加背景图片</el-button>
     <input ref="input" type="file" style="display:none" @change="selectImg">

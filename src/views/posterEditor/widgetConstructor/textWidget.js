@@ -1,9 +1,10 @@
 import Widget from './widget'
+import _merge from 'lodash/merge'
 
 // 文本Widget
 export default class TextWidget extends Widget {
     constructor(config) {
-        config = Object.assign({}, {
+        config = _merge({
             type: 'text',
             typeLabel: '文本',
             componentName: 'text-widget',
@@ -15,12 +16,12 @@ export default class TextWidget extends Widget {
                 style: {
                     color: '#000',
                     textAlign: 'center',
-                    fontSize: 14, // px
+                    fontSize: '14px', // px
                     padding: 0, // px
                     borderColor: '#000',
                     borderWidth: 0, // px
                     borderStyle: 'solid',
-                    lineHeight: 100, // %
+                    lineHeight: '100%', // %
                     letterSpacing: 0, // %
                     backgroundColor: '',
                     fontWeight: '',

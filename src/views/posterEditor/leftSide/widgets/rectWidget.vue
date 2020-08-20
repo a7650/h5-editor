@@ -3,7 +3,7 @@
     <el-button
       class="add-text"
       size="mini"
-      type="primary"
+      type="plain"
       @click="addRect"
     >添加矩形</el-button>
   </div>

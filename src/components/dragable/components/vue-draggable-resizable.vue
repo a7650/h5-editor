@@ -804,6 +804,7 @@ $handle-item-pos: 4px;
   right: 0 - $handle-item-pos;
   top: 50%;
   margin-top: 0 - $handle-item-pos;
+  z-index: 6;
 }
 .handle-tl,
 .handle-tr,

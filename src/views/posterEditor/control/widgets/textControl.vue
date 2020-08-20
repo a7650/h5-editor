@@ -138,18 +138,18 @@ export default {
     },
     inFontSize: {
       get() {
-        return this.style.fontSize
+        return parseInt(this.style.fontSize)
       },
       set(val) {
-        this.updateStyle('fontSize', val)
+        this.updateStyle('fontSize', val + 'px')
       }
     },
     inPadding: {
       get() {
-        return this.style.padding
+        return parseInt(this.style.padding)
       },
       set(val) {
-        this.updateStyle('padding', val)
+        this.updateStyle('padding', val + 'px')
       }
     },
     inBorderColor: {
@@ -162,10 +162,10 @@ export default {
     },
     inBorderWidth: {
       get() {
-        return this.style.borderWidth
+        return parseInt(this.style.borderWidth)
       },
       set(val) {
-        this.updateStyle('borderWidth', val)
+        this.updateStyle('borderWidth', val + 'px')
       }
     },
     inBorderStyle: {
@@ -178,18 +178,18 @@ export default {
     },
     inLineHeight: {
       get() {
-        return this.style.lineHeight
+        return parseInt(this.style.lineHeight)
       },
       set(val) {
-        this.updateStyle('lineHeight', val)
+        this.updateStyle('lineHeight', val + '%')
       }
     },
     inLetterSpacing: {
       get() {
-        return this.style.letterSpacing
+        return parseInt(this.style.letterSpacing)
       },
       set(val) {
-        this.updateStyle('letterSpacing', val)
+        this.updateStyle('letterSpacing', val + 'px')
       }
     },
     inTextAlign: {
