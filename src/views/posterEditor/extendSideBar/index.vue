@@ -65,7 +65,7 @@
         placement="left"
         transition="el-zoom-in-center"
       >
-        <div class="item">
+        <div class="item disabled">
           <i class="el-icon-document-copy" />
         </div>
       </el-tooltip>
@@ -75,7 +75,7 @@
         placement="left"
         transition="el-zoom-in-center"
       >
-        <div class="item">
+        <div class="item disabled">
           <i class="icon-h5" />
         </div>
       </el-tooltip>
@@ -85,7 +85,7 @@
         placement="left"
         transition="el-zoom-in-center"
       >
-        <div class="item">
+        <div class="item disabled">
           <i class="icon-poster" />
         </div>
       </el-tooltip>
@@ -95,7 +95,7 @@
         placement="left"
         transition="el-zoom-in-center"
       >
-        <div class="item">
+        <div class="item disabled">
           <i class="el-icon-set-up" />
         </div>
       </el-tooltip>
