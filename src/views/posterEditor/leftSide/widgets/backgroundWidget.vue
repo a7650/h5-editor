@@ -7,6 +7,17 @@
       size="mini"
       @change="backgroundColorChange"
     />
+    <div class="title">推荐颜色</div>
+    <div class="recommend-color">
+      <ul>
+        <li
+          v-for="(item, index) in recommendColor"
+          :key="index"
+          :style="{ backgroundColor: `rgb(${item})` }"
+          @click="selectRecommend(`rgb(${item})`)"
+        />
+      </ul>
+    </div>
     <div class="title">图片背景</div>
     <el-button
       class="add-image"
@@ -24,7 +35,30 @@ import { BackgroundWidget } from '../../widgetConstructor'
 export default {
   data() {
     return {
-      backgroundColor: ''
+      backgroundColor: '',
+      // 推荐颜色 ['r,g,b']
+      recommendColor: [
+        '232,221,203',
+        '205,179,128',
+        '3,101,100',
+        '3,54,73',
+        '3,22,52',
+        '255,67,101',
+        '252,157,153',
+        '249,204,173',
+        '201,200,170',
+        '132,175,155',
+        '17,63,61',
+        '60,79,57',
+        '95,92,51',
+        '179,214,110',
+        '248,147,29',
+        '227,160,92',
+        '178,190,126',
+        '114,111,128',
+        '57,13,49',
+        '90,61,66'
+      ]
     }
   },
   computed: {
@@ -40,6 +74,10 @@ export default {
           lock: true
         })
       )
+    },
+    selectRecommend(rgb) {
+      this.backgroundColor = rgb
+      this.backgroundColorChange()
     },
     selectImgHandler() {
       this.$refs.input.click()
@@ -76,9 +114,26 @@ export default {
   .title {
     width: 100%;
     padding: 10px 0;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
     color: $colorText;
+  }
+  .recommend-color {
+    ul {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(34px, 1fr));
+      li {
+        height: 24px;
+        width: 24px;
+        margin-bottom: 10px;
+        transition: 0.2s;
+        cursor: pointer;
+        border-radius: 2px;
+        &:hover {
+          transform: scale(1.2);
+        }
+      }
+    }
   }
   .add-image {
     width: 100%;
