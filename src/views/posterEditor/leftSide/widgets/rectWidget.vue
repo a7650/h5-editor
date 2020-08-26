@@ -14,7 +14,9 @@ import { mapActions } from 'poster/poster.vuex'
 import { DrawRectWidget } from '../../widgetConstructor'
 export default {
   data() {
-    return {}
+    return {
+      recommendList: []
+    }
   },
   methods: {
     ...mapActions(['addAssistWidget']),

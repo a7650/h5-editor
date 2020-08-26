@@ -1,9 +1,10 @@
 import Widget from './widget'
+import _merge from 'lodash/merge'
 
 // 矩形Widget
 export default class RectWidget extends Widget {
     constructor(config) {
-        config = Object.assign({}, {
+        config = _merge({
             type: 'rect',
             typeLabel: '矩形',
             componentName: 'rect-widget',
