@@ -1,4 +1,3 @@
-import { max } from 'lodash'
 
 /**
  * 更改组合（activeitems）的位置
@@ -14,7 +13,6 @@ export function changeCompositionPositionHandler(activeItems, type, canvasSize) 
         minX = Math.min(minX, item.dragInfo.x)
         maxX = Math.max(maxX, item.dragInfo.x)
     })
-
     switch (type) {
         case 'alignLeft':
             activeItems.forEach(item => {

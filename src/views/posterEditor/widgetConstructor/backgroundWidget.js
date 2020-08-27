@@ -12,12 +12,16 @@ export default class BackgroundWidget extends Widget {
       lock: false,
       visible: true,
       couldAddToActive: false,
-      replicable: false
+      replicable: false,
+      wState: {
+        isSolid: true,
+        src: '',
+        style: {
+          backgroundColor: '#fff'
+        }
+      }
     }, config)
     super(config)
-    this.src = config.src
-    this.isSolid = !!config.isSolid // 是否是纯色背景
-    this.backgroundColor = config.backgroundColor || '#fff'
   }
 
   static widgetMixin = () => {

@@ -12,7 +12,7 @@
     :lock="item.lock"
     :active.sync="isActive"
     class="drag-item"
-    :class="{ solid: item.isSolid }"
+    :class="{ solid: wState.isSolid }"
     deselect-cancel=".poster-editor_deactivated-ignore"
     @activated="activated"
     @deactivated="deactivated"
@@ -24,10 +24,10 @@
     @resizestop="onResizeStop"
   >
     <div
-      v-if="item.isSolid"
+      v-if="wState.isSolid"
       class="poster-editor-background"
       :style="{
-        backgroundColor: item.backgroundColor,
+        backgroundColor: wState.style.backgroundColor,
         width: '100%',
         height: '100%'
       }"
@@ -35,7 +35,7 @@
     <img
       v-else
       ref="image"
-      :src="item.src"
+      :src="wState.src"
       class="qr-code"
       style="width:100%;height:100%"
       ondragstart="return false"
@@ -78,13 +78,9 @@ export default {
       set(val) {
         this.item.dragInfo = val
       }
-    }
-  },
-  watch: {
-    activeItemIds(newVal) {
-      if (newVal.length > 0) {
-        // this.isActive = false
-      }
+    },
+    wState() {
+      return this.item.wState
     }
   },
   mounted() {
@@ -94,7 +90,7 @@ export default {
       x: 0,
       y: 0
     })
-    if (this.item.isSolid) {
+    if (this.wState.isSolid) {
       this.resizable = false
       this.draggable = false
     }
@@ -142,7 +138,7 @@ export default {
       if (this.copiedWidgets) {
         menuList.unshift({ label: '粘贴', command: 'paste' })
       }
-      if (!this.item.isSolid) {
+      if (!this.wState.isSolid) {
         if (this.item.lock) {
           menuList.unshift({ label: '解除锁定', command: 'unlock' })
         } else {

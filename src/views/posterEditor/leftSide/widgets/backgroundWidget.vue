@@ -69,9 +69,13 @@ export default {
     backgroundColorChange() {
       this.addBackground(
         new BackgroundWidget({
-          backgroundColor: this.backgroundColor,
-          isSolid: true,
-          lock: true
+          lock: true,
+          wState: {
+            isSolid: true,
+            style: {
+              backgroundColor: this.backgroundColor
+            }
+          }
         })
       )
     },
@@ -89,8 +93,10 @@ export default {
       reader.onload = () => {
         this.addBackground(
           new BackgroundWidget({
-            src: reader.result,
-            isSolid: false
+            wState: {
+              src: reader.result,
+              isSolid: false
+            }
           })
         )
       }

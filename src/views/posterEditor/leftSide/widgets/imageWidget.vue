@@ -41,7 +41,7 @@ export default {
       inputNode.value = ''
     },
     addImage({ src }) {
-      this.addItem(new ImageWidget({ src }))
+      this.addItem(new ImageWidget({ wState: { src }}))
     }
   }
 }

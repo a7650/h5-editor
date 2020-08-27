@@ -65,7 +65,7 @@
         placement="left"
         transition="el-zoom-in-center"
       >
-        <div class="item disabled">
+        <div class="item">
           <i class="el-icon-document-copy" />
         </div>
       </el-tooltip>
@@ -95,21 +95,35 @@
         placement="left"
         transition="el-zoom-in-center"
       >
-        <div class="item disabled">
+        <div class="item" @click="settingCenterVisible = true">
           <i class="el-icon-set-up" />
         </div>
       </el-tooltip>
     </div>
+
+    <el-dialog
+      :visible="settingCenterVisible"
+      title="设置中心"
+      width="600px"
+      append-to-body
+      transition="el-zoom-in-center"
+      @close="settingCenterVisible=false"
+    >
+      <setting-center />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'poster/poster.vuex'
 import referenceLine from './referenceLine'
+import settingCenter from './settingCenter'
 export default {
-  components: { referenceLine },
+  components: { referenceLine, settingCenter },
   data() {
-    return {}
+    return {
+      settingCenterVisible: false
+    }
   },
   computed: {
     ...mapState({
@@ -155,7 +169,7 @@ export default {
     &.active {
       color: $colorTheme;
     }
-    &.disabled{
+    &.disabled {
       color: #999;
     }
   }

@@ -2,7 +2,7 @@
   <div class="image-widget">
     <img
       ref="image"
-      :src="item.src"
+      :src="wState.src"
       class="qr-code"
       style="width:100%;height:100%"
       ondragstart="return false"

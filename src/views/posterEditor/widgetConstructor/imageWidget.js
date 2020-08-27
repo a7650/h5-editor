@@ -9,9 +9,11 @@ export default class ImageWidget extends Widget {
             componentName: 'image-widget',
             icon: 'el-icon-picture',
             lock: false,
-            visible: true
+            visible: true,
+            wState: {
+                src: ''
+            }
         }, config)
         super(config)
-        this.src = config.src
     }
 }
