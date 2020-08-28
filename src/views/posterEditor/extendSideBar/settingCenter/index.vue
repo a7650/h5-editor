@@ -4,13 +4,17 @@
       <el-tab-pane label="数据备份">
         <data-backup />
       </el-tab-pane>
+      <el-tab-pane label="撤销设置">
+        <undo />
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 <script>
 import dataBackup from './dataBackup'
+import undo from './undo'
 export default {
-  components: { dataBackup },
+  components: { dataBackup, undo },
   data() {
     return {}
   },

@@ -17,6 +17,9 @@
             :value="item.value"
           />
         </el-select>
+        <div v-if="autoSaveDivision==='smartBackup'" style="font-size:12px">
+          系统会在合适的时机进行备份
+        </div>
       </el-form-item>
       <el-form-item label="备份记录">
         <span>{{ `上次备份：2020-08-27 13:49${1}` }}</span>
@@ -33,6 +36,10 @@ export default {
       autoSave: true,
       autoSaveDivision: 1000 * 60 * 10,
       autoSaveDivisionOptions: [
+        {
+          label: '智能备份',
+          value: 'smartBackup'
+        },
         {
           label: '5分钟',
           value: 1000 * 60 * 5
@@ -57,7 +64,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .data-backup {
-  .recover{
+  .recover {
     margin-left: 10px;
     color: $colorTheme;
     cursor: pointer;
