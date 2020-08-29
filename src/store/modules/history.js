@@ -1,15 +1,19 @@
 import _cloneDeep from 'lodash/cloneDeep'
 
-// 最多保留之前的n步
-const MAX_STACK_LEN = 30
-
 const state = {
+    maxHistoryStackLength: 30,
     preStack: [],
     nextStack: [],
     current: null
 }
 
 const actions = {
+    setMaxHistory({ state }, n) {
+        const _n = parseInt(n)
+        if (_n) {
+            state.maxHistoryStackLength = _n
+        }
+    },
     push({ state, rootState }) {
         const posterState = rootState.poster
         const snapshotState = {
@@ -18,7 +22,7 @@ const actions = {
             referenceLine: posterState.referenceLine
         }
         state.preStack.push(_cloneDeep(snapshotState))
-        if (state.preStack.length > MAX_STACK_LEN) {
+        if (state.preStack.length > state.maxHistoryStackLength) {
             state.preStack.shift()
         }
         state.nextStack = []
