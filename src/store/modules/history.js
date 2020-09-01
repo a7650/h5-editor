@@ -3,8 +3,19 @@ import _cloneDeep from 'lodash/cloneDeep'
 const state = {
     maxHistoryStackLength: 30,
     preStack: [],
-    nextStack: [],
-    current: null
+    nextStack: []
+}
+
+const getters = {
+    current(state, getters, rootState) {
+        const posterState = rootState.poster
+        const snapshotState = {
+            background: posterState.background,
+            posterItems: posterState.posterItems,
+            referenceLine: posterState.referenceLine
+        }
+        return snapshotState
+    }
 }
 
 const actions = {
@@ -14,13 +25,8 @@ const actions = {
             state.maxHistoryStackLength = _n
         }
     },
-    push({ state, rootState }) {
-        const posterState = rootState.poster
-        const snapshotState = {
-            background: posterState.background,
-            posterItems: posterState.posterItems,
-            referenceLine: posterState.referenceLine
-        }
+    push({ state, getters }) {
+        const snapshotState = getters.current
         state.preStack.push(_cloneDeep(snapshotState))
         if (state.preStack.length > state.maxHistoryStackLength) {
             state.preStack.shift()
@@ -60,5 +66,6 @@ const actions = {
 export default {
     namespaced: true,
     state,
+    getters,
     actions
 }

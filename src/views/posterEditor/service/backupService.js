@@ -1,3 +1,9 @@
 export default class BackupService {
-    bac
+    static saveBackupData(backupData) {
+        localStorage.setItem('backupDate', JSON.stringify(backupData))
+        return true
+    }
+    static getBackupData() {
+        return JSON.parse(localStorage.getItem('backupDate'))
+    }
 }

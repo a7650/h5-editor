@@ -17,28 +17,27 @@
             :value="item.value"
           />
         </el-select>
-        <div v-if="autoSaveDivision==='smartBackup'" style="font-size:12px">
+        <div v-if="!autoSaveDivision" style="font-size:12px">
           系统会在合适的时机进行备份
         </div>
       </el-form-item>
       <el-form-item label="备份记录">
         <span>{{ `上次备份：2020-08-27 13:49${1}` }}</span>
-        <span class="recover">恢复数据</span>
+        <span class="recover" @click="recover">恢复数据</span>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
+import { mapState, mapActions } from 'poster/poster.vuex'
 export default {
   data() {
     return {
-      autoSave: true,
-      autoSaveDivision: 1000 * 60 * 10,
       autoSaveDivisionOptions: [
         {
           label: '智能备份',
-          value: 'smartBackup'
+          value: ''
         },
         {
           label: '5分钟',
@@ -59,7 +58,40 @@ export default {
       ]
     }
   },
-  methods: {}
+  computed: {
+    ...mapState({
+      _autoSave: (state) => state.backup.autoSave,
+      _autoSaveDivision: (state) => state.backup.autoSaveDivision
+    }),
+    autoSave: {
+      get() {
+        return this._autoSave
+      },
+      set(val) {
+        this.toggleAutoSave(val)
+      }
+    },
+    autoSaveDivision: {
+      get() {
+        return this._autoSaveDivision
+      },
+      set(val) {
+        this.changeAutoSaveDivision(val)
+      }
+    }
+  },
+  watch: {
+    autoSaveDivision: {
+      handler(newVal) {}
+    }
+  },
+  methods: {
+    ...mapActions({
+      toggleAutoSave: 'backup/toggleAutoSave',
+      changeAutoSaveDivision: 'backup/changeAutoSaveDivision',
+      recover: 'backup/recover'
+    })
+  }
 }
 </script>
 <style lang="scss" scoped>

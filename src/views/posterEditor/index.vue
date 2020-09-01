@@ -28,6 +28,7 @@ const PASTE_KEY = 86 // v
 const LAYER_PANEL_KEY = 76 // l
 const REFERENCE_LINE_KEY = 72 // h
 const UNDO_KEY = 90 // z
+const BACKUP_KEY = 83 // s
 
 export default {
   components: {
@@ -51,10 +52,12 @@ export default {
     document.addEventListener('keydown', this.keydownHandle)
     this.body = document.body
     this.mainPanelRef = this.$refs.main.$refs.mainPanel
-    // this.$store.dispatch('poster/history/push')
+    // 执行自动保存任务
+    this.startAutoSaveTask()
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.keydownHandle)
+    this.killAutoSaveTask()
   },
   methods: {
     ...mapActions([
@@ -66,7 +69,10 @@ export default {
     ]),
     ...mapActions({
       undo: 'history/undo',
-      redo: 'history/redo'
+      redo: 'history/redo',
+      startAutoSaveTask: 'backup/startAutoSaveTask',
+      killAutoSaveTask: 'backup/killAutoSaveTask',
+      backupInvoker: 'backup/invoker'
     }),
     keydownHandle(e) {
       if (e.target !== this.body) {
@@ -114,6 +120,10 @@ export default {
           break
         case keyCode === UNDO_KEY && ctrl:
           this.undo()
+          break
+        case keyCode === BACKUP_KEY && ctrl:
+          e.preventDefault()
+          this.backupInvoker()
           break
         default:
           break

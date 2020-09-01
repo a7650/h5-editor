@@ -5,6 +5,7 @@ import { arrMoveTop, arrMoveUpper, arrMoveLower, arrMoveBottom } from '@/utils/p
 import _set from 'lodash/set'
 import { changeCompositionPositionHandler } from './helpers'
 import history from './history'
+import backup from './backup'
 
 const state = {
     canvasSize: {
@@ -366,6 +367,7 @@ export default {
     mutations,
     actions,
     modules: {
-        history
+        history,
+        backup
     }
 }
