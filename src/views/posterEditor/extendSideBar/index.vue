@@ -143,7 +143,7 @@ export default {
     },
     openSettingCenter(tab) {
       this.settingCenterVisible = true
-      if (tab) {
+      if (typeof tab === 'string') {
         Vue.set(this.$refs.settingCenter, 'activeTab', tab)
       }
     }
