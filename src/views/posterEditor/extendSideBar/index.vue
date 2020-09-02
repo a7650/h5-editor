@@ -65,7 +65,7 @@
         placement="left"
         transition="el-zoom-in-center"
       >
-        <div class="item">
+        <div class="item" @click="openSettingCenter('dataBackup')">
           <i class="el-icon-document-copy" />
         </div>
       </el-tooltip>
@@ -95,21 +95,20 @@
         placement="left"
         transition="el-zoom-in-center"
       >
-        <div class="item" @click="settingCenterVisible = true">
+        <div class="item" @click="openSettingCenter">
           <i class="el-icon-set-up" />
         </div>
       </el-tooltip>
     </div>
 
     <el-dialog
-      :visible="settingCenterVisible"
+      :visible.sync="settingCenterVisible"
       title="设置中心"
       width="600px"
       append-to-body
       transition="el-zoom-in-center"
-      @close="settingCenterVisible=false"
     >
-      <setting-center />
+      <setting-center ref="settingCenter" />
     </el-dialog>
   </div>
 </template>
@@ -118,6 +117,7 @@
 import { mapState, mapActions } from 'poster/poster.vuex'
 import referenceLine from './referenceLine'
 import settingCenter from './settingCenter'
+import Vue from 'vue'
 export default {
   components: { referenceLine, settingCenter },
   data() {
@@ -140,6 +140,12 @@ export default {
     // 打开图层面板
     openLayer() {
       this.$store.dispatch('poster/setLayerPanel', !this.layerPanelOpened)
+    },
+    openSettingCenter(tab) {
+      this.settingCenterVisible = true
+      if (tab) {
+        Vue.set(this.$refs.settingCenter, 'activeTab', tab)
+      }
     }
   }
 }
