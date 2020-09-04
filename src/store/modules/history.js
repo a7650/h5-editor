@@ -3,7 +3,8 @@ import _cloneDeep from 'lodash/cloneDeep'
 const state = {
     maxHistoryStackLength: 30,
     preStack: [],
-    nextStack: []
+    nextStack: [],
+    lastBackupStepCount: 0 // 距离上次备份的步数
 }
 
 const getters = {
@@ -22,16 +23,20 @@ const actions = {
     setMaxHistory({ state }, n) {
         const _n = parseInt(n)
         if (_n) {
-            state.maxHistoryStackLength = _n
+            state.maxHistoryStackLength = Math.min(50, _n)
         }
     },
-    push({ state, getters }) {
+    push({ state, getters, rootGetters, dispatch }) {
         const snapshotState = getters.current
         state.preStack.push(_cloneDeep(snapshotState))
         if (state.preStack.length > state.maxHistoryStackLength) {
             state.preStack.shift()
         }
         state.nextStack = []
+        state.lastBackupStepCount += 1
+        if (rootGetters['poster/backup/smartBackup'] && state.lastBackupStepCount > 10) {
+            dispatch('poster/backup/invoker', false/** close tip */, { root: true })
+        }
     },
     undo({ state, rootState }) {
         if (state.preStack.length > 0) {

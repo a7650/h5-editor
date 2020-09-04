@@ -22,8 +22,8 @@
         </div>
       </el-form-item>
       <el-form-item label="备份记录">
-        <span>{{ `上次备份：2020-08-27 13:49${1}` }}</span>
-        <span class="recover" @click="recover">恢复数据</span>
+        <span>{{ `上次备份：${lastBackupTime || '无'}` }}</span>
+        <span v-if="lastBackup" class="recover" @click="recover">恢复数据</span>
       </el-form-item>
     </el-form>
   </div>
@@ -61,7 +61,8 @@ export default {
   computed: {
     ...mapState({
       _autoSave: (state) => state.backup.autoSave,
-      _autoSaveDivision: (state) => state.backup.autoSaveDivision
+      _autoSaveDivision: (state) => state.backup.autoSaveDivision,
+      lastBackup: state => state.backup.lastBackup
     }),
     autoSave: {
       get() {
@@ -78,6 +79,12 @@ export default {
       set(val) {
         this.changeAutoSaveDivision(val)
       }
+    },
+    lastBackupTime() {
+      if (!this.lastBackup) {
+        return null
+      }
+      return this.$moment(this.lastBackup.createTime).format('MM-DD HH:mm:ss')
     }
   },
   watch: {

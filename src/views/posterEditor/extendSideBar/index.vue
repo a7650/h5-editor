@@ -60,6 +60,7 @@
         </el-popover>
       </el-tooltip>
       <el-tooltip
+        v-if="useBackup"
         effect="dark"
         content="数据备份 ctrl+s"
         placement="left"
@@ -129,7 +130,8 @@ export default {
     ...mapState({
       layerPanelOpened: 'layerPanelOpened',
       couldRedo: (state) => state.history.nextStack.length > 0,
-      couldUndo: (state) => state.history.preStack.length > 0
+      couldUndo: (state) => state.history.preStack.length > 0,
+      useBackup: (state) => state.backup.useBackup
     })
   },
   methods: {
@@ -143,9 +145,11 @@ export default {
     },
     openSettingCenter(tab) {
       this.settingCenterVisible = true
-      if (typeof tab === 'string') {
-        Vue.set(this.$refs.settingCenter, 'activeTab', tab)
-      }
+      this.$nextTick(() => {
+        if (typeof tab === 'string' && this.$refs.settingCenter) {
+          Vue.set(this.$refs.settingCenter, 'activeTab', tab)
+        }
+      })
     }
   }
 }

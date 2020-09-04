@@ -48,12 +48,11 @@ export default {
     ]),
     ...mapGetters(['activeItemIds'])
   },
-  mounted() {
+  async mounted() {
     document.addEventListener('keydown', this.keydownHandle)
     this.body = document.body
     this.mainPanelRef = this.$refs.main.$refs.mainPanel
-    // 执行自动保存任务
-    this.startAutoSaveTask()
+    this.backupInit()
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.keydownHandle)
@@ -70,7 +69,7 @@ export default {
     ...mapActions({
       undo: 'history/undo',
       redo: 'history/redo',
-      startAutoSaveTask: 'backup/startAutoSaveTask',
+      backupInit: 'backup/init',
       killAutoSaveTask: 'backup/killAutoSaveTask',
       backupInvoker: 'backup/invoker'
     }),

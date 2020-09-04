@@ -1,30 +1,19 @@
 
-let dbInstance = null
-
-export class dbService {
-  open() {
+export default class DbService {
+  static open(name, version, onupgradeneededCb) {
     return new Promise((resolve, reject) => {
-      if (!dbInstance) {
-        const dbRequest = window.indexedDB.open('editorBackup', 1)
-        dbRequest.onsuccess = e => {
-          dbInstance = dbRequest.result
-          resolve(dbInstance)
-        }
-        dbRequest.onupgradeneeded = e => {
-          dbInstance = e.target.result
-          if (!dbInstance.objectStoreNames.contains('config')) {
-            dbInstance.createObjectStore('config', { keyPath: 'pageConfigId' })
-          }
-          if (!dbInstance.objectStoreNames.contains('activity_config')) {
-            dbInstance.createObjectStore('activity_config', { keyPath: 'activityId' })
-          }
-          resolve(dbInstance)
-        }
-        dbRequest.onerror = e => {
-          reject()
-        }
-      } else {
+      const dbRequest = window.indexedDB.open(name, version)
+      dbRequest.onsuccess = () => {
+        const dbInstance = dbRequest.result
         resolve(dbInstance)
+      }
+      dbRequest.onupgradeneeded = e => {
+        const dbInstance = e.target.result
+        onupgradeneededCb && onupgradeneededCb(dbInstance)
+        resolve(dbInstance)
+      }
+      dbRequest.onerror = e => {
+        reject()
       }
     })
   }
