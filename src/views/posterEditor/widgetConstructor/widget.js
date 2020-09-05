@@ -429,12 +429,14 @@ export default class Widget {
     if (!dragInfo) {
       return null
     }
+    const canvasSize = store.state.poster.canvasSize
     return {
       position: 'absolute',
-      width: dragInfo.w + 'px',
-      height: dragInfo.h + 'px',
-      left: dragInfo.x + 'px',
-      top: dragInfo.y + 'px'
+      width: (dragInfo.w / canvasSize.width) * 100 + '%',
+      height: (dragInfo.h / canvasSize.height) * 100 + '%',
+      // left: dragInfo.x + 'px',
+      left: (dragInfo.x / canvasSize.width) * 100 + '%',
+      top: (dragInfo.y / canvasSize.height) * 100 + '%'
     }
   }
 }

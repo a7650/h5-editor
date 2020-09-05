@@ -8,6 +8,7 @@ export function getCopyData(item, vm) {
     return {
         ...JSON.parse(JSON.stringify(item)),
         initHook: item.initHook,
+        _codeGen: item._codeGen,
         componentState: function() {
             return stateJson && JSON.parse(stateJson)
         }

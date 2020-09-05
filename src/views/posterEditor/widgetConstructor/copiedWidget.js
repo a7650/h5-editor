@@ -13,7 +13,6 @@ export default class CopiedWidget extends Widget {
         )
         super(configCopy)
         configCopy.componentState.count = (configCopy.componentState.count || 0) + 1
-        this._codeGen = configCopy._codeGen
-        console.log(this._codeGen)
+        this._codeGen = config._codeGen
     }
 }
