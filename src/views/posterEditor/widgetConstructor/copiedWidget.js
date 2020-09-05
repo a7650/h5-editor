@@ -3,7 +3,7 @@ import Widget from './widget'
 // 复制Widget
 export default class CopiedWidget extends Widget {
     constructor(config) {
-        config = Object.assign({}, JSON.parse(JSON.stringify(config)),
+        const configCopy = Object.assign({}, JSON.parse(JSON.stringify(config)),
             {
                 typeLabel: config.typeLabel + '-copy',
                 isCopied: true,
@@ -11,7 +11,9 @@ export default class CopiedWidget extends Widget {
                 initHook: config.initHook
             }
         )
-        super(config)
-        config.componentState.count = (config.componentState.count || 0) + 1
+        super(configCopy)
+        configCopy.componentState.count = (configCopy.componentState.count || 0) + 1
+        this._codeGen = configCopy._codeGen
+        console.log(this._codeGen)
     }
 }

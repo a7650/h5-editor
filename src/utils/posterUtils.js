@@ -79,10 +79,7 @@ export function createDom(obj) {
 export function createHtmlStr(nodeObj) {
     const result = document.createElement('div')
     result.appendChild(createDom(nodeObj))
-    return {
-        id: getRandomStr(),
-        htmlStr: result.innerHTML
-    }
+    return result.innerHTML
 }
 
 /**

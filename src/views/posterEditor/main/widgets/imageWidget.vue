@@ -1,5 +1,5 @@
 <template>
-  <div class="image-widget">
+  <div class="image-widget" style="width:100%;height:100%">
     <img
       ref="image"
       :src="wState.src"

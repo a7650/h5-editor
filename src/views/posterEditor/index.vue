@@ -99,6 +99,7 @@ export default {
           if (this.activeItemIds.length > 0) {
             const copiedWidgets = []
             const widgetRefs = this.mainPanelRef.$refs
+            debugger
             this.activeItemIds.forEach((itemId) => {
               const widgetRef = widgetRefs[itemId][0]
               copiedWidgets.push(getCopyData(widgetRef.item, widgetRef._self))

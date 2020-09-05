@@ -1,5 +1,19 @@
 import Widget from './widget'
 import _merge from 'lodash/merge'
+import { createHtmlStr } from '@/utils/posterUtils'
+
+function codeGen(config) {
+    return createHtmlStr({
+        tag: 'image',
+        attrs: {
+            src: config.wState.src
+        },
+        style: {
+            ...Widget.getPositionStyle(config.dragInfo)
+        }
+    })
+}
+
 // 图片Widget
 export default class ImageWidget extends Widget {
     constructor(config) {
@@ -15,5 +29,6 @@ export default class ImageWidget extends Widget {
             }
         }, config)
         super(config)
+        this._codeGen = codeGen
     }
 }

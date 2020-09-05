@@ -424,4 +424,17 @@ export default class Widget {
       }
     }
   }
+
+  static getPositionStyle(dragInfo) {
+    if (!dragInfo) {
+      return null
+    }
+    return {
+      position: 'absolute',
+      width: dragInfo.w + 'px',
+      height: dragInfo.h + 'px',
+      left: dragInfo.x + 'px',
+      top: dragInfo.y + 'px'
+    }
+  }
 }

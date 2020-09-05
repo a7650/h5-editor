@@ -76,7 +76,7 @@
         placement="left"
         transition="el-zoom-in-center"
       >
-        <div class="item disabled">
+        <div class="item" @click="exportH5">
           <i class="icon-h5" />
         </div>
       </el-tooltip>
@@ -86,7 +86,7 @@
         placement="left"
         transition="el-zoom-in-center"
       >
-        <div class="item disabled">
+        <div class="item" @click="exportPoster">
           <i class="icon-poster" />
         </div>
       </el-tooltip>
@@ -119,6 +119,7 @@ import { mapState, mapActions } from 'poster/poster.vuex'
 import referenceLine from './referenceLine'
 import settingCenter from './settingCenter'
 import Vue from 'vue'
+import ExportService from 'poster/service/exportService'
 export default {
   components: { referenceLine, settingCenter },
   data() {
@@ -139,6 +140,12 @@ export default {
       undo: 'history/undo',
       redo: 'history/redo'
     }),
+    exportH5() {
+      ExportService.exportH5()
+    },
+    exportPoster() {
+
+    },
     // 打开图层面板
     openLayer() {
       this.$store.dispatch('poster/setLayerPanel', !this.layerPanelOpened)

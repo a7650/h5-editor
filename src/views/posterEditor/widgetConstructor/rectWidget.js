@@ -1,5 +1,16 @@
 import Widget from './widget'
 import _merge from 'lodash/merge'
+import { createHtmlStr } from '@/utils/posterUtils'
+
+function codeGen(config) {
+    return createHtmlStr({
+        tag: 'div',
+        style: {
+            ...config.wState.style,
+            ...Widget.getPositionStyle(config.dragInfo)
+        }
+    })
+}
 
 // 矩形Widget
 export default class RectWidget extends Widget {
@@ -25,5 +36,6 @@ export default class RectWidget extends Widget {
             }
         }, config)
         super(config)
+        this._codeGen = codeGen
     }
 }
