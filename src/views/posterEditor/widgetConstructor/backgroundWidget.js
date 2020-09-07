@@ -1,6 +1,23 @@
 import Widget from './widget'
 import _merge from 'lodash/merge'
+import { createHtmlStr } from '@/utils/posterUtils'
 
+function codeGen(config) {
+  const node = {
+    style: {
+      ...config.wState.style,
+      ...Widget.getPositionStyle(config.dragInfo)
+    }
+  }
+  if (config.wState.isSolid) {
+    node.tag = 'div'
+    node.style.backgroundColor = config.wState.style.backgroundColor
+  } else {
+    node.tag = 'image'
+    node.attrs = { src: config.wState.src }
+  }
+  return createHtmlStr(node)
+}
 // 背景Widget
 export default class BackgroundWidget extends Widget {
   constructor(config) {
@@ -22,6 +39,7 @@ export default class BackgroundWidget extends Widget {
       }
     }, config)
     super(config)
+    this._codeGen = codeGen
   }
 
   static widgetMixin = () => {

@@ -3,10 +3,17 @@ import _merge from 'lodash/merge'
 import { createHtmlStr } from '@/utils/posterUtils'
 
 function codeGen(config) {
+    const style = config.wState.style
     return createHtmlStr({
         tag: 'div',
         style: {
-            ...config.wState.style,
+            ...Object.assign({}, style, {
+                borderWidth: style.borderWidth + 'px',
+                borderTopLeftRadius: style.borderTopLeftRadius + '%',
+                borderTopRightRadius: style.borderTopRightRadius + '%',
+                borderBottomLeftRadius: style.borderBottomLeftRadius + '%',
+                borderBottomRightRadius: style.borderBottomRightRadius + '%'
+            }),
             ...Widget.getPositionStyle(config.dragInfo)
         }
     })

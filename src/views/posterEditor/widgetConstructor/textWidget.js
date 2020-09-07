@@ -5,11 +5,18 @@ import { createHtmlStr } from '@/utils/posterUtils'
 function codeGen(config) {
     return createHtmlStr({
         tag: 'div',
-        text: config.wState.text,
         style: {
-            ...config.wState.style,
             ...Widget.getPositionStyle(config.dragInfo)
-        }
+        },
+        children: [
+            {
+                tag: 'div',
+                text: config.wState.text,
+                style: {
+                    ...config.wState.style
+                }
+            }
+        ]
     })
 }
 
@@ -26,6 +33,8 @@ export default class TextWidget extends Widget {
             wState: {
                 text: '双击编辑文本',
                 style: {
+                    margin: '10px',
+                    wordBreak: 'break-all',
                     color: '#000',
                     textAlign: 'center',
                     fontSize: '14px', // px
