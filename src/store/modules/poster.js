@@ -9,8 +9,8 @@ import backup from './backup'
 
 const state = {
     canvasSize: {
-        width: null,
-        height: null
+        width: 338,
+        height: 1000
     },
     canvasPosition: {
         top: null,
@@ -40,9 +40,6 @@ const getters = {
 }
 
 const mutations = {
-    [MTS.SET_CANVAS_SIZE](state, data) {
-        state.canvasSize = data
-    },
     [MTS.SET_CANVAS_POSITION](state, data) {
         state.canvasPosition = data
     },
@@ -125,7 +122,12 @@ const mutations = {
     // 复制组件
     [MTS.COPY_WIDGET](state, item) {
         const items = Array.isArray(item) ? item : [item]
-        const finalItems = items.filter(i => i && i.replicable)
+        const finalItems = items
+            .filter(i => i && i.replicable)
+            .map(i => {
+                i._copyCount = 0
+                return i
+            })
         state.copiedWidgets = finalItems.length > 0 ? finalItems : null
     },
     // 粘贴组件
@@ -161,6 +163,10 @@ const mutations = {
 }
 
 const actions = {
+    setCanvasSize({ state, dispatch }, data) {
+        // dispatch('history/push')
+        state.canvasSize = data
+    },
     addBackground({ state, commit, dispatch }, item) {
         if (state.background) {
             dispatch('history/push')
@@ -174,6 +180,13 @@ const actions = {
     setBackgroundConfig({ state, commit, dispatch }, cb) {
         dispatch('history/push')
         commit(MTS.SET_BACKGROUND_CONFIG, cb)
+    },
+    seekBackgroundSize({ state }) {
+        const background = state.background
+        if (background && background.wState.isSolid) {
+            background.dragInfo.w = state.canvasSize.width
+            background.dragInfo.h = state.canvasSize.height
+        }
     },
     addItem({ commit, dispatch }, item) {
         if (item instanceof Widget) {

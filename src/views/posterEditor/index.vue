@@ -29,6 +29,7 @@ const LAYER_PANEL_KEY = 76 // l
 const REFERENCE_LINE_KEY = 72 // h
 const UNDO_KEY = 90 // z
 const BACKUP_KEY = 83 // s
+const SELECT_ALL_KEY = 65 // a
 
 export default {
   components: {
@@ -61,6 +62,7 @@ export default {
   methods: {
     ...mapActions([
       'replacePosterItems',
+      'replaceActiveItems',
       'pasteWidget',
       'copyWidget',
       'setLayerPanel',
@@ -80,6 +82,7 @@ export default {
       const keyCode = e.keyCode
       const ctrl = e.ctrlKey || e.metaKey
       const shift = e.shiftKey
+      console.log(keyCode)
       switch (true) {
         case keyCode === DELETE_KEY:
           if (this.activeItemIds.length > 0) {
@@ -96,13 +99,16 @@ export default {
           }
           break
         case keyCode === COPY_KEY && ctrl:
-          if (this.activeItemIds.length > 0) {
-            const copiedWidgets = []
-            const widgetRefs = this.mainPanelRef.$refs
-            debugger
-            this.activeItemIds.forEach((itemId) => {
-              const widgetRef = widgetRefs[itemId][0]
-              copiedWidgets.push(getCopyData(widgetRef.item, widgetRef._self))
+          if (this.activeItems.length > 0) {
+            // const copiedWidgets = []
+            // const widgetRefs = this.mainPanelRef.$refs
+            // this.activeItemIds.forEach((itemId) => {
+            // const widgetRef = widgetRefs[itemId][0]
+            // copiedWidgets.push(getCopyData(widgetRef.item, widgetRef._self))
+            // })
+            const copiedWidgets = [...this.activeItems].map((item) => {
+              item._copyFrom = 'command'
+              return item
             })
             this.copyWidget(copiedWidgets)
           }
@@ -124,6 +130,10 @@ export default {
         case keyCode === BACKUP_KEY && ctrl:
           e.preventDefault()
           this.backupInvoker()
+          break
+        case keyCode === SELECT_ALL_KEY:
+          e.preventDefault()
+          this.replaceActiveItems(this.posterItems)
           break
         default:
           break

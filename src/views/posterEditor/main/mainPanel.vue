@@ -3,10 +3,11 @@
     class="main-panel"
     :style="{
       width: canvasSize.width + 'px',
-      height: canvasSize.height + 'px'
+      height: canvasSize.height + 'px',
     }"
     @contextmenu.prevent=""
   >
+    <!-- marginLeft: -canvasSize.width / 2 + 'px' -->
     <background-widget
       v-if="background"
       :key="background.id"
@@ -40,7 +41,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from '../poster.vuex'
+import { mapState } from '../poster.vuex'
 import customContextmenu from '@/components/customContextmenu'
 import { clickoutside } from 'poster/poster.directives'
 import widgetContainer from './widgets/widgetContainer'
@@ -65,7 +66,6 @@ export default {
     ...mapState(['posterItems', 'canvasSize', 'background', 'assistWidgets'])
   },
   methods: {
-    ...mapMutations(['SET_CANVAS_SIZE']),
     openContextmenu({ x, y, menuList, vm }) {
       this.contextmenuPosition.x = x
       this.contextmenuPosition.y = y
@@ -84,21 +84,19 @@ export default {
         vm._executeContextCommand(commandItem)
       }
     }
-  },
-  created() {
-    this.SET_CANVAS_SIZE({ width: 338, height: 600 })
   }
 }
 </script>
 <style lang="scss" scoped>
 .main-panel {
   background-color: #fff;
-  position: absolute;
-  margin-top: 50px;
-  left: 50%;
-  margin-left: -169px;
+  /* position: absolute; */
+  /* left: 50%; */
+  margin: 0 auto;
+  position: relative;
   user-select: none;
   box-shadow: 0 0 6px rgba($color: #000000, $alpha: 0.1);
+  transition: 0.4s;
   .poster-item-container {
     /* position: absolute;
     top: 0; */

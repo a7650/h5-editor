@@ -25,7 +25,7 @@ export default class BackupService {
         const transaction = dbInstance.transaction('backup', 'readwrite')
         const store = transaction.objectStore('backup')
         store.add({
-            backupData,
+            backupData: JSON.parse(JSON.stringify(backupData)),
             id: getRandomStr(),
             createTime: Date.now()
         })

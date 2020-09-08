@@ -4,6 +4,20 @@
       画布大小:
       <span>{{ `宽${canvasSize.width}px` }}</span>
       <span>{{ `高${canvasSize.height}px` }}</span>
+      <el-popover
+        placement="top"
+        title="修改画布大小"
+        width="200"
+        trigger="click"
+        transition="el-zoom-in-center"
+      >
+        <change-size />
+        <i
+          slot="reference"
+          class="el-icon-paperclip change-size"
+          title="修改画布大小"
+        />
+      </el-popover>
     </div>
     <div class="widget-count">
       <span>{{ `元素数量：${posterItemIds.length}` }}</span>
@@ -13,7 +27,9 @@
 
 <script>
 import { mapState, mapGetters } from 'poster/poster.vuex'
+import changeSize from './changeSize'
 export default {
+  components: { changeSize },
   data() {
     return {}
   },
@@ -42,13 +58,20 @@ export default {
   font-size: 12px;
   color: $colorTextL;
   justify-content: space-between;
-  .canvas-size{
-    span{
+  .canvas-size {
+    span {
       padding-left: 2px;
     }
+    .change-size {
+      font-size: 16px;
+      margin-left: 4px;
+      cursor: pointer;
+      &:hover {
+        color: #000;
+      }
+    }
   }
-  .widget-count{
-
+  .widget-count {
   }
 }
 </style>

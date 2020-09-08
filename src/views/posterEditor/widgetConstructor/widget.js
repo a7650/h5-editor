@@ -1,6 +1,6 @@
 import uniqueId from 'lodash/uniqueId'
 import { mapGetters, mapActions } from 'poster/poster.vuex'
-import { baseCommandStrat, baseMenuList, getCopyData } from './helpers/commandStrat'
+import { baseCommandStrat, baseMenuList } from './helpers/commandStrat'
 import store from '@/store'
 
 const defaultWidgetConfig = () => {
@@ -22,6 +22,11 @@ const defaultWidgetConfig = () => {
     removable: true, // 是否可删除
     couldAddToActive: true, // 是否可被添加进activeItems
     componentState: null // Function 复制组件时有效，返回结果为为复制时原组件内部的data；componentState.count为复制的次数
+    /**
+     * @property {Int} _copyCount 复制的次数
+     * @property {String} _copyFrom 复制来源 command | drag
+     * @property {Boolean} _isBackup 是否是通过备份恢复的组件
+     */
   }
 }
 
@@ -190,8 +195,9 @@ export default class Widget {
           // ctrl快捷键拖动复制
           if (!hasCopiedOnDrag && e && e.ctrlKey) {
             const lastCopiedWidgets = store.state.poster.copiedWidgets
-            const copyData = getCopyData(this.item, this.$refs.widget)
-            copyData.componentState.count = -1 // 粘贴的时候计算得出count为0，使粘贴的组件的位置和原先位置重合
+            // const copyData = getCopyData(this.item, this.$refs.widget)
+            const copyData = this.item
+            copyData._copyFrom = 'drag'
             store.dispatch('poster/copyWidget', copyData)
             store.dispatch('poster/pasteWidget')
             store.dispatch('poster/copyWidget', lastCopiedWidgets) // 恢复之前复制的组件
@@ -360,9 +366,10 @@ export default class Widget {
         // 初始化菜单
         this._baseMenuList = options.baseMenuList
         // 复制组件初始化数据
-        if (this.item.isCopied) {
-          Object.assign(this.$data, this.item.componentState())
-          const count = this.item.componentState.count
+        if (this.item.isCopied && (this.item._copyFrom === 'command') && !this.item._isBackup) {
+          // Object.assign(this.$data, this.item.componentState())
+          // const count = this.item.componentState.count
+          const count = this.item._copyCount
           this.updateDragInfo({
             x: this.dragInfo.x + count * 10,
             y: this.dragInfo.y + count * 10
@@ -436,7 +443,8 @@ export default class Widget {
       height: (dragInfo.h / canvasSize.height) * 100 + '%',
       // left: dragInfo.x + 'px',
       left: (dragInfo.x / canvasSize.width) * 100 + '%',
-      top: (dragInfo.y / canvasSize.height) * 100 + '%'
+      top: (dragInfo.y / canvasSize.height) * 100 + '%',
+      transform: `rotateZ(${dragInfo.rotateZ}deg)`
     }
   }
 }

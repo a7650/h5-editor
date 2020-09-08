@@ -1,5 +1,7 @@
+/* eslint-disable new-cap */
 import { Message } from 'element-ui'
 import BackupService from 'poster/service/backupService'
+import constructorMap from 'poster/widgetConstructor/constructorMap'
 
 const state = {
     useBackup: false, // 是否使用备份功能，数据库不存在/数据库被禁止使用等情况下，将会关闭备份功能
@@ -51,8 +53,25 @@ const actions = {
         }
         const backupData = (await BackupService.getBackupData(state.lastBackup.id)).backupData
         if (backupData) {
+            let posterItems = backupData.posterItems
+            let background = backupData.background
+            if (posterItems && posterItems.length > 0) {
+                posterItems = posterItems.map(item => {
+                    const widget = new constructorMap[item.type](item)
+                    widget._isBackup = true
+                    return widget
+                })
+            }
+            if (background) {
+                background = new constructorMap.background(background)
+            }
             dispatch('poster/history/push', null, { root: true })
-            rootState.poster = Object.assign({}, rootState.poster, backupData)
+            rootState.poster = Object.assign(
+                {},
+                rootState.poster,
+                backupData,
+                { background, posterItems }
+            )
         }
     },
     async init({ state, dispatch }) {

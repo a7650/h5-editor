@@ -8,9 +8,11 @@
     "dev": "vue-cli-service serve"
   },
   "dependencies": {
+    "better-scroll": "^2.0.2",
     "compression-webpack-plugin": "^4.0.0",
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
+    "file-saver": "^2.0.2",
     "html2canvas": "^1.0.0-rc.5",
     "lodash": "^4.17.19",
     "moment": "^2.27.0",
