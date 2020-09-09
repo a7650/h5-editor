@@ -2,14 +2,21 @@
 import { Message } from 'element-ui'
 import BackupService from 'poster/service/backupService'
 import constructorMap from 'poster/widgetConstructor/constructorMap'
+import { getEditorConfig, saveEditorConfig } from './helpers'
 
-const state = {
-    useBackup: false, // 是否使用备份功能，数据库不存在/数据库被禁止使用等情况下，将会关闭备份功能
-    autoSaveTimer: null,
-    autoSave: true,
-    autoSaveDivision: 1000 * 60 * 10,
-    lastBackup: null // {createTime:0,id:''}
+function getState() {
+    const editorConfig = getEditorConfig()
+    const state = {
+        useBackup: false, // 是否使用备份功能，数据库不存在/数据库被禁止使用等情况下，将会关闭备份功能
+        autoSaveTimer: null,
+        autoSave: editorConfig['backup.autoSave'],
+        autoSaveDivision: editorConfig['backup.autoSaveDivision'],
+        lastBackup: null // {createTime:0,id:''}
+    }
+    return state
 }
+
+const state = getState()
 
 const getters = {
     smartBackup(state) {
@@ -18,8 +25,16 @@ const getters = {
 }
 
 const actions = {
+    resetState({ state, dispatch }) {
+        dispatch('killAutoSaveTask')
+        for (const [key, val] of Object.entries(getState())) {
+            state[key] = val
+        }
+        dispatch('init')
+    },
     toggleAutoSave({ state, dispatch }, autoSave) {
         state.autoSave = autoSave
+        saveEditorConfig({ 'backup.autoSave': autoSave })
         if (autoSave) {
             dispatch('startAutoSaveTask')
         } else {
@@ -28,6 +43,7 @@ const actions = {
     },
     changeAutoSaveDivision({ state, dispatch }, value) {
         state.autoSaveDivision = value
+        saveEditorConfig({ 'backup.autoSaveDivision': value })
         dispatch('killAutoSaveTask')
         dispatch('startAutoSaveTask')
     },

@@ -162,7 +162,7 @@ export default {
     height: 100%;
     position: absolute;
     border-style: solid;
-    border-color: rgba($color: rgb(82, 82, 82), $alpha: 0.6);
+    border-color: rgba($color: rgb(0, 0, 0), $alpha: 0.5);
     box-sizing: border-box;
     left: 0;
     top: 0;

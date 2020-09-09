@@ -7,29 +7,34 @@ import { changeCompositionPositionHandler } from './helpers'
 import history from './history'
 import backup from './backup'
 
-const state = {
-    canvasSize: {
-        width: 338,
-        height: 600
-    },
-    canvasPosition: {
-        top: null,
-        left: null
-    },
-    background: null,
-    posterItems: [], // 组件列表
-    activeItems: [], // 当前选中的组件
-    assistWidgets: [], // 辅助组件
-    layerPanelOpened: false, // 是否打开图层面板
-    referenceLineOpened: true, // 是否打开参考线
-    copiedWidgets: null, // 当前复制的组件 WidgetItem[]
-    referenceLine: { // 参考线,用户定义的参考线
-        row: [],
-        col: []
-    },
-    matchedLine: null, // 匹配到的参考线 {row:[],col:[]}
-    mainPanelScrollY: 0
+function getState() {
+    const state = {
+        canvasSize: {
+            width: 338,
+            height: 600
+        },
+        canvasPosition: {
+            top: null,
+            left: null
+        },
+        background: null,
+        posterItems: [], // 组件列表
+        activeItems: [], // 当前选中的组件
+        assistWidgets: [], // 辅助组件
+        layerPanelOpened: false, // 是否打开图层面板
+        referenceLineOpened: true, // 是否打开参考线
+        copiedWidgets: null, // 当前复制的组件 WidgetItem[]
+        referenceLine: { // 参考线,用户定义的参考线
+            row: [],
+            col: []
+        },
+        matchedLine: null, // 匹配到的参考线 {row:[],col:[]}
+        mainPanelScrollY: 0
+    }
+    return state
 }
+
+const state = getState()
 
 const getters = {
     posterItemIds(state, getters) {
@@ -167,6 +172,18 @@ const mutations = {
 }
 
 const actions = {
+    resetState({ state, dispatch }) {
+        return new Promise((resolve) => {
+            for (const [key, val] of Object.entries(getState())) {
+                state[key] = val
+            }
+            dispatch('backup/resetState')
+            dispatch('history/resetState')
+            setTimeout(() => {
+                resolve()
+            }, 500)
+        })
+    },
     setCanvasSize({ state, dispatch }, data) {
         // dispatch('history/push')
         state.canvasSize = data

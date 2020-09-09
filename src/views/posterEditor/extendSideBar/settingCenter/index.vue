@@ -7,14 +7,18 @@
       <el-tab-pane v-if="useBackup" label="数据备份" name="dataBackup">
         <data-backup />
       </el-tab-pane>
+      <!-- <el-tab-pane label="操作设置" name="handleSetting">
+        <handle-setting />
+      </el-tab-pane> -->
     </el-tabs>
   </div>
 </template>
 <script>
 import dataBackup from './dataBackup'
 import undo from './undo'
+// import handleSetting from './handleSetting'
 export default {
-  components: { dataBackup, undo },
+  components: { dataBackup, undo /** handleSetting*/ },
   data() {
     return {
       activeTab: 'undo'

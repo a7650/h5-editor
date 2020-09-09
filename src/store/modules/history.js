@@ -1,11 +1,18 @@
 import _cloneDeep from 'lodash/cloneDeep'
+import { getEditorConfig, saveEditorConfig } from './helpers'
 
-const state = {
-    maxHistoryStackLength: 30,
-    preStack: [],
-    nextStack: [],
-    lastBackupStepCount: 0 // 距离上次备份的步数
+function getState() {
+    const editorConfig = getEditorConfig()
+    const state = {
+        maxHistoryStackLength: editorConfig['history.maxHistoryStackLength'],
+        preStack: [],
+        nextStack: [],
+        lastBackupStepCount: 0 // 距离上次备份的步数
+    }
+    return state
 }
+
+const state = getState()
 
 const getters = {
     current(state, getters, rootState) {
@@ -20,10 +27,16 @@ const getters = {
 }
 
 const actions = {
+    resetState({ state }) {
+        for (const [key, val] of Object.entries(getState())) {
+            state[key] = val
+        }
+    },
     setMaxHistory({ state }, n) {
         const _n = parseInt(n)
         if (_n) {
             state.maxHistoryStackLength = Math.min(50, _n)
+            saveEditorConfig({ 'history.maxHistoryStackLength': state.maxHistoryStackLength })
         }
     },
     push({ state, getters, rootGetters, dispatch }) {

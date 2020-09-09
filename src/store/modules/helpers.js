@@ -33,3 +33,32 @@ export function changeCompositionPositionHandler(activeItems, type, canvasSize) 
     }
     return true
 }
+
+/**
+ * 获取编辑器配置
+ */
+export function getEditorConfig() {
+    const defaultConfig = {
+        'history.maxHistoryStackLength': 30, // 撤销最大步数
+        'backup.autoSave': true, // 自动备份
+        'backup.autoSaveDivision': 1000 * 60 * 10 // 自动备份的间隔
+    }
+    try {
+        const config = JSON.parse(localStorage.getItem('editorConfig')) || null
+        return Object.assign(defaultConfig, config)
+    } catch (e) {
+        localStorage.removeItem('editorConfig')
+        console.error(e)
+        return defaultConfig
+    }
+}
+
+/**
+ * 保存编辑器配置
+ */
+export function saveEditorConfig(config) {
+    const oldConfig = getEditorConfig()
+    const newConfig = Object.assign(oldConfig, config)
+    localStorage.setItem('editorConfig', JSON.stringify(newConfig))
+    return newConfig
+}
