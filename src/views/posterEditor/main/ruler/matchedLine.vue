@@ -10,7 +10,7 @@
       v-for="(item, index) in matchedLine.row"
       :key="'row' + index"
       class="reference-line row"
-      :style="{ top: item + 'px' }"
+      :style="{ top: item + 'px',...rowElPositionFix }"
     />
   </div>
 </template>
@@ -18,6 +18,12 @@
 <script>
 import { mapState } from 'poster/poster.vuex'
 export default {
+  props: {
+    rowElPositionFix: {
+      type: Object,
+      default: null
+    }
+  },
   data() {
     return {}
   },

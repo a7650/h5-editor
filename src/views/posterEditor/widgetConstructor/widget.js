@@ -2,6 +2,7 @@ import uniqueId from 'lodash/uniqueId'
 import { mapGetters, mapActions } from 'poster/poster.vuex'
 import { baseCommandStrat, baseMenuList } from './helpers/commandStrat'
 import store from '@/store'
+import _merge from 'lodash/merge'
 
 const defaultWidgetConfig = () => {
   return {
@@ -87,7 +88,7 @@ function updateDragInfo(dragInfo, updateSelfOnly = false) {
 // 组件父类
 export default class Widget {
   constructor(config) {
-    const item = Object.assign({}, defaultWidgetConfig(), config, {
+    const item = _merge(defaultWidgetConfig(), config, {
       id: uniqueId(config.typeLabel + '-')
     })
     this._config = item
@@ -150,6 +151,7 @@ export default class Widget {
       },
       mounted() {
         this.dragRef = this.$refs.drag
+        dragItemPosition[this.item.id] = this.dragInfo
       },
       methods: {
         ...mapActions(

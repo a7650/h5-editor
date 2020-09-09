@@ -4,6 +4,8 @@ import { createHtmlStr } from '@/utils/posterUtils'
 
 function codeGen(config) {
     const style = config.wState.style
+    console.log(config.dragInfo)
+    console.log(Widget.getPositionStyle(config.dragInfo))
     return createHtmlStr({
         tag: 'div',
         style: {

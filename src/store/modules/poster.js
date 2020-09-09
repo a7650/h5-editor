@@ -10,7 +10,7 @@ import backup from './backup'
 const state = {
     canvasSize: {
         width: 338,
-        height: 1000
+        height: 600
     },
     canvasPosition: {
         top: null,
@@ -27,7 +27,8 @@ const state = {
         row: [],
         col: []
     },
-    matchedLine: null // 匹配到的参考线 {row:[],col:[]}
+    matchedLine: null, // 匹配到的参考线 {row:[],col:[]}
+    mainPanelScrollY: 0
 }
 
 const getters = {
@@ -40,6 +41,9 @@ const getters = {
 }
 
 const mutations = {
+    'SET_SCROLL_Y'(state, y) {
+        state.mainPanelScrollY = y
+    },
     [MTS.SET_CANVAS_POSITION](state, data) {
         state.canvasPosition = data
     },

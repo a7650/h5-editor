@@ -3,16 +3,16 @@
     class="main-panel"
     :style="{
       width: canvasSize.width + 'px',
-      height: canvasSize.height + 'px',
+      height: canvasSize.height + 'px'
     }"
-    @contextmenu.prevent=""
+    @mousedown.prevent.stop=""
   >
     <!-- marginLeft: -canvasSize.width / 2 + 'px' -->
     <background-widget
       v-if="background"
       :key="background.id"
       :item="background"
-      @openContextmenu="openContextmenu"
+      v-on="$listeners"
     />
     <!-- 组件容器 -->
     <widget-container
@@ -20,7 +20,7 @@
       v-show="item.visible"
       :key="item.id"
       :item="item"
-      @openContextmenu="openContextmenu"
+      v-on="$listeners"
     />
     <!-- 辅助组件 -->
     <component
@@ -30,61 +30,27 @@
       :key="item.id"
       :item="item"
     />
-    <custom-contextmenu
-      v-if="contextmenuVisible"
-      v-clickoutside="closeContextmenu"
-      v-bind="contextmenuPosition"
-      :menu-list="menuList"
-      @executeCommand="executeContextCommand"
-    />
   </div>
 </template>
 
 <script>
 import { mapState } from '../poster.vuex'
-import customContextmenu from '@/components/customContextmenu'
-import { clickoutside } from 'poster/poster.directives'
 import widgetContainer from './widgets/widgetContainer'
 import backgroundWidget from './widgets/backgroundWidget'
 import drawRectWidget from './assistWidgets/drawRectWidget'
 export default {
   components: {
-    customContextmenu,
     widgetContainer,
     backgroundWidget,
     drawRectWidget
   },
-  directives: { clickoutside },
   data() {
-    return {
-      contextmenuVisible: false,
-      contextmenuPosition: { x: 0, y: 0 },
-      menuList: []
-    }
+    return {}
   },
   computed: {
     ...mapState(['posterItems', 'canvasSize', 'background', 'assistWidgets'])
   },
-  methods: {
-    openContextmenu({ x, y, menuList, vm }) {
-      this.contextmenuPosition.x = x
-      this.contextmenuPosition.y = y
-      this.menuList = menuList
-      this._currentContextmenuWidgetVm = vm
-      this.contextmenuVisible = true
-    },
-    closeContextmenu() {
-      this.contextmenuVisible = false
-    },
-    // 执行右键命令
-    executeContextCommand(commandItem) {
-      this.closeContextmenu()
-      const vm = this._currentContextmenuWidgetVm
-      if (vm && vm.executeContextCommand) {
-        vm._executeContextCommand(commandItem)
-      }
-    }
-  }
+  methods: {}
 }
 </script>
 <style lang="scss" scoped>
@@ -96,7 +62,9 @@ export default {
   position: relative;
   user-select: none;
   box-shadow: 0 0 6px rgba($color: #000000, $alpha: 0.1);
+  transition-property: height;
   transition: 0.4s;
+  cursor:initial;
   .poster-item-container {
     /* position: absolute;
     top: 0; */

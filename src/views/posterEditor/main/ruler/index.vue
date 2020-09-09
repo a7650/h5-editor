@@ -7,7 +7,7 @@
         :key="'col' + index"
         class="reference-line column"
         :style="{ left: item + 'px' }"
-        @dblclick="removeReferenceLine({type:'col', index})"
+        @dblclick="removeReferenceLine({ type: 'col', index })"
         @mousedown="colHandleDown($event, index)"
       />
       <!-- 横向参考线 -->
@@ -15,8 +15,8 @@
         v-for="(item, index) in referenceLine.row"
         :key="'row' + index"
         class="reference-line row"
-        :style="{ top: item + 'px' }"
-        @dblclick="removeReferenceLine({type:'row', index})"
+        :style="{ top: item + 'px', ...rowElPositionFix }"
+        @dblclick="removeReferenceLine({ type: 'row', index })"
         @mousedown="rowHandleDown($event, index)"
       />
     </template>
@@ -43,6 +43,7 @@
     <div
       ref="leftRuler"
       class="left-ruler"
+      :style="rowElPositionFix"
       @mouseenter="leftMouseEnter"
       @mousemove="leftMouseMove"
       @mouseleave="leftMouseLeave"
@@ -50,7 +51,7 @@
     >
       <div
         v-if="leftMoving"
-        class="reference-line row"
+        class="reference-line row moving"
         :style="{ top: rowY + 'px' }"
       >
         <div class="tip" draggable="false" ondragstart="return false">
@@ -59,7 +60,7 @@
       </div>
     </div>
     <!-- 动态匹配的参考线 -->
-    <matched-line />
+    <matched-line :row-el-position-fix="rowElPositionFix" />
   </div>
 </template>
 
@@ -67,6 +68,7 @@
 import ruler from '@/utils/canvasRuler'
 import { mapState, mapActions } from 'poster/poster.vuex'
 import matchedLine from './matchedLine'
+
 const LEFT_SIDE_WIDTH = 260 // 左侧边栏的宽度
 const TOP_RULER_HEIGHT = 22 // 顶部标尺高度
 
@@ -81,12 +83,17 @@ export default {
     }
   },
   computed: {
-    ...mapState(['referenceLine', 'referenceLineOpened']),
+    ...mapState(['referenceLine', 'referenceLineOpened', 'mainPanelScrollY']),
     columnXInRuler() {
       return this.columnX - TOP_RULER_HEIGHT
     },
     rowYInRuler() {
       return this.rowY - 50
+    },
+    rowElPositionFix() {
+      return {
+        transform: `translateY(${this.mainPanelScrollY}px)`
+      }
     }
   },
   mounted() {
@@ -137,7 +144,7 @@ export default {
       this.rowY = e.pageY
     },
     leftMouseMove(e) {
-      this.rowY = e.pageY
+      this.rowY = e.pageY - this.mainPanelScrollY
     },
     leftMouseLeave() {
       if (this.rowHandleMoveReady) {
@@ -228,6 +235,7 @@ export default {
   z-index: 99;
   /* border-right: 1px solid #bac3c9; */
   cursor: row-resize;
+  transition: 0.5s;
 }
 .reference-line {
   /* background-color: #ff0000; */
@@ -268,6 +276,7 @@ export default {
     margin-top: -2px;
     left: 0;
     cursor: row-resize;
+    transition: 0.1s;
     background: linear-gradient(
       0deg,
       transparent 33.3%,
@@ -278,6 +287,9 @@ export default {
     .tip {
       top: -30px;
       left: 30px;
+    }
+    &.moving {
+      transition: none;
     }
   }
 }

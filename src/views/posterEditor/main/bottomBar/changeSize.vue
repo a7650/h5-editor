@@ -1,12 +1,13 @@
 <template>
   <div class="change-size">
-    <div class="item">
+    <div class="item" title="无法修改宽度">
       <span class="label">宽度</span>
       <el-input
         v-model.number="width"
         type="number"
         style="width:120px"
         size="mini"
+        disabled
       />
     </div>
     <div class="item">
