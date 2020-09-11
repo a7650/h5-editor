@@ -27,8 +27,30 @@ import textWidget from './widgets/textWidget'
 import rectWidget from './widgets/rectWidget'
 import { mapActions } from 'poster/poster.vuex'
 import { BackgroundWidget } from 'poster/widgetConstructor'
+import { pluginMap, pluginWrap } from '../plugins'
+
+// 注册插件
+const pluginWidgets = []
+const pluginComponents = {}
+for (const [pluginName, options] of Object.entries(pluginMap.leftSide)) {
+  const { name, icon, component } = options
+  pluginWidgets.push({
+    type: pluginName,
+    component: pluginName,
+    name,
+    icon
+  })
+  pluginComponents[pluginName] = pluginWrap(component)
+}
+
 export default {
-  components: { imageWidget, backgroundWidget, textWidget, rectWidget },
+  components: {
+    imageWidget,
+    backgroundWidget,
+    textWidget,
+    rectWidget,
+    ...pluginComponents
+  },
   data() {
     return {
       current: null,
@@ -56,7 +78,8 @@ export default {
           component: 'rect-widget',
           name: '矩形',
           icon: 'icon-rect'
-        }
+        },
+        ...pluginWidgets
       ]
     }
   },

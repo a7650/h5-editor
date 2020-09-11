@@ -253,3 +253,22 @@ export function arrMoveBottom(arr, index) {
     }
 }
 
+export const HoC = (WrappedComponent, options) => ({
+    ...options,
+    props: typeof WrappedComponent === 'function'
+        ? WrappedComponent.options.props
+        : WrappedComponent.props,
+    render(h) {
+        const slots = this.$slots
+        const scopedSlots = {}
+        Object.keys(slots).map(key => (scopedSlots[key] = () => slots[key]))
+        const props = options.props
+        return h(WrappedComponent, {
+            attrs: this.$attrs,
+            props: Object.assign({}, this.$props, props),
+            on: this.$listeners,
+            scopedSlots
+        })
+    }
+})
+
