@@ -25,7 +25,7 @@ export default class ExportService {
             }
             if (item._codeGen) {
                 bodyInnerHtml += item._codeGen(item) || ''
-            } else {
+            } else if (process.env.NODE_ENV !== 'production') {
                 console.warn(`类型为${item.type}的组件的构造函数未实现"_codeGen"方法`)
             }
         })

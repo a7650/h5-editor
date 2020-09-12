@@ -1,8 +1,14 @@
-import Widget from 'poster/widgetConstructor'
+import { Widget } from 'poster/widgetConstructor'
 import _merge from 'lodash/merge'
 
-export class PluginA extends Widget {
+export default class PluginA extends Widget {
     constructor(config) {
-
+        config = _merge({
+            type: 'pluginA',
+            typeLabel: '插件测试',
+            componentName: 'plugin-pluginA',
+            icon: 'el-icon-star-off'
+        }, config)
+        super(config)
     }
 }

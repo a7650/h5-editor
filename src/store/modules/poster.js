@@ -265,6 +265,7 @@ const actions = {
     },
     updateBackgroundDragInfo({ state }, dragInfo) {
         state.background.dragInfo = Object.assign({}, state.background.dragInfo, dragInfo)
+        console.log(state.background)
     },
     // 更新组件位置、大小等
     updateDragInfo({ state }, { dragInfo, widgetId, updateSelfOnly = false }) {

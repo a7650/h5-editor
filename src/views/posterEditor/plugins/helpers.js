@@ -1,12 +1,13 @@
 import { HoC } from '@/utils/posterUtils'
 import store from '@/store'
+import portalVue from 'portal-vue'
 
 export const pluginMap = {
     leftSide: {},
-    bottomBar: {},
+    widget: {},
     controlPanel: {},
-    extendSideBar: {},
-    widget: {}
+    bottomBar: {},
+    extendSideBar: {}
 }
 
 export function usePlugin(name, options) {
@@ -18,24 +19,32 @@ export function usePlugin(name, options) {
     if (leftSide) {
         pluginMap.leftSide[name] = leftSide
     }
-    if (leftSide) {
+    if (bottomBar) {
         pluginMap.bottomBar[name] = bottomBar
     }
-    if (leftSide) {
+    if (controlPanel) {
         pluginMap.controlPanel[name] = controlPanel
     }
-    if (leftSide) {
+    if (extendSideBar) {
         pluginMap.extendSideBar[name] = extendSideBar
     }
-    if (leftSide) {
-        pluginMap.widget[name] = widget
+    if (widget) {
+        const componentName = (new widget.constructor()).componentName
+        if (componentName.indexOf('plugin-') !== 0) {
+            return
+        }
+        pluginMap.widget[name] = { ...widget, componentName }
     }
 }
 
 const pluginHelpers = {
     addWidget(widget) {
         store.dispatch('poster/addItem', widget)
+    },
+    updateWidgetState(agrs) { // { keyPath, value, widgetId, pushHistory = true }
+        store.dispatch('poster/updateWidgetState', agrs)
     }
+
 }
 
 export function pluginWrap(component) {
@@ -45,4 +54,6 @@ export function pluginWrap(component) {
         }
     })
 }
+
+export const controlPortal = pluginWrap(portalVue)
 

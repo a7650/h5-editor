@@ -1,14 +1,17 @@
 <template>
-  <div class="left-side-test">test - 123</div>
+  <div class="left-side-test">
+    <el-button size="small" @click="add">插件测试</el-button>
+  </div>
 </template>
 
 <script>
-import { TextWidget } from 'poster/widgetConstructor'
-
+import PluginA from './constructor'
 export default {
   props: ['pluginHelpers'],
-  created() {
-    this.pluginHelpers.addWidget(new TextWidget())
+  methods: {
+    add() {
+      this.pluginHelpers.addWidget(new PluginA())
+    }
   }
 }
 </script>

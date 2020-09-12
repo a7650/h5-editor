@@ -380,7 +380,7 @@ export default class Widget {
       },
       mounted() {
         // 背景是自带drag，其他组件是嵌套在dragContainer里面
-        const dragRef = this.$refs.drag || this.$parent
+        const dragRef = this.$refs.drag || (this.$parent._isHoc ? this.$parent.$parent : this.$parent)
         if (options.contextmenu) {
           dragRef.$el.addEventListener('contextmenu', (e) => {
             const menuList = [...(this.getMenuList() || []), ...this._baseMenuList]
@@ -389,6 +389,7 @@ export default class Widget {
               menuList.unshift({ label: isLock ? '解除锁定' : '锁定', command: isLock ? '$unlock' : '$lock' })
             }
             if (menuList.length > 0) {
+              console.log('contextmenu')
               this.$emit('openContextmenu', {
                 x: e.pageX,
                 y: e.pageY,

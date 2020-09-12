@@ -53,7 +53,7 @@ export default {
     ]),
     ...mapGetters(['activeItemIds'])
   },
-  async mounted() {
+  async created() {
     this.initLoading = true
     const loading = this.$loading({
       lock: true,
@@ -61,12 +61,14 @@ export default {
       spinner: 'el-icon-loading',
       background: 'rgba(255, 255, 255, 0.6)'
     })
-    document.addEventListener('keydown', this.keydownHandle)
-    this.body = document.body
-    this.mainPanelRef = this.$refs.main.$refs.mainPanel
     await this.resetState()
     loading.close()
     this.initLoading = false
+  },
+  async mounted() {
+    document.addEventListener('keydown', this.keydownHandle)
+    this.body = document.body
+    this.mainPanelRef = this.$refs.main.$refs.mainPanel
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.keydownHandle)

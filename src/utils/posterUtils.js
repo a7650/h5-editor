@@ -258,6 +258,9 @@ export const HoC = (WrappedComponent, options) => ({
     props: typeof WrappedComponent === 'function'
         ? WrappedComponent.options.props
         : WrappedComponent.props,
+    created() {
+        this._isHoc = true
+    },
     render(h) {
         const slots = this.$slots
         const scopedSlots = {}

@@ -774,31 +774,38 @@ $handle-item-pos: 4px;
 .handle-tl {
   left: 0 - $handle-item-pos;
   top: 0 - $handle-item-pos;
+  z-index: 2;
 }
 .handle-tm {
   top: 0 - $handle-item-pos;
   left: 50%;
+  z-index: 2;
 }
 .handle-tr {
   right: 0 - $handle-item-pos;
   top: 0 - $handle-item-pos;
+  z-index: 2;
 }
 .handle-bl {
   left: 0 - $handle-item-pos;
   bottom: 0 - $handle-item-pos;
+  z-index: 2;
 }
 .handle-bm {
   bottom: 0 - $handle-item-pos;
   left: 50%;
+  z-index: 2;
 }
 .handle-br {
   bottom: 0 - $handle-item-pos;
   right: 0 - $handle-item-pos;
+  z-index: 2;
 }
 .handle-ml {
   left: 0 - $handle-item-pos;
   top: 50%;
   margin-top: 0 - $handle-item-pos;
+  z-index: 2;
 }
 .handle-mr {
   right: 0 - $handle-item-pos;
