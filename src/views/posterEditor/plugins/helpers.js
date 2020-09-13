@@ -44,6 +44,9 @@ const pluginHelpers = {
     addWidget(widget) {
         store.dispatch('poster/addItem', widget)
     },
+    removeWidget(widget) {
+        store.dispatch('poster/removeItem', widget)
+    },
     updateWidgetState(agrs) { // { keyPath, value, widgetId, pushHistory = true }
         store.dispatch('poster/updateWidgetState', agrs)
     }

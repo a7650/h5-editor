@@ -17,7 +17,19 @@ export default {
   data() {
     return {}
   },
-  methods: {}
+  methods: {
+    executeContextCommand(command) {
+      this.$message.success('插件测试命令')
+    },
+    getMenuList() {
+      return [
+        {
+          label: '插件测试',
+          command: 'test'
+        }
+      ]
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
