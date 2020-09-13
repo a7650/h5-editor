@@ -10,6 +10,8 @@ export const pluginMap = {
     extendSideBar: {}
 }
 
+export const pluginConstructorMap = {}
+
 export function usePlugin(name, options) {
     if (options._registered) {
         return
@@ -29,11 +31,12 @@ export function usePlugin(name, options) {
         pluginMap.extendSideBar[name] = extendSideBar
     }
     if (widget) {
-        const componentName = (new widget.constructor()).componentName
+        const { componentName, type } = (new widget.constructor())
         if (componentName.indexOf('plugin-') !== 0) {
             return
         }
         pluginMap.widget[name] = { ...widget, componentName }
+        pluginConstructorMap[type] = widget.constructor
     }
 }
 
@@ -56,4 +59,6 @@ export function pluginWrap(component) {
 }
 
 export const controlPortal = pluginWrap(portalVue)
+
+export { commonMixin as controlMixin } from '../control/widgets/common/mixins'
 

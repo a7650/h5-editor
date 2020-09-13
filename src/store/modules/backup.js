@@ -2,6 +2,7 @@
 import { Message } from 'element-ui'
 import BackupService from 'poster/service/backupService'
 import constructorMap from 'poster/widgetConstructor/constructorMap'
+import { pluginConstructorMap } from 'poster/plugins'
 import { getEditorConfig, saveEditorConfig } from './helpers'
 
 function getState() {
@@ -69,17 +70,21 @@ const actions = {
         }
         const backupData = (await BackupService.getBackupData(state.lastBackup.id)).backupData
         if (backupData) {
+            const allConstructorMap = {
+                ...constructorMap,
+                ...pluginConstructorMap
+            }
             let posterItems = backupData.posterItems
             let background = backupData.background
             if (posterItems && posterItems.length > 0) {
                 posterItems = posterItems.map(item => {
-                    const widget = new constructorMap[item.type](item)
+                    const widget = new allConstructorMap[item.type](item)
                     widget._isBackup = true
                     return widget
                 })
             }
             if (background) {
-                background = new constructorMap.background(background)
+                background = new allConstructorMap.background(background)
             }
             dispatch('poster/history/push', null, { root: true })
             rootState.poster = Object.assign(

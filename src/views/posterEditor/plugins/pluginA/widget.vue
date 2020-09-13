@@ -1,10 +1,8 @@
 <template>
   <div class="plugin-a">
-    <button>1</button>
-    <button>2</button>
-    <button>3</button>
+    <button v-for="item in wState.buttonCount" :key="item">{{ item }}</button>
     <portal v-if="isActive" :to="$data.$controlTarget">
-      <widget-control />
+      <widget-control :item="item" />
     </portal>
   </div>
 </template>

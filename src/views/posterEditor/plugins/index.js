@@ -1,5 +1,5 @@
 import { usePlugin } from './helpers'
-export { pluginMap, pluginWrap } from './helpers'
+export { pluginMap, pluginWrap, pluginConstructorMap } from './helpers'
 
 import pluginA from './pluginA'
 
