@@ -1,23 +1,26 @@
 <template>
   <div class="bottom-bar">
-    <div class="canvas-size">
-      画布大小:
-      <span>{{ `宽${canvasSize.width}px` }}</span>
-      <span>{{ `高${canvasSize.height}px` }}</span>
-      <el-popover
-        placement="top"
-        title="修改画布大小"
-        width="200"
-        trigger="click"
-        transition="el-zoom-in-center"
-      >
-        <change-size />
-        <i
-          slot="reference"
-          class="el-icon-paperclip change-size"
+    <div class="left">
+      <div class="canvas-size">
+        画布大小:
+        <span>{{ `宽${canvasSize.width}px` }}</span>
+        <span>{{ `高${canvasSize.height}px` }}</span>
+        <el-popover
+          placement="top"
           title="修改画布大小"
-        />
-      </el-popover>
+          width="200"
+          trigger="click"
+          transition="el-zoom-in-center"
+        >
+          <change-size />
+          <i
+            slot="reference"
+            class="el-icon-paperclip change-size"
+            title="修改画布大小"
+          />
+        </el-popover>
+      </div>
+      <component :is="item" v-for="item in pluginNames" :key="item" />
     </div>
     <div class="widget-count">
       <span>{{ `元素数量：${posterItemIds.length}` }}</span>
@@ -28,14 +31,25 @@
 <script>
 import { mapState, mapGetters } from 'poster/poster.vuex'
 import changeSize from './changeSize'
+import { pluginMap, pluginWrap } from '../../plugins'
+const pluginComponents = {}
+const pluginNames = []
+for (const [pluginName, options] of Object.entries(pluginMap.bottomBar)) {
+  const { component } = options
+  pluginComponents[pluginName] = pluginWrap(component)
+  pluginNames.push(pluginName)
+}
 export default {
-  components: { changeSize },
+  components: { changeSize, ...pluginComponents },
   data() {
     return {}
   },
   computed: {
     ...mapState(['canvasSize']),
-    ...mapGetters(['posterItemIds'])
+    ...mapGetters(['posterItemIds']),
+    pluginNames() {
+      return pluginNames
+    }
   },
   methods: {}
 }
@@ -58,6 +72,14 @@ export default {
   font-size: 12px;
   color: $colorTextL;
   justify-content: space-between;
+  .left{
+    max-width: 60%;
+    display: flex;
+    align-items: center;
+    &>div{
+      margin-right: 10px;
+    }
+  }
   .canvas-size {
     span {
       padding-left: 2px;

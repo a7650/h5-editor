@@ -734,7 +734,7 @@ export default {
   font-size: 1px;
   border-radius: 50%;
   background: #fff;
-  border: 1px solid $colorTheme;
+  border: 2px solid $colorTheme;
 }
 .handle-rot {
   position: absolute;

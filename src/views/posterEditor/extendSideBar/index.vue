@@ -100,6 +100,18 @@
           <i class="el-icon-set-up" />
         </div>
       </el-tooltip>
+      <el-tooltip
+        v-for="item in plugins"
+        :key="item.name"
+        effect="dark"
+        :content="item.name"
+        placement="left"
+        transition="el-zoom-in-center"
+      >
+        <div class="item">
+          <i :class="item.icon" />
+        </div>
+      </el-tooltip>
     </div>
 
     <el-dialog
@@ -120,6 +132,15 @@ import referenceLine from './referenceLine'
 import settingCenter from './settingCenter'
 import Vue from 'vue'
 import ExportService from 'poster/service/exportService'
+import { pluginMap, pluginWrap } from '../plugins'
+const pluginComponents = {}
+const plugins = []
+for (const [pluginName, options] of Object.entries(pluginMap.extendSideBar)) {
+  const { component } = options
+  pluginComponents[pluginName] = pluginWrap(component)
+  plugins.push(options)
+}
+
 export default {
   components: { referenceLine, settingCenter },
   data() {
@@ -133,7 +154,10 @@ export default {
       couldRedo: (state) => state.history.nextStack.length > 0,
       couldUndo: (state) => state.history.preStack.length > 0,
       useBackup: (state) => state.backup.useBackup
-    })
+    }),
+    plugins() {
+      return Object.freeze(plugins)
+    }
   },
   methods: {
     ...mapActions({
@@ -143,9 +167,7 @@ export default {
     exportH5() {
       ExportService.exportH5()
     },
-    exportPoster() {
-
-    },
+    exportPoster() {},
     // 打开图层面板
     openLayer() {
       this.$store.dispatch('poster/setLayerPanel', !this.layerPanelOpened)
