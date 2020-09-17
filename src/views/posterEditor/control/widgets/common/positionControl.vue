@@ -19,8 +19,7 @@
 </template>
 
 <script>
-import settingContent from '../ui/settingContent'
-import settingItem from '../ui/settingItem'
+import { settingContent, settingItem } from 'poster/commonUI'
 export default {
   components: { settingContent, settingItem },
   props: {

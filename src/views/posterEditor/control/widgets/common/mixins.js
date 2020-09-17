@@ -1,7 +1,4 @@
-import settingContent from '../ui/settingContent'
-import settingItem from '../ui/settingItem'
-import settingRow from '../ui/settingRow'
-import radioGroup from '../ui/radioGroup'
+import { settingContent, settingItem, settingRow, radioGroup } from 'poster/commonUI'
 import positionControl from './positionControl'
 import { mapActions } from 'poster/poster.vuex'
 export const commonMixin = {

@@ -13,9 +13,8 @@
 
 <script>
 import { mapActions, mapState } from 'poster/poster.vuex'
-import settingContent from './ui/settingContent'
-import settingItem from './ui/settingItem'
-import radioGroup from './ui/radioGroup'
+import { settingContent, settingItem, radioGroup } from 'poster/commonUI'
+
 export default {
   components: { settingContent, settingItem, radioGroup },
   data() {

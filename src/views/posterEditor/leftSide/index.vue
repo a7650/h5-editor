@@ -106,22 +106,24 @@ export default {
 .left-side {
   background-color: #fff;
   box-sizing: border-box;
-  border-right: 1px solid rgb(224, 224, 224);
+  /* border-right: 1px solid rgb(224, 224, 224); */
   display: flex;
+  background-color: rgb(59, 59, 59);
   .widget-list {
-    width: 60px;
+    width: 40px;
     height: 100%;
-    border-right: 1px solid rgb(224, 224, 224);
+    border-right: 1px solid rgb(43, 43, 43);
     .widget-item {
       display: block;
-      width: 60px;
-      height: 60px;
+      width: 40px;
+      height: 40px;
       cursor: pointer;
       text-align: center;
-      line-height: 60px;
-      font-size: 24px;
+      line-height: 40px;
+      font-size: 20px;
       transition: 0.2s;
       border-radius: 2px;
+      color: #fff;
       &:hover,
       &.active {
         background-color: $colorTheme;
