@@ -83,6 +83,13 @@ export default {
       return this.item.wState
     }
   },
+  watch: {
+    activeItemIds(newVal) {
+      if (newVal.length > 0) {
+        this.isActive = false
+      }
+    }
+  },
   mounted() {
     this.updateBackgroundDragInfo({
       w: this.canvasSize.width,
