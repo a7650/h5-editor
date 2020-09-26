@@ -4,7 +4,7 @@
       <!-- 纵向参考线 -->
       <div
         v-for="(item, index) in referenceLine.col"
-        :key="'col' + index"
+        :key="'col' + index + item"
         class="reference-line column"
         :style="{ left: item + 'px' }"
         @dblclick="removeReferenceLine({ type: 'col', index })"
@@ -13,7 +13,7 @@
       <!-- 横向参考线 -->
       <div
         v-for="(item, index) in referenceLine.row"
-        :key="'row' + index"
+        :key="'row' + index + item"
         class="reference-line row"
         :style="{ top: item + 'px', ...rowElPositionFix }"
         @dblclick="removeReferenceLine({ type: 'row', index })"
@@ -69,8 +69,8 @@ import ruler from '@/utils/canvasRuler'
 import { mapState, mapActions } from 'poster/poster.vuex'
 import matchedLine from './matchedLine'
 
-const LEFT_SIDE_WIDTH = 260 // 左侧边栏的宽度
-const TOP_RULER_HEIGHT = 22 // 顶部标尺高度
+const LEFT_SIDE_WIDTH = 240 // 左侧边栏的宽度
+const TOP_RULER_HEIGHT = 21 // 顶部标尺高度
 
 export default {
   components: { matchedLine },
@@ -141,7 +141,7 @@ export default {
     },
     leftMouseEnter(e) {
       this.leftMoving = true
-      this.rowY = e.pageY
+      // this.rowY = e.pageY - this.mainPanelScrollY
     },
     leftMouseMove(e) {
       this.rowY = e.pageY - this.mainPanelScrollY
