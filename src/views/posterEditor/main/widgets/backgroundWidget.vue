@@ -200,6 +200,7 @@ export default {
   user-select: none;
   &.solid:hover {
     border-color: transparent !important;
+    box-shadow: none !important;
   }
 }
 </style>

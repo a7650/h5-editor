@@ -702,8 +702,8 @@ export default {
 <style scoped lang="scss">
 .vdrr {
   position: absolute;
-  box-sizing: content-box;
-  border: 1px dashed transparent;
+  /* box-sizing: content-box;
+  border: 1px dashed transparent; */
   /* transition: border .2s; */
   &.dragging,
   &.active,
@@ -711,10 +711,12 @@ export default {
     user-select: none;
   }
   &:hover {
-    border-color: $colorTheme;
+    /* border-color: $colorTheme; */
+    box-shadow: 0 0 0 1px #03A9F4
   }
   &.active {
-    border-color: $colorTheme;
+    /* border-color: $colorTheme; */
+    box-shadow: 0 0 0 1px #03A9F4
   }
   &.active:before {
     content: '';
@@ -734,7 +736,7 @@ export default {
   font-size: 1px;
   border-radius: 50%;
   background: #fff;
-  border: 2px solid $colorTheme;
+  border: 2px solid #03A9F4;
 }
 .handle-rot {
   position: absolute;
