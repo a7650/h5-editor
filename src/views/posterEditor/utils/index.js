@@ -1,4 +1,5 @@
-import html2canvas from 'html2canvas'
+// import html2canvas from 'html2canvas'
+import html2canvas from './html2canvas.min'
 
 /**
  * 获取随机字符串
@@ -147,23 +148,21 @@ export function domToImg(dom, options = {}) {
     return new Promise((resolve, reject) => {
         const baseOptions = {
             width: 0,
-            height: 0,
-            scale: 2
+            height: 0
         }
         options = Object.assign({}, baseOptions, options)
-        const { width, height, scale } = options
+        const { width, height } = options
         try {
             document.body.appendChild(dom)
             html2canvas(dom, {
-                width: width * scale,
-                height: height * scale,
-                scale: 4,
-                dpi: 4,
-                proxy: true,
-                useCORS: true
+                width: width,
+                height: height,
+                // dpi: 192,
+                scale: 2
             })
                 .then(canvas => {
                     const url = canvas.toDataURL()
+                    console.log(url)
                     const _img = document.createElement('img')
                     _img.width = width
                     _img.height = height
@@ -565,5 +564,17 @@ export function parseHtmlStr(originText) {
         return results.children
     }
     return parseHtml(originText)
+}
+
+export function base64ToBlob(base64Str) {
+    var arr = base64Str.split(',')
+    var mime = arr[0].match(/:(.*?);/)[1]
+    var bstr = atob(arr[1])
+    var n = bstr.length
+    var u8arr = new Uint8Array(n)
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n)
+    }
+    return new Blob([u8arr], { type: mime })
 }
 

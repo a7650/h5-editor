@@ -43,7 +43,8 @@ const webpackConfig = {
         threshold: 10240
         // deleteOriginAssets:false
       })
-    ]
+    ],
+    externals: {}
   },
   chainWebpack: config => {
     const oneOfsMap = config.module.rule('scss').oneOfs.store

@@ -167,7 +167,9 @@ export default {
     exportH5() {
       ExportService.exportH5()
     },
-    exportPoster() {},
+    exportPoster() {
+      ExportService.exportPoster()
+    },
     // 打开图层面板
     openLayer() {
       this.$store.dispatch('poster/setLayerPanel', !this.layerPanelOpened)
