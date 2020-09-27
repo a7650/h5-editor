@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import vueDraggableResizable from '@/components/dragable/components/vue-draggable-resizable'
+import vueDraggableResizable from 'poster/components/dragable/components/vue-draggable-resizable'
 import { Widget } from 'poster/widgetConstructor'
 import exportWidgets from '../exportWidgets'
 

@@ -20,6 +20,8 @@ import mainComponent from './main/index'
 import leftSide from './leftSide/index'
 import extendSideBar from './extendSideBar'
 import layerPanel from './extendSideBar/layerPanel'
+import store from '@/store'
+import posterModule from './vuexModule/poster'
 
 const DELETE_KEY = 8 // delete
 const COPY_KEY = 67 // c
@@ -53,8 +55,13 @@ export default {
     ]),
     ...mapGetters(['activeItemIds'])
   },
+  beforeCreate() {
+    /** 注册poster-vuex模块 */
+    store.registerModule('poster', posterModule)
+  },
   async created() {
     this.initLoading = true
+    if (!store.hasModule('poster')) return
     const loading = this.$loading({
       lock: true,
       text: '正在初始化编辑器',

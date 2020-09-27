@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import vueDraggableResizable from '@/components/dragable/components/vue-draggable-resizable'
+import vueDraggableResizable from 'poster/components/dragable/components/vue-draggable-resizable'
 import { mapGetters, mapActions, mapState } from 'poster/poster.vuex'
 import { BackgroundWidget } from 'poster/widgetConstructor'
 

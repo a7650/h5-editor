@@ -1,6 +1,6 @@
 import Widget from './widget'
 import _merge from 'lodash/merge'
-import { createHtmlStr } from '@/utils/posterUtils'
+import { createHtmlStr } from 'poster/utils'
 
 function codeGen(config) {
   const node = {

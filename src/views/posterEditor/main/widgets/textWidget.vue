@@ -2,19 +2,23 @@
   <div class="text-widget">
     <div
       v-if="!isEditing"
+      key="1"
       class="text-container"
       contenteditable="false"
       :style="textStyle"
+      v-html="text"
     >
       {{ text }}
     </div>
     <div
       v-else
+      key="2"
       ref="textContainer"
       v-clickoutside="saveText"
       class="text-container editing"
       contenteditable="true"
       :style="textStyle"
+      v-html="text"
     >
       {{ text }}
     </div>
@@ -64,9 +68,9 @@ export default {
     }
   },
   mounted() {
-  this.$dragRef.$el.addEventListener('dblclick', () => {
-    this.openEditing()
-  })
+    this.$dragRef.$el.addEventListener('dblclick', () => {
+      this.openEditing()
+    })
   },
   methods: {
     ...mapActions(['setWidgetConfig', 'updateWidgetState']),
@@ -77,6 +81,7 @@ export default {
       this.isEditing = true
       this.$nextTick(() => {
         const ref = this.$refs.textContainer
+        if (!ref) return
         const selection = window.getSelection()
         const range = document.createRange()
         range.selectNodeContents(ref)
@@ -87,11 +92,13 @@ export default {
     saveText(text) {
       const ref = text || this.$refs.textContainer
       this.isEditing = false
+      console.log(ref.innerHTML)
       this.updateWidgetState({
         keyPath: 'text',
-        value: ref.innerText,
+        value: ref.innerHTML,
         widgetId: this.item.id
       })
+      console.log(this.text)
     }
   }
 }

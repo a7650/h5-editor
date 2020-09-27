@@ -24,7 +24,7 @@ import _throttle from 'lodash/throttle'
 import rulerComponent from './ruler'
 import { mapMutations, mapState } from 'poster/poster.vuex'
 import bottomBar from './bottomBar'
-import customContextmenu from '@/components/customContextmenu'
+import customContextmenu from 'poster/components/customContextmenu'
 import { clickoutside } from 'poster/poster.directives'
 
 import BScroll from '@better-scroll/core'

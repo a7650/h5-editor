@@ -1,4 +1,4 @@
-import { HoC } from '@/utils/posterUtils'
+import { HoC } from 'poster/utils'
 import store from '@/store'
 import portalVue from 'portal-vue'
 

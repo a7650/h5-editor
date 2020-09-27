@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import ruler from '@/utils/canvasRuler'
+import ruler from 'poster/utils/canvasRuler'
 import { mapState, mapActions } from 'poster/poster.vuex'
 import matchedLine from './matchedLine'
 

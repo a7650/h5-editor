@@ -1,7 +1,7 @@
 import * as MTS from './poster.mutations'
 // import { Message } from 'element-ui'
 import { Widget, BackgroundWidget, CopiedWidget } from 'poster/widgetConstructor'
-import { arrMoveTop, arrMoveUpper, arrMoveLower, arrMoveBottom } from '@/utils/posterUtils'
+import { arrMoveTop, arrMoveUpper, arrMoveLower, arrMoveBottom } from 'poster/utils'
 import _set from 'lodash/set'
 import { changeCompositionPositionHandler } from './helpers'
 import history from './history'
@@ -265,7 +265,6 @@ const actions = {
     },
     updateBackgroundDragInfo({ state }, dragInfo) {
         state.background.dragInfo = Object.assign({}, state.background.dragInfo, dragInfo)
-        console.log(state.background)
     },
     // 更新组件位置、大小等
     updateDragInfo({ state }, { dragInfo, widgetId, updateSelfOnly = false }) {

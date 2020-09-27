@@ -1,5 +1,5 @@
 import DbService from './indexDB'
-import { getRandomStr } from '@/utils/posterUtils'
+import { getRandomStr } from 'poster/utils'
 
 let dbInstance = null
 

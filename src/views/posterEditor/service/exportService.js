@@ -1,5 +1,4 @@
 import store from '@/store'
-import { createHtmlStr } from '@/utils/posterUtils'
 import { saveAs } from 'file-saver'
 
 /**
