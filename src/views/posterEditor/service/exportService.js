@@ -24,7 +24,7 @@ export default class ExportService {
                 return
             }
             if (item._codeGen) {
-                bodyInnerHtml += item._codeGen(item) || ''
+                bodyInnerHtml += item._codeGen(item, 'h5') || ''
             } else if (process.env.NODE_ENV !== 'production') {
                 console.warn(`类型为${item.type}的组件的构造函数未实现"_codeGen"方法`)
             }
@@ -44,7 +44,7 @@ export default class ExportService {
     static exportPoster() {
         const allWidgets = getAllWidgets()
         const background = store.state.poster.background
-        const backgroundHtml = background._codeGen(background)
+        const backgroundHtml = background._codeGen(background, 'poster')
         const canvasSize = store.state.poster.canvasSize
         let bodyInnerHtml = ''
         allWidgets.forEach(item => {

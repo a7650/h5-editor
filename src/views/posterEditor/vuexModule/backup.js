@@ -64,11 +64,15 @@ const actions = {
             state.autoSaveTimer = null
         }
     },
-    async recover({ state, rootState, dispatch }) {
-        if (!state.lastBackup) {
+    /**
+     * 恢复数据
+     * 如果有initialBackupData则使用initialBackupData，否则取上次备份的数据
+     */
+    async recover({ state, rootState, dispatch }, initialBackupData) {
+        if ((!state.lastBackup) && (!initialBackupData)) {
             return
         }
-        const backupData = (await BackupService.getBackupData(state.lastBackup.id)).backupData
+        const backupData = initialBackupData || (await BackupService.getBackupData(state.lastBackup.id)).backupData
         if (backupData) {
             const allConstructorMap = {
                 ...constructorMap,

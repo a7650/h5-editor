@@ -117,7 +117,7 @@ export default {
         return this.style.borderTopLeftRadius
       },
       set(val) {
-        this.updateStyle('borderTopLeftRadius', val, false /** pushHistory */)
+        this.updateStyle('borderTopLeftRadius', val, false /** no pushHistory */)
       }
     },
     inBorderTopRightRadius: {
@@ -125,7 +125,11 @@ export default {
         return this.style.borderTopRightRadius
       },
       set(val) {
-        this.updateStyle('borderTopRightRadius', val, false /** pushHistory */)
+        this.updateStyle(
+          'borderTopRightRadius',
+          val,
+          false /** no pushHistory */
+        )
       }
     },
     inBorderBottomLeftRadius: {
@@ -136,7 +140,7 @@ export default {
         this.updateStyle(
           'borderBottomLeftRadius',
           val,
-          false /** pushHistory */
+          false /** no pushHistory */
         )
       }
     },
@@ -148,7 +152,7 @@ export default {
         this.updateStyle(
           'borderBottomRightRadius',
           val,
-          false /** pushHistory */
+          false /** no pushHistory */
         )
       }
     }

@@ -17,7 +17,6 @@ function parseContent2(originText) {
         let match
         const stack = []
         let last = html
-        let isIgnoreTag = false
         stack.last = function() {
             return this[this.length - 1]
         }
@@ -45,27 +44,20 @@ function parseContent2(originText) {
                     } // start tag
                 } else if (html.indexOf('<') === 0) {
                     match = html.match(startTag)
-                    if (match) {
-                        if (empty[match[1]]) {
-                            html = html.substring(match[0].length)
-                            match[0].replace(startTag, parseStartTag)
-                            chars = false
-                        } else {
-                            isIgnoreTag = true
-                        }
+                    if (match && empty[match[1]]) {
+                        html = html.substring(match[0].length)
+                        match[0].replace(startTag, parseStartTag)
+                        chars = false
                     }
                 }
 
                 if (chars) {
-                    index = html.indexOf('<', isIgnoreTag ? 1 : 0)
+                    index = html.indexOf('<')
                     const text = index < 0 ? html : html.substring(0, index)
                     html = index < 0 ? '' : html.substring(index)
 
                     if (handler.chars) {
                         handler.chars(text)
-                    }
-                    if (isIgnoreTag) {
-                        isIgnoreTag = false
                     }
                 }
             } else {
