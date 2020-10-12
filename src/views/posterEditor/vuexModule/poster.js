@@ -42,6 +42,9 @@ const getters = {
     },
     activeItemIds(state) {
         return state.activeItems.map(item => item.id)
+    },
+    canvasSize(state) {
+        return state.canvasSize
     }
 }
 

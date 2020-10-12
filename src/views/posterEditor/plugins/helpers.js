@@ -49,8 +49,16 @@ const pluginHelpers = {
     },
     updateWidgetState(agrs) { // { keyPath, value, widgetId, pushHistory = true }
         store.dispatch('poster/updateWidgetState', agrs)
+    },
+    getCanvasSize() {
+        return store.getters['poster/canvasSize']
+    },
+    setCanvasSize(agrs) { // {width, height}
+        store.dispatch('poster/setCanvasSize', agrs)
+    },
+    recoverEditorData(agrs /** initialBackupData */) {
+        store.dispatch('poster/backup/recover', agrs)
     }
-
 }
 
 export function pluginWrap(component) {

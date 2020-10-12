@@ -116,6 +116,7 @@ const actions = {
     async invoker({ rootState, rootGetters, dispatch }, openTip = true) {
         const coreData = rootGetters['poster/history/current']
         await BackupService.saveBackupData(coreData)
+        console.log(coreData)
         rootState.poster.backup.lastBackupStepCount = 0
         dispatch('refresh')
         if (openTip) {

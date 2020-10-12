@@ -23,7 +23,7 @@
       </el-form-item>
       <el-form-item label="备份记录">
         <span>{{ `上次备份：${lastBackupTime || '无'}` }}</span>
-        <span v-if="lastBackup" class="recover" @click="recover">恢复数据</span>
+        <span v-if="lastBackup" class="recover" @click="recover(null)">恢复数据</span>
       </el-form-item>
     </el-form>
   </div>

@@ -1,6 +1,6 @@
 <template>
-  <div class="plugin-a">
-    <button v-for="item in wState.buttonCount" :key="item">{{ item }}</button>
+  <div class="activity-form">
+    <input v-model="formName" class="form-name">
     <!-- <portal v-if="isActive" :to="$data.$controlTarget">
       <widget-control :item="item" />
     </portal> -->
@@ -14,8 +14,19 @@ import PluginA from './constructor'
 export default {
   // components: { widgetControl: pluginWrap(widgetControl) },
   mixins: [PluginA.widgetMixin()],
+  props: ['pluginHelpers'],
   data() {
     return {}
+  },
+  computed: {
+    formName: {
+      get() {
+        return this.wState.formName
+      },
+      set(val) {
+        this.pluginHelpers.updateWidgetState('formName', val)
+      }
+    }
   },
   methods: {
     executeContextCommand(command) {
@@ -33,18 +44,28 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.plugin-a {
+.activity-form {
   width: 100%;
   height: 100%;
   color: #000;
-  /* position: relative; */
-  /* z-index: 2; */
+  position: relative;
+  z-index: 2;
   display: flex;
-  button {
-    flex: 1;
-    height: 100%;
-    padding: 0;
-    box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 10px;
+  .form-name {
+    width: 70%;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    background-color: transparent;
+    border: 1px solid $colorBorder;
+    margin: 0 auto;
+    &:focus{
+      border-color: #000;
+    }
   }
 }
 </style>

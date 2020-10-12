@@ -91,7 +91,7 @@ export default class Widget {
     const item = _merge(defaultWidgetConfig(), config, {
       id: uniqueId(config.typeLabel + '-')
     })
-    this._config = item
+    // this._config = item
     Object.keys(item).forEach(key => {
       this[key] = item[key]
     })
