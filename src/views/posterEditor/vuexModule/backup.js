@@ -120,7 +120,7 @@ const actions = {
         rootState.poster.backup.lastBackupStepCount = 0
         dispatch('refresh')
         if (openTip) {
-            Message.success('已保存')
+            Message.success('已备份')
         }
         console.log(`编辑器数据已保存：${new Date()}`)
     }

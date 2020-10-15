@@ -10,6 +10,8 @@
     <transition name="el-zoom-in-center">
       <layer-panel v-if="layerPanelOpened" />
     </transition>
+    <!-- 功能栏 -->
+    <functional-bar />
   </div>
 </template>
 
@@ -19,6 +21,7 @@ import controlComponent from './control/index'
 import mainComponent from './main/index'
 import leftSide from './leftSide/index'
 import extendSideBar from './extendSideBar'
+import functionalBar from './functionalBar'
 import layerPanel from './extendSideBar/layerPanel'
 import store from '@/store'
 import posterModule from './vuexModule/poster'
@@ -38,7 +41,8 @@ export default {
     mainComponent,
     leftSide,
     extendSideBar,
-    layerPanel
+    layerPanel,
+    functionalBar
   },
   data() {
     return {
@@ -76,6 +80,7 @@ export default {
     document.addEventListener('keydown', this.keydownHandle)
     this.body = document.body
     this.mainPanelRef = this.$refs.main.$refs.mainPanel
+    this.$store.commit('poster/SET_ACTIVITY_ID', this.$route.activityId)
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.keydownHandle)

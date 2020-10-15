@@ -9,6 +9,7 @@ import backup from './backup'
 
 function getState() {
     const state = {
+        activityId: '',
         canvasSize: {
             width: 338,
             height: 600
@@ -49,6 +50,9 @@ const getters = {
 }
 
 const mutations = {
+    'SET_ACTIVITY_ID'(state, id) {
+        state.activityId = id
+    },
     'SET_SCROLL_Y'(state, y) {
         state.mainPanelScrollY = y
     },
