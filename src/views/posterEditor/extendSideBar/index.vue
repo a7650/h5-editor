@@ -72,7 +72,7 @@
       </el-tooltip>
       <el-tooltip
         effect="dark"
-        content="生成H5代码"
+        content="生成H5代码（Beta）"
         placement="left"
         transition="el-zoom-in-center"
       >
@@ -80,7 +80,7 @@
           <i class="icon-h5" />
         </div>
       </el-tooltip>
-      <el-tooltip
+      <!-- <el-tooltip
         effect="dark"
         content="生成海报"
         placement="left"
@@ -88,6 +88,16 @@
       >
         <div class="item" @click="exportPoster">
           <i class="icon-poster" />
+        </div>
+      </el-tooltip> -->
+      <el-tooltip
+        effect="dark"
+        content="快捷键参考"
+        placement="left"
+        transition="el-zoom-in-center"
+      >
+        <div class="item" @click="openSettingCenter('shortcut')">
+          <i class="el-icon-thumb" />
         </div>
       </el-tooltip>
       <el-tooltip
@@ -113,10 +123,9 @@
         </div>
       </el-tooltip>
     </div>
-
     <el-dialog
       :visible.sync="settingCenterVisible"
-      title="设置中心"
+      title="设置"
       width="600px"
       append-to-body
       transition="el-zoom-in-center"
@@ -151,9 +160,9 @@ export default {
   computed: {
     ...mapState({
       layerPanelOpened: 'layerPanelOpened',
-      couldRedo: (state) => state.history.nextStack.length > 0,
-      couldUndo: (state) => state.history.preStack.length > 0,
-      useBackup: (state) => state.backup.useBackup
+      couldRedo: state => state.history.nextStack.length > 0,
+      couldUndo: state => state.history.preStack.length > 0,
+      useBackup: state => state.backup.useBackup
     }),
     plugins() {
       return Object.freeze(plugins)

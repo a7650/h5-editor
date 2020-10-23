@@ -23,10 +23,13 @@ const defaultWidgetConfig = () => {
     removable: true, // 是否可删除
     couldAddToActive: true, // 是否可被添加进activeItems
     componentState: null // Function 复制组件时有效，返回结果为为复制时原组件内部的data；componentState.count为复制的次数
+
     /**
      * @property {Int} _copyCount 复制的次数
      * @property {String} _copyFrom 复制来源 command | drag
      * @property {Boolean} _isBackup 是否是通过备份恢复的组件
+     * @property {Int} _widgetCountLimit 该组件的数量限制
+     * @property {Int} _sort 组件图层排序
      */
   }
 }

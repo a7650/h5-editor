@@ -5,6 +5,13 @@
         <el-input v-model.number="maxHistoryStackLength" type="number" />
       </el-form-item>
     </el-form>
+    <!-- title="注意" -->
+    <el-alert
+      type="info"
+      :closable="false"
+      description="若编辑器卡顿，可尝试调低该属性"
+      show-icon
+    />
   </div>
 </template>
 
@@ -16,7 +23,7 @@ export default {
   },
   computed: {
     ...mapState({
-      maxHistory: (state) => state.history.maxHistoryStackLength
+      maxHistory: state => state.history.maxHistoryStackLength
     }),
     maxHistoryStackLength: {
       get() {

@@ -109,7 +109,8 @@ export default {
       width: TOP_RULER_HEIGHT,
       color: '#bac3c9',
       background: '#f4f7f8',
-      startGap: 50 - 1
+      startGap: 50 - 1,
+      maxScale: 501
     })
   },
   methods: {
@@ -162,7 +163,7 @@ export default {
       this.colHandleMoveReady = true
       let invoked = false
       document.body.style.cursor = 'col-resize'
-      const mouseMoveFn = (_e) => {
+      const mouseMoveFn = _e => {
         if (!invoked) {
           this.removeReferenceLine({ type: 'col', index })
           this.topMouseEnter(_e)
@@ -187,7 +188,7 @@ export default {
       this.rowHandleMoveReady = true
       let invoked = false
       document.body.style.cursor = 'row-resize'
-      const mouseMoveFn = (_e) => {
+      const mouseMoveFn = _e => {
         if (!invoked) {
           this.removeReferenceLine({ type: 'row', index })
           this.leftMouseEnter(_e)
@@ -231,7 +232,7 @@ export default {
   top: 0;
   left: 0;
   width: 22px;
-  height: 5000px;
+  height: 6000px;
   z-index: 99;
   /* border-right: 1px solid #bac3c9; */
   cursor: row-resize;

@@ -90,10 +90,10 @@ export default {
     },
     inBorderWidth: {
       get() {
-        return this.style.borderWidth
+        return parseInt(this.style.borderWidth)
       },
       set(val) {
-        this.updateStyle('borderWidth', val)
+        this.updateStyle('borderWidth', val + 'px')
       }
     },
     inBorderStyle: {
@@ -114,44 +114,44 @@ export default {
     },
     inBorderTopLeftRadius: {
       get() {
-        return this.style.borderTopLeftRadius
+        return parseInt(this.style.borderTopLeftRadius)
       },
       set(val) {
-        this.updateStyle('borderTopLeftRadius', val, false /** no pushHistory */)
+        this.updateStyle('borderTopLeftRadius', val + '%', false /** no pushHistory */)
       }
     },
     inBorderTopRightRadius: {
       get() {
-        return this.style.borderTopRightRadius
+        return parseInt(this.style.borderTopRightRadius)
       },
       set(val) {
         this.updateStyle(
           'borderTopRightRadius',
-          val,
+          val + '%',
           false /** no pushHistory */
         )
       }
     },
     inBorderBottomLeftRadius: {
       get() {
-        return this.style.borderBottomLeftRadius
+        return parseInt(this.style.borderBottomLeftRadius)
       },
       set(val) {
         this.updateStyle(
           'borderBottomLeftRadius',
-          val,
+          val + '%',
           false /** no pushHistory */
         )
       }
     },
     inBorderBottomRightRadius: {
       get() {
-        return this.style.borderBottomRightRadius
+        return parseInt(this.style.borderBottomRightRadius)
       },
       set(val) {
         this.updateStyle(
           'borderBottomRightRadius',
-          val,
+          val + '%',
           false /** no pushHistory */
         )
       }

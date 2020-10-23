@@ -26,7 +26,12 @@
         @click.stop="lock"
       />
       <i v-else class="el-icon-lock" title="解除锁定" @click.stop="unlock" />
-      <i class="el-icon-view" title="隐藏" @click.stop="hide" />
+      <i
+        class="el-icon-view"
+        title="隐藏"
+        :class="{ hide: !item.visible }"
+        @click.stop="hide"
+      />
     </div>
   </div>
 </template>
@@ -145,6 +150,26 @@ export default {
     }
     .el-icon-lock {
       color: #fff;
+    }
+    .el-icon-view {
+      position: relative;
+      &::after{
+        content: "";
+        display: block;
+        position: absolute;
+        width: 0;
+        height: 1px;
+        border-radius: 2px;
+        background-color: currentColor;
+        top: 0;
+        left: 0;
+        transform: rotateZ(36deg);
+        transform-origin: top left;
+        transition: .2s;
+      }
+      &.hide::after {
+        width: 18px;
+      }
     }
     .remove {
       display: none;

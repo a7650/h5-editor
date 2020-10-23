@@ -13,6 +13,8 @@
 <script>
 import { mapActions } from 'poster/poster.vuex'
 import { ImageWidget } from '../../widgetConstructor'
+import { validateImage } from '@/utils/imageHelpers'
+import { uploadActivityImgAssets } from '@/api/activity'
 export default {
   data() {
     return {}
@@ -22,23 +24,18 @@ export default {
     selectImgHandler() {
       this.$refs.input.click()
     },
-    selectImg({ currentTarget: inputNode }) {
-      const file = inputNode.files
-      let imgData = file
-      const reader = new FileReader()
-      reader.onload = () => {
-        this.addImage({
-          src: reader.result
-        })
+    async selectImg({ currentTarget: inputNode }) {
+      try {
+        const file = inputNode.files
+        const imgFile = file && file[0]
+        await validateImage(imgFile)
+        const src = await uploadActivityImgAssets(imgFile)
+        this.addImage({ src })
+      } catch (e) {
+        console.error(e)
+      } finally {
+        inputNode.value = ''
       }
-      if (imgData && (imgData = imgData[0])) {
-        if (!/image/.test(imgData.type)) {
-          alert('请选择图片文件')
-        } else {
-          reader.readAsDataURL(imgData)
-        }
-      }
-      inputNode.value = ''
     },
     addImage({ src }) {
       this.addItem(new ImageWidget({ wState: { src }}))

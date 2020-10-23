@@ -7,11 +7,9 @@
       <control-component />
     </div>
     <!-- 图层面板 -->
-    <transition name="el-zoom-in-center">
-      <layer-panel v-if="layerPanelOpened" />
+    <transition name="el-zoom-in-top">
+      <layer-panel v-show="layerPanelOpened" />
     </transition>
-    <!-- 功能栏 -->
-    <functional-bar />
   </div>
 </template>
 
@@ -21,7 +19,6 @@ import controlComponent from './control/index'
 import mainComponent from './main/index'
 import leftSide from './leftSide/index'
 import extendSideBar from './extendSideBar'
-import functionalBar from './functionalBar'
 import layerPanel from './extendSideBar/layerPanel'
 import store from '@/store'
 import posterModule from './vuexModule/poster'
@@ -41,8 +38,7 @@ export default {
     mainComponent,
     leftSide,
     extendSideBar,
-    layerPanel,
-    functionalBar
+    layerPanel
   },
   data() {
     return {
@@ -55,17 +51,34 @@ export default {
       'layerPanelOpened',
       'activeItems',
       'copiedWidgets',
-      'referenceLineOpened'
+      'referenceLineOpened',
+      'isUnsavedState'
     ]),
     ...mapGetters(['activeItemIds'])
   },
+  beforeRouteLeave(to, from, next) {
+    if (this.isUnsavedState) {
+      const answer = window.confirm(
+        '当前页面配置未保存,退出将不会保存,是否继续退出？'
+      )
+      if (answer) {
+        next()
+      } else {
+        next(false)
+      }
+    } else {
+      next()
+    }
+  },
   beforeCreate() {
-    /** 注册poster-vuex模块 */
-    store.registerModule('poster', posterModule)
+    if (!store.hasModule('poster')) {
+      /** 注册poster-vuex模块 */
+      store.registerModule('poster', posterModule)
+    }
   },
   async created() {
     this.initLoading = true
-    if (!store.hasModule('poster')) return
+    // if (!store.hasModule('poster')) return
     const loading = this.$loading({
       lock: true,
       text: '正在初始化编辑器',
@@ -80,7 +93,6 @@ export default {
     document.addEventListener('keydown', this.keydownHandle)
     this.body = document.body
     this.mainPanelRef = this.$refs.main.$refs.mainPanel
-    this.$store.commit('poster/SET_ACTIVITY_ID', this.$route.activityId)
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.keydownHandle)
@@ -115,7 +127,7 @@ export default {
           if (this.activeItemIds.length > 0) {
             this.replacePosterItems(
               this.posterItems.filter(
-                (item) => !this.activeItemIds.includes(item.id)
+                item => !this.activeItemIds.includes(item.id)
               )
             )
           }
@@ -133,7 +145,7 @@ export default {
             // const widgetRef = widgetRefs[itemId][0]
             // copiedWidgets.push(getCopyData(widgetRef.item, widgetRef._self))
             // })
-            const copiedWidgets = [...this.activeItems].map((item) => {
+            const copiedWidgets = [...this.activeItems].map(item => {
               item._copyFrom = 'command'
               return item
             })
@@ -173,6 +185,7 @@ export default {
 <style lang="scss" scoped>
 .poster-editor {
   width: 100%;
+  min-width: 900px;
   height: 100%;
   background-color: #fff;
   position: fixed;

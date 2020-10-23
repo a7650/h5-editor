@@ -8,6 +8,7 @@
     @mousedown.prevent.stop=""
   >
     <!-- marginLeft: -canvasSize.width / 2 + 'px' -->
+
     <background-widget
       v-if="background"
       :key="background.id"
@@ -34,7 +35,7 @@
 </template>
 
 <script>
-import { mapState } from '../poster.vuex'
+import { mapState, mapMutations } from '../poster.vuex'
 import widgetContainer from './widgets/widgetContainer'
 import backgroundWidget from './widgets/backgroundWidget'
 import drawRectWidget from './assistWidgets/drawRectWidget'
@@ -48,9 +49,15 @@ export default {
     return {}
   },
   computed: {
-    ...mapState(['posterItems', 'canvasSize', 'background', 'assistWidgets'])
-  },
-  methods: {}
+    ...mapState([
+      'posterItems',
+      'canvasSize',
+      'background',
+      'assistWidgets',
+      'pageTitle'
+    ])
+
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -64,7 +71,7 @@ export default {
   box-shadow: 0 0 6px rgba($color: #000000, $alpha: 0.1);
   transition-property: height;
   transition: 0.4s;
-  cursor:initial;
+  cursor: initial;
   .poster-item-container {
     /* position: absolute;
     top: 0; */

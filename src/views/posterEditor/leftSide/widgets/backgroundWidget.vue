@@ -32,6 +32,9 @@
 <script>
 import { mapActions, mapState } from 'poster/poster.vuex'
 import { BackgroundWidget } from '../../widgetConstructor'
+import { uploadActivityImgAssets } from '@/api/activity'
+import { validateImage } from '@/utils/imageHelpers'
+
 export default {
   data() {
     return {
@@ -86,28 +89,25 @@ export default {
     selectImgHandler() {
       this.$refs.input.click()
     },
-    selectImg({ currentTarget: inputNode }) {
-      const file = inputNode.files
-      let imgData = file
-      const reader = new FileReader()
-      reader.onload = () => {
+    async selectImg({ currentTarget: inputNode }) {
+      try {
+        const file = inputNode.files
+        const imgFile = file && file[0]
+        await validateImage(imgFile)
+        const src = await uploadActivityImgAssets(imgFile)
         this.addBackground(
           new BackgroundWidget({
             wState: {
-              src: reader.result,
+              src,
               isSolid: false
             }
           })
         )
+      } catch (e) {
+        console.error(e)
+      } finally {
+        inputNode.value = ''
       }
-      if (imgData && (imgData = imgData[0])) {
-        if (!/image/.test(imgData.type)) {
-          alert('请选择图片文件')
-        } else {
-          reader.readAsDataURL(imgData)
-        }
-      }
-      inputNode.value = ''
     }
   }
 }

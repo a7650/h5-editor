@@ -50,6 +50,9 @@ const pluginHelpers = {
     updateWidgetState(agrs) { // { keyPath, value, widgetId, pushHistory = true }
         store.dispatch('poster/updateWidgetState', agrs)
     },
+    updateDragInfo(agrs) {
+        store.dispatch('poster/updateDragInfo', agrs)
+    },
     getCanvasSize() {
         return store.getters['poster/canvasSize']
     },

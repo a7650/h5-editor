@@ -1,3 +1,9 @@
+// 页面设置
+export const SET_ACTIVITY_ID = 'SET_ACTIVITY_ID'
+export const SET_PAGE_CONFIG_ID = 'SET_PAGE_CONFIG_ID'
+export const SET_UNSAVED_STATE = 'SET_UNSAVED_STATE'
+export const SET_PAGE_TITLE = 'SET_PAGE_TITLE'
+
 // 画布设置
 export const SET_CANVAS_SIZE = 'SET_CANVAS_SIZE'
 export const SET_CANVAS_POSITION = 'SET_CANVAS_POSITION'

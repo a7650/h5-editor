@@ -5,13 +5,7 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    redirect: '/posterEditor'
-  },
-  {
-    path: '/posterEditor',
-    name: 'posterEditor',
-    component: () => import('@/views/posterEditor')
+    path: '/'
   }
 ]
 

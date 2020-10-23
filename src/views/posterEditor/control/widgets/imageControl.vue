@@ -1,7 +1,7 @@
 <template>
   <div class="image-control">
     <el-collapse v-model="activeNames">
-      <el-collapse-item name="image">
+      <!-- <el-collapse-item name="image">
         <template #title>
           <div class="header">
             图片
@@ -10,7 +10,7 @@
         <div class="setting-content">
           #tupian
         </div>
-      </el-collapse-item>
+      </el-collapse-item> -->
       <el-collapse-item name="position">
         <template #title>
           <div class="header">

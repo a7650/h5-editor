@@ -18,14 +18,25 @@
           />
         </el-select>
         <div v-if="!autoSaveDivision" style="font-size:12px">
-          系统会在合适的时机进行备份
+          系统会根据你的操作自动进行备份
         </div>
       </el-form-item>
       <el-form-item label="备份记录">
-        <span>{{ `上次备份：${lastBackupTime || '无'}` }}</span>
-        <span v-if="lastBackup" class="recover" @click="recover(null)">恢复数据</span>
+        <span>{{ `上次备份：${lastBackupTime || "无"}` }}</span>
+        <span
+          v-if="lastBackup"
+          class="recover"
+          @click="recover(null)"
+        >恢复数据</span>
       </el-form-item>
     </el-form>
+    <el-alert
+      title="注意"
+      type="warning"
+      :closable="false"
+      description="由于数据保存在本地，更换浏览器或清除缓存将会失去备份的数据"
+      show-icon
+    />
   </div>
 </template>
 
@@ -60,8 +71,8 @@ export default {
   },
   computed: {
     ...mapState({
-      _autoSave: (state) => state.backup.autoSave,
-      _autoSaveDivision: (state) => state.backup.autoSaveDivision,
+      _autoSave: state => state.backup.autoSave,
+      _autoSaveDivision: state => state.backup.autoSaveDivision,
       lastBackup: state => state.backup.lastBackup
     }),
     autoSave: {

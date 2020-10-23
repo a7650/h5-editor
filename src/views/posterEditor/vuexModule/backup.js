@@ -115,14 +115,13 @@ const actions = {
     // 执行备份操作
     async invoker({ rootState, rootGetters, dispatch }, openTip = true) {
         const coreData = rootGetters['poster/history/current']
-        await BackupService.saveBackupData(coreData)
-        console.log(coreData)
+        await BackupService.saveBackupData({ ...coreData, canvasSize: rootState.poster.canvasSize })
         rootState.poster.backup.lastBackupStepCount = 0
         dispatch('refresh')
         if (openTip) {
             Message.success('已备份')
         }
-        console.log(`编辑器数据已保存：${new Date()}`)
+        console.log(`编辑器数据已备份：${new Date()}`)
     }
 }
 

@@ -47,6 +47,7 @@ const actions = {
         }
         state.nextStack = []
         state.lastBackupStepCount += 1
+        dispatch('poster/setUnsavedState', true, { root: true })
         if (rootGetters['poster/backup/smartBackup'] && state.lastBackupStepCount > 10) {
             dispatch('poster/backup/invoker', false/** close tip */, { root: true })
         }

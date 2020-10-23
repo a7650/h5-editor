@@ -26,7 +26,7 @@ export default class BackgroundWidget extends Widget {
       typeLabel: '背景',
       componentName: 'background-widget',
       icon: 'icon-background',
-      lock: false,
+      lock: true,
       visible: true,
       couldAddToActive: false,
       replicable: false,

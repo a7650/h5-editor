@@ -19,14 +19,7 @@ export default {
   },
   computed: {
     rectStyleFilter() {
-      const style = this.wState.style
-      return Object.assign({}, style, {
-        borderWidth: style.borderWidth + 'px',
-        borderTopLeftRadius: style.borderTopLeftRadius + '%',
-        borderTopRightRadius: style.borderTopRightRadius + '%',
-        borderBottomLeftRadius: style.borderBottomLeftRadius + '%',
-        borderBottomRightRadius: style.borderBottomRightRadius + '%'
-      })
+      return this.wState.style
     }
   },
   methods: {}

@@ -13,11 +13,15 @@
           transition="el-zoom-in-center"
         >
           <change-size />
-          <i
+          <button slot="reference" title="编辑画布" class="change-size">
+            <i class="el-icon-s-tools" />
+            编辑画布
+          </button>
+          <!-- <i
             slot="reference"
             class="el-icon-paperclip change-size"
             title="修改画布大小"
-          />
+          /> -->
         </el-popover>
       </div>
       <component :is="item" v-for="item in pluginNames" :key="item" />
@@ -72,11 +76,12 @@ export default {
   font-size: 12px;
   color: $colorTextL;
   justify-content: space-between;
-  .left{
-    max-width: 60%;
+  .left {
+    max-width: 70%;
     display: flex;
     align-items: center;
-    &>div{
+    flex-wrap: no-wrap;
+    & > div {
       margin-right: 10px;
     }
   }
@@ -84,14 +89,19 @@ export default {
     span {
       padding-left: 2px;
     }
-    .change-size {
+    .change-size{
+      font-size: 12px;
+      background-color: none;
+      border: 1px solid $colorBorder;
+    }
+    /* .change-size {
       font-size: 16px;
       margin-left: 4px;
       cursor: pointer;
       &:hover {
         color: #000;
       }
-    }
+    } */
   }
   .widget-count {
   }

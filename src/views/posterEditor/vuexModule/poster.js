@@ -2,14 +2,19 @@ import * as MTS from './poster.mutations'
 // import { Message } from 'element-ui'
 import { Widget, BackgroundWidget, CopiedWidget } from 'poster/widgetConstructor'
 import { arrMoveTop, arrMoveUpper, arrMoveLower, arrMoveBottom } from 'poster/utils'
+import { isPlainObject } from '@/utils'
 import _set from 'lodash/set'
 import { changeCompositionPositionHandler } from './helpers'
 import history from './history'
 import backup from './backup'
+import { addActivityPageConfig } from '@/api/activity'
+import { Message } from 'element-ui'
 
 function getState() {
     const state = {
         activityId: '',
+        pageConfigId: '',
+        pageTitle: '',
         canvasSize: {
             width: 338,
             height: 600
@@ -22,7 +27,7 @@ function getState() {
         posterItems: [], // 组件列表
         activeItems: [], // 当前选中的组件
         assistWidgets: [], // 辅助组件
-        layerPanelOpened: false, // 是否打开图层面板
+        layerPanelOpened: true, // 是否打开图层面板
         referenceLineOpened: true, // 是否打开参考线
         copiedWidgets: null, // 当前复制的组件 WidgetItem[]
         referenceLine: { // 参考线,用户定义的参考线
@@ -30,7 +35,8 @@ function getState() {
             col: []
         },
         matchedLine: null, // 匹配到的参考线 {row:[],col:[]}
-        mainPanelScrollY: 0
+        mainPanelScrollY: 0,
+        isUnsavedState: false // 是否处于未保存状态
     }
     return state
 }
@@ -46,12 +52,22 @@ const getters = {
     },
     canvasSize(state) {
         return state.canvasSize
+    },
+    activityId(state) {
+        return state.activityId
     }
 }
 
 const mutations = {
-    'SET_ACTIVITY_ID'(state, id) {
+    [MTS.SET_ACTIVITY_ID](state, id) {
         state.activityId = id
+    },
+    [MTS.SET_PAGE_CONFIG_ID](state, id) {
+        state.pageConfigId = id
+    },
+    [MTS.SET_PAGE_TITLE](state, title) {
+        state.pageTitle = title
+        state.isUnsavedState = true
     },
     'SET_SCROLL_Y'(state, y) {
         state.mainPanelScrollY = y
@@ -65,11 +81,7 @@ const mutations = {
         }
     },
     [MTS.REMOVE_BACKGROUND](state) {
-        state.background = new BackgroundWidget({
-            backgroundColor: '#fff',
-            isSolid: true,
-            lock: true
-        })
+        state.background = new BackgroundWidget()
     },
     [MTS.SET_BACKGROUND_CONFIG](state, cb) {
         if (state.background) {
@@ -175,7 +187,11 @@ const mutations = {
     },
     [MTS.REMOVE_MATCHED_LINE](state) {
         state.matchedLine = null
+    },
+    [MTS.SET_UNSAVED_STATE](state, flag = false) {
+        state.isUnsavedState = flag
     }
+
 }
 
 const actions = {
@@ -190,6 +206,9 @@ const actions = {
                 resolve()
             }, 500)
         })
+    },
+    setUnsavedState({ commit }, flag) {
+        commit(MTS.SET_UNSAVED_STATE, flag)
     },
     setCanvasSize({ state, dispatch }, data) {
         // dispatch('history/push')
@@ -216,7 +235,15 @@ const actions = {
             background.dragInfo.h = state.canvasSize.height
         }
     },
-    addItem({ commit, dispatch }, item) {
+    addItem({ commit, dispatch, state }, item) {
+        const widgetCountLimit = parseInt(item._widgetCountLimit)
+        if (widgetCountLimit) {
+            const currentCount = (state.posterItems.filter(i => i.type === item.type)).length
+            if (currentCount >= widgetCountLimit) {
+                Message.error(`<${item.typeLabel || item.type}>类型的组件最多有${widgetCountLimit}个`)
+                return
+            }
+        }
         if (item instanceof Widget) {
             dispatch('history/push')
             if (!(item instanceof CopiedWidget)) {
@@ -398,6 +425,88 @@ const actions = {
     },
     removeMatchedLine({ commit }) {
         commit(MTS.REMOVE_MATCHED_LINE)
+    },
+    /**
+     * 更新当前页面配置
+     * 参数pageConfig是从后台获取到的页面配置信息
+     */
+    updatePageConfig({ dispatch, state, commit }, pageConfig) {
+        let recoverData = {}
+        if (!pageConfig || !isPlainObject(pageConfig)) {
+            commit(MTS.SET_PAGE_CONFIG_ID, '')
+            recoverData = {
+                background: new BackgroundWidget(),
+                posterItems: [],
+                referenceLine: getState().referenceLine
+            }
+        } else {
+            commit(MTS.SET_PAGE_CONFIG_ID, pageConfig.pageConfigId)
+            const baseConfig = JSON.parse(pageConfig.config)
+            const posterItems = pageConfig.items
+            let background
+            try {
+                const backgroundItem = posterItems.splice(
+                    posterItems.findIndex(i => i.type === 'background'), 1
+                )[0]
+                if (backgroundItem) {
+                    background = JSON.parse(backgroundItem.config)
+                }
+            } catch (e) {
+                console.error(e)
+                background = new BackgroundWidget()
+            }
+            const defaultState = getState()
+            recoverData = {
+                background,
+                posterItems: posterItems.map(item => JSON.parse(item.config)),
+                referenceLine: baseConfig.referenceLine || defaultState.referenceLine,
+                canvasSize: baseConfig.canvasSize || defaultState.canvasSize,
+                pageTitle: pageConfig.title || ''
+            }
+        }
+        dispatch('backup/recover', recoverData)
+        commit(MTS.SET_UNSAVED_STATE, false)
+    },
+    /**
+     * 保存/新增当前的活动页配置
+     */
+    saveActivityPageConfig({ state, commit, rootGetters }) {
+        const requestData = {
+            title: state.pageTitle,
+            // baseConfig
+            config: JSON.stringify({
+                referenceLine: state.referenceLine,
+                canvasSize: state.canvasSize
+            }),
+            items: [
+                {
+                    type: state.background.type,
+                    content: '',
+                    config: JSON.stringify(state.background)
+                },
+                ...state.posterItems.map((item, index) => {
+                    return {
+                        type: item.type,
+                        content: '',
+                        config: JSON.stringify({
+                            ...item,
+                            _sort: index + 1
+                        })
+                    }
+                })
+            ]
+        }
+        return addActivityPageConfig(requestData).then(
+            res => {
+                Message.success('保存成功')
+                commit(MTS.SET_UNSAVED_STATE, false)
+                return res
+            },
+            () => {
+                Message.error('保存失败')
+                return Promise.reject()
+            }
+        )
     }
 }
 
