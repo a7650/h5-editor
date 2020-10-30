@@ -1,11 +1,23 @@
 <template>
   <div class="functional-bar">
     <ul>
+      <li class="github">
+        <el-tooltip
+          effect="dark"
+          content="希望大佬们能给我点颗星⭐"
+          placement="bottom"
+          transition="el-zoom-in-center"
+        >
+          <span>
+            <a href="https://github.com/a7650/h5-editor" target="blank">GitHub</a>
+          </span>
+        </el-tooltip>
+      </li>
       <li @click="savePage">
         <i class="el-icon-upload" />
         <span>
           <el-badge is-dot :hidden="!isUnsavedState">
-            {{ savePageLoading ? "正在保存" : "保存页面" }}
+            {{ savePageLoading ? '正在保存' : '保存页面' }}
           </el-badge>
         </span>
       </li>
@@ -54,16 +66,19 @@ export default {
   position: absolute;
   top: 26px;
   right: 4px;
-  padding: 4px 10px;
+  padding: 0 10px;
   box-shadow: 0 0 6px rgba($color: #000000, $alpha: 0.2);
   z-index: 999;
+  height: 24px;
   ul {
     /* padding: 2px 0; */
     /* height: 22px; */
+    height: 100%;
   }
   li {
     user-select: none;
     cursor: pointer;
+    height: 100%;
     color: #9099a4;
     float: left;
     display: flex;
@@ -83,6 +98,9 @@ export default {
     span {
       font-size: 14px;
     }
+  }
+  .github{
+    color: #fff;
   }
 }
 </style>
