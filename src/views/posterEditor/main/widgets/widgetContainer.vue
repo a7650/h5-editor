@@ -36,12 +36,12 @@
 
 <script>
 import vueDraggableResizable from 'poster/components/dragable/components/vue-draggable-resizable'
-import { Widget } from 'poster/widgetConstructor'
+import { widgetContainerMixin } from 'poster/widgetConstructor/widget'
 import exportWidgets from '../exportWidgets'
 
 export default {
   components: { vueDraggableResizable, ...exportWidgets },
-  mixins: [Widget.superMixin()],
+  mixins: [widgetContainerMixin()],
   data() {
     return {
       draggable: true

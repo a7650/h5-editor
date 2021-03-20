@@ -1,9 +1,13 @@
 <template>
   <div class="poster-editor" :class="{ 'init-loading': initLoading }">
     <div class="base">
+      <!-- 左侧添加组件栏 -->
       <left-side />
+      <!-- 主要操作区域 -->
       <main-component ref="main" />
+      <!-- 常用功能栏 -->
       <extend-side-bar />
+      <!-- 组件编辑区域 -->
       <control-component />
     </div>
     <!-- 图层面板 -->
