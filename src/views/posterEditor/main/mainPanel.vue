@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from '../poster.vuex'
+import { mapState } from '../poster.vuex'
 import widgetContainer from './widgets/widgetContainer'
 import backgroundWidget from './widgets/backgroundWidget'
 import drawRectWidget from './assistWidgets/drawRectWidget'
