@@ -25,7 +25,7 @@ import leftSide from './leftSide/index'
 import extendSideBar from './extendSideBar'
 import layerPanel from './extendSideBar/layerPanel'
 import store from '@/store'
-import posterModule from './vuexModule/poster'
+import posterModule from '@/store/modules/poster/poster'
 
 const DELETE_KEY = 8 // delete
 const COPY_KEY = 67 // c
