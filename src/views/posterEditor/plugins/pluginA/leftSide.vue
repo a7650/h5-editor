@@ -7,10 +7,10 @@
 <script>
 import PluginA from './constructor'
 export default {
-  props: ['pluginHelpers'],
   methods: {
     add() {
-      this.pluginHelpers.addWidget(new PluginA())
+      console.log(this)
+      this.$pluginHelpers.addWidget(new PluginA())
     }
   }
 }

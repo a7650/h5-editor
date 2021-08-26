@@ -1,18 +1,18 @@
 <template>
   <div class="plugin-a">
     <button v-for="item in wState.buttonCount" :key="item">{{ item }}</button>
-    <!-- <portal v-if="isActive" :to="$data.$controlTarget">
+    <portal v-if="isActive" :to="$data.$controlTarget">
       <widget-control :item="item" />
-    </portal> -->
+    </portal>
   </div>
 </template>
 
 <script>
 import PluginA from './constructor'
-// import widgetControl from './widgetControl'
-// import { pluginWrap } from '../helpers'
+import widgetControl from './widgetControl'
+import { pluginWrap } from '../helpers'
 export default {
-  // components: { widgetControl: pluginWrap(widgetControl) },
+  components: { widgetControl: pluginWrap(widgetControl) },
   mixins: [PluginA.widgetMixin()],
   data() {
     return {}
