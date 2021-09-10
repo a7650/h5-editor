@@ -13,7 +13,7 @@ const defaultWidgetConfig = () => {
     icon: '', // 图标class
     wState: {}, // 组件内部状态数据，样式属性等信息
     dragInfo: { w: 100, h: 100, x: 0, y: 0, rotateZ: 0 }, // 组件的位置、大小、旋转角度
-    rename: '', // typeLabel重命名
+    rename: '', // typeLabel重命名 （图层面板item双击）
     lock: false, // 是否处于锁定状态
     visible: true, // 是否可见
     initHook: null, // Function 组件初始化时候（created）执行
@@ -40,7 +40,12 @@ function getBaseMenuList() {
   return baseMenuList
 }
 
-function getReferenceLineMap(canvasSize, canvasPosition, userLine/** 用户定义的referenceLine */, dragItemPosition) {
+function getReferenceLineMap(
+  canvasSize,
+  canvasPosition,
+  userLine /** 用户定义的referenceLine */,
+  dragItemPosition
+) {
   const { width, height } = canvasSize
   const { top, left } = canvasPosition
   if (!store.state.poster.referenceLineOpened) {
@@ -56,7 +61,7 @@ function getReferenceLineMap(canvasSize, canvasPosition, userLine/** 用户定�
     row: [],
     col: []
   }
-  Object.values(dragItemPosition).forEach(dragInfo => {
+  Object.values(dragItemPosition).forEach((dragInfo) => {
     if (dragInfo) {
       const { x, y, w, h } = dragInfo
       widgetLine.row.push(y, parseInt(y + h / 2), y + h)
@@ -64,28 +69,30 @@ function getReferenceLineMap(canvasSize, canvasPosition, userLine/** 用户定�
     }
   })
   const finalReferenceLine = {
-    row: [
-      ...referenceLine.row.map(i => (i - top)),
-      ...widgetLine.row
-    ],
-    col: [
-      ...referenceLine.col.map(i => (i - left)),
-      ...widgetLine.col
-    ]
+    row: [...referenceLine.row.map((i) => i - top), ...widgetLine.row],
+    col: [...referenceLine.col.map((i) => i - left), ...widgetLine.col]
   }
   const referenceLineMap = {
     row: finalReferenceLine.row.reduce((pre, cur) => {
-      return Object.assign(pre, { [cur]: { min: cur - 5, max: cur + 5, value: cur }})
+      return Object.assign(pre, {
+        [cur]: { min: cur - 5, max: cur + 5, value: cur }
+      })
     }, {}),
     col: finalReferenceLine.col.reduce((pre, cur) => {
-      return Object.assign(pre, { [cur]: { min: cur - 5, max: cur + 5, value: cur }})
+      return Object.assign(pre, {
+        [cur]: { min: cur - 5, max: cur + 5, value: cur }
+      })
     }, {})
   }
   return referenceLineMap
 }
 
 function updateDragInfo(dragInfo, updateSelfOnly = false) {
-  this.$store.dispatch('poster/updateDragInfo', { dragInfo, widgetId: this.item.id, updateSelfOnly })
+  this.$store.dispatch('poster/updateDragInfo', {
+    dragInfo,
+    widgetId: this.item.id,
+    updateSelfOnly
+  })
 }
 
 // 组件父类
@@ -95,243 +102,21 @@ export default class Widget {
       id: uniqueId(config.typeLabel + '-')
     })
     // this._config = item
-    Object.keys(item).forEach(key => {
+    Object.keys(item).forEach((key) => {
       this[key] = item[key]
     })
   }
 
-  // 组件容器mixin
-  static superMixin(options) {
-    options = Object.assign({}, {}, options)
-
-    let hasCopiedOnDrag = false // 拖动过程中是否执行过复制
-    let canvasSize = null
-    let canvasPosition = null
-    let referenceLineMap = null // 参考线位置（相对于画布的位置）{col:[],row:[]}
-    return {
-      data() {
-        return {
-          isActive: false
-        }
-      },
-      props: {
-        /**
-         * widgetConfig
-         */
-        item: {
-          type: Object,
-          default() {
-            return {}
-          }
-        }
-      },
-      computed: {
-        ...mapGetters(['activeItemIds']),
-        wState() {
-          return this.item.wState
-        },
-        dragInfo: {
-          get() {
-            return this.item.dragInfo
-          },
-          set(val) {
-            this.updateDragInfo(val)
-          }
-        }
-      },
-      beforeDestroy() {
-        delete dragItemPosition[this.item.id]
-      },
-      watch: {
-        activeItemIds: {
-          handler(newVal) {
-            if (this.item.couldAddToActive) {
-              this.isActive = newVal.includes(this.item.id)
-            }
-          },
-          immediate: true
-        }
-      },
-      mounted() {
-        this.dragRef = this.$refs.drag
-        dragItemPosition[this.item.id] = this.dragInfo
-      },
-      methods: {
-        ...mapActions(
-          [
-            'addActiveItem',
-            'replaceActiveItems',
-            'removeActiveItem',
-            'setMatchedLine',
-            'removeMatchedLine'
-          ]
-        ),
-        activated(e) {
-          this.isActive = true
-          if (e) {
-            if (e.ctrlKey) {
-              this.addActiveItem(this.item)
-            } else {
-              this.replaceActiveItems([this.item])
-            }
-          }
-        },
-        deactivated() {
-          this.isActive = false
-          this.removeActiveItem(this.item)
-        },
-        onResize(x, y, w, h) {
-          if (!this.resizing) {
-            this.resizing = true
-            store.dispatch('poster/history/push')
-          }
-          this.updateDragInfo({ x, y, w, h })
-          dragItemPosition[this.item.id] = this.dragInfo
-          // this.onDrag(x, y)
-        },
-        onResizeStop() {
-          this.resizing = false
-        },
-        onDrag(x, y, e) {
-          if (!this.moving) {
-            this.moving = true
-            store.dispatch('poster/history/push')
-          }
-          // ctrl快捷键拖动复制
-          if (!hasCopiedOnDrag && e && e.ctrlKey) {
-            const lastCopiedWidgets = store.state.poster.copiedWidgets
-            // const copyData = getCopyData(this.item, this.$refs.widget)
-            const copyData = this.item
-            copyData._copyFrom = 'drag'
-            store.dispatch('poster/copyWidget', copyData)
-            store.dispatch('poster/pasteWidget')
-            store.dispatch('poster/copyWidget', lastCopiedWidgets) // 恢复之前复制的组件
-            hasCopiedOnDrag = true
-          }
-          // 参考线吸附对齐
-          if (!e.altKey) {
-            canvasSize = canvasSize || store.state.poster.canvasSize
-            canvasPosition = canvasPosition || store.state.poster.canvasPosition
-            if (!referenceLineMap) {
-              referenceLineMap = getReferenceLineMap(
-                canvasSize,
-                canvasPosition,
-                store.state.poster.referenceLine,
-                Object.assign({}, dragItemPosition, { [this.item.id]: null })
-              )
-            }
-            const maxX = x + this.dragInfo.w
-            const maxY = y + this.dragInfo.h
-            const widgetSelfLine = {
-              row: [y, parseInt((y + maxY) / 2), maxY], // left - center - right
-              col: [x, parseInt((x + maxX) / 2), maxX]
-            }
-            let newX = null
-            let newY = null
-            const matchedLine = {
-              row: widgetSelfLine.row
-                .map((i, index) => {
-                  let match = null
-                  Object.values(referenceLineMap.row).forEach(referItem => {
-                    if (i >= referItem.min && i <= referItem.max) {
-                      match = referItem.value
-                    }
-                  })
-                  if (match !== null) {
-                    if (index === 0) {
-                      newY = match
-                    } else if (index === 1) {
-                      newY = parseInt(match - this.dragInfo.h / 2)
-                    } else if (index === 2) {
-                      newY = parseInt(match - this.dragInfo.h)
-                    }
-                  }
-                  return match
-                })
-                .filter(i => i !== null),
-              col: widgetSelfLine.col
-                .map((i, index) => {
-                  let match = null
-                  Object.values(referenceLineMap.col).forEach(referItem => {
-                    if (i >= referItem.min && i <= referItem.max) {
-                      match = referItem.value
-                    }
-                  })
-                  if (match !== null) {
-                    if (index === 0) {
-                      newX = match
-                    } else if (index === 1) {
-                      newX = parseInt(match - this.dragInfo.w / 2)
-                    } else if (index === 2) {
-                      newX = parseInt(match - this.dragInfo.w)
-                    }
-                  }
-                  return match
-                })
-                .filter(i => i !== null)
-            }
-            let finalX, finalY
-            if (newX !== null) {
-              finalX = newX
-              if (this.dragRef) {
-                this.dragRef.elmX = newX
-                this.dragRef.left = newX
-              }
-            } else {
-              finalX = x
-            }
-            if (newY !== null) {
-              finalY = newY
-              if (this.dragRef) {
-                this.dragRef.elmY = newY
-                this.dragRef.top = newY
-              }
-            } else {
-              finalY = y
-            }
-            this.updateDragInfo({ x: finalX, y: finalY })
-            dragItemPosition[this.item.id] = this.dragInfo
-            this.setMatchedLine({
-              row: matchedLine.row.map(i => (i + canvasPosition.top)),
-              col: matchedLine.col.map(i => (i + canvasPosition.left))
-            })
-          } else {
-            this.updateDragInfo({ x, y })
-          }
-        },
-        onDragStop(e) {
-          if (this.moving) {
-            this.moving = false
-            hasCopiedOnDrag = false
-            canvasSize = null
-            canvasPosition = null
-            referenceLineMap = null
-            this.removeMatchedLine()
-          } else if (!e.ctrlKey) {
-            this.replaceActiveItems([this.item])
-          }
-        },
-        onRotate(e) {
-          if (!this.rotating) {
-            this.rotating = true
-            store.dispatch('poster/history/push')
-          }
-          this.updateDragInfo({ rotateZ: (e > 0 ? e : 360 + e) % 360 })
-        },
-        onRotateStop() {
-          this.rotating = false
-        },
-        updateDragInfo: updateDragInfo
-      }
-    }
-  }
-
   // 组件mixin
   static widgetMixin(options) {
-    options = Object.assign({}, {
-      baseMenuList: getBaseMenuList(),
-      contextmenu: true // 使用右键菜单功能
-    }, options)
+    options = Object.assign(
+      {},
+      {
+        baseMenuList: getBaseMenuList(),
+        contextmenu: true // 使用右键菜单功能
+      },
+      options
+    )
     return {
       data() {
         return {
@@ -371,25 +156,40 @@ export default class Widget {
         // 初始化菜单
         this._baseMenuList = options.baseMenuList
         // 复制组件初始化数据
-        if (this.item.isCopied && (this.item._copyFrom === 'command') && !this.item._isBackup) {
+        if (
+          this.item.isCopied &&
+          this.item._copyFrom === 'command' &&
+          !this.item._isBackup
+        ) {
           // Object.assign(this.$data, this.item.componentState())
           // const count = this.item.componentState.count
           const count = this.item._copyCount
-          this.updateDragInfo({
-            x: this.dragInfo.x + count * 10,
-            y: this.dragInfo.y + count * 10
-          }, true/** updateSelfOnly */)
+          this.updateDragInfo(
+            {
+              x: this.dragInfo.x + count * 10,
+              y: this.dragInfo.y + count * 10
+            },
+            true /** updateSelfOnly */
+          )
         }
       },
       mounted() {
         // 背景是自带drag，其他组件是嵌套在dragContainer里面
-        const dragRef = this.$refs.drag || (this.$parent._isHoc ? this.$parent.$parent : this.$parent)
+        const dragRef =
+          this.$refs.drag ||
+          (this.$parent._isHoc ? this.$parent.$parent : this.$parent)
         if (options.contextmenu) {
           dragRef.$el.addEventListener('contextmenu', (e) => {
-            const menuList = [...(this.getMenuList() || []), ...this._baseMenuList]
+            const menuList = [
+              ...(this.getMenuList() || []),
+              ...this._baseMenuList
+            ]
             const isLock = this.item.lock
             if (this.item.type !== 'background') {
-              menuList.unshift({ label: isLock ? '解除锁定' : '锁定', command: isLock ? '$unlock' : '$lock' })
+              menuList.unshift({
+                label: isLock ? '解除锁定' : '锁定',
+                command: isLock ? '$unlock' : '$lock'
+              })
             }
             if (menuList.length > 0) {
               console.log('contextmenu')
@@ -408,12 +208,16 @@ export default class Widget {
         updateDragInfo: updateDragInfo,
         // 获取菜单列表
         getMenuList() {
-          console.warn(`${this.item.type}-${this.item.id}: "getMenuList" is null`)
+          console.warn(
+            `${this.item.type}-${this.item.id}: "getMenuList" is null`
+          )
           return null
         },
         // 执行命令
         executeContextCommand(command) {
-          console.warn(`${this.item.type}-${this.item.id}: "executeContextCommand" is null`)
+          console.warn(
+            `${this.item.type}-${this.item.id}: "executeContextCommand" is null`
+          )
           return null
         },
         _executeBaseContextCommand(command) {
@@ -451,6 +255,230 @@ export default class Widget {
       left: (dragInfo.x / canvasSize.width) * 100 + '%',
       top: (dragInfo.y / canvasSize.height) * 100 + '%',
       transform: `rotateZ(${dragInfo.rotateZ}deg)`
+    }
+  }
+}
+
+// 组件容器mixin
+export function widgetContainerMixin(options) {
+  options = Object.assign({}, options)
+
+  let hasCopiedOnDrag = false // 拖动过程中是否执行过复制
+  let canvasSize = null
+  let canvasPosition = null
+  let referenceLineMap = null // 参考线位置（相对于画布的位置）{col:[],row:[]}
+  return {
+    data() {
+      return {
+        isActive: false
+      }
+    },
+    props: {
+      /**
+       * widgetConfig
+       */
+      item: {
+        type: Object,
+        default() {
+          return {}
+        }
+      }
+    },
+    computed: {
+      ...mapGetters(['activeItemIds']),
+      wState() {
+        return this.item.wState
+      },
+      dragInfo: {
+        get() {
+          return this.item.dragInfo
+        },
+        set(val) {
+          this.updateDragInfo(val)
+        }
+      }
+    },
+    beforeDestroy() {
+      delete dragItemPosition[this.item.id]
+    },
+    watch: {
+      activeItemIds: {
+        handler(newVal) {
+          if (this.item.couldAddToActive) {
+            this.isActive = newVal.includes(this.item.id)
+          }
+        },
+        immediate: true
+      }
+    },
+    mounted() {
+      this.dragRef = this.$refs.drag
+      dragItemPosition[this.item.id] = this.dragInfo
+    },
+    methods: {
+      ...mapActions([
+        'addActiveItem',
+        'replaceActiveItems',
+        'removeActiveItem',
+        'setMatchedLine',
+        'removeMatchedLine'
+      ]),
+      activated(e) {
+        this.isActive = true
+        if (e) {
+          if (e.ctrlKey) {
+            this.addActiveItem(this.item)
+          } else {
+            this.replaceActiveItems([this.item])
+          }
+        }
+      },
+      deactivated() {
+        this.isActive = false
+        this.removeActiveItem(this.item)
+      },
+      onResize(x, y, w, h) {
+        if (!this.resizing) {
+          this.resizing = true
+          store.dispatch('poster/history/push')
+        }
+        this.updateDragInfo({ x, y, w, h })
+        dragItemPosition[this.item.id] = this.dragInfo
+        // this.onDrag(x, y)
+      },
+      onResizeStop() {
+        this.resizing = false
+      },
+      onDrag(x, y, e) {
+        if (!this.moving) {
+          this.moving = true
+          store.dispatch('poster/history/push')
+        }
+        // ctrl快捷键拖动复制
+        if (!hasCopiedOnDrag && e && e.ctrlKey) {
+          const lastCopiedWidgets = store.state.poster.copiedWidgets
+          // const copyData = getCopyData(this.item, this.$refs.widget)
+          const copyData = this.item
+          copyData._copyFrom = 'drag'
+          store.dispatch('poster/copyWidget', copyData)
+          store.dispatch('poster/pasteWidget')
+          store.dispatch('poster/copyWidget', lastCopiedWidgets) // 恢复之前复制的组件
+          hasCopiedOnDrag = true
+        }
+        // 参考线吸附对齐
+        if (!e.altKey) {
+          canvasSize = canvasSize || store.state.poster.canvasSize
+          canvasPosition = canvasPosition || store.state.poster.canvasPosition
+          if (!referenceLineMap) {
+            referenceLineMap = getReferenceLineMap(
+              canvasSize,
+              canvasPosition,
+              store.state.poster.referenceLine,
+              Object.assign({}, dragItemPosition, { [this.item.id]: null })
+            )
+          }
+          const maxX = x + this.dragInfo.w
+          const maxY = y + this.dragInfo.h
+          const widgetSelfLine = {
+            row: [y, parseInt((y + maxY) / 2), maxY], // left - center - right
+            col: [x, parseInt((x + maxX) / 2), maxX]
+          }
+          let newX = null
+          let newY = null
+          const matchedLine = {
+            row: widgetSelfLine.row
+              .map((i, index) => {
+                let match = null
+                Object.values(referenceLineMap.row).forEach((referItem) => {
+                  if (i >= referItem.min && i <= referItem.max) {
+                    match = referItem.value
+                  }
+                })
+                if (match !== null) {
+                  if (index === 0) {
+                    newY = match
+                  } else if (index === 1) {
+                    newY = parseInt(match - this.dragInfo.h / 2)
+                  } else if (index === 2) {
+                    newY = parseInt(match - this.dragInfo.h)
+                  }
+                }
+                return match
+              })
+              .filter((i) => i !== null),
+            col: widgetSelfLine.col
+              .map((i, index) => {
+                let match = null
+                Object.values(referenceLineMap.col).forEach((referItem) => {
+                  if (i >= referItem.min && i <= referItem.max) {
+                    match = referItem.value
+                  }
+                })
+                if (match !== null) {
+                  if (index === 0) {
+                    newX = match
+                  } else if (index === 1) {
+                    newX = parseInt(match - this.dragInfo.w / 2)
+                  } else if (index === 2) {
+                    newX = parseInt(match - this.dragInfo.w)
+                  }
+                }
+                return match
+              })
+              .filter((i) => i !== null)
+          }
+          let finalX, finalY
+          if (newX !== null) {
+            finalX = newX
+            if (this.dragRef) {
+              this.dragRef.elmX = newX
+              this.dragRef.left = newX
+            }
+          } else {
+            finalX = x
+          }
+          if (newY !== null) {
+            finalY = newY
+            if (this.dragRef) {
+              this.dragRef.elmY = newY
+              this.dragRef.top = newY
+            }
+          } else {
+            finalY = y
+          }
+          this.updateDragInfo({ x: finalX, y: finalY })
+          dragItemPosition[this.item.id] = this.dragInfo
+          this.setMatchedLine({
+            row: matchedLine.row.map((i) => i + canvasPosition.top),
+            col: matchedLine.col.map((i) => i + canvasPosition.left)
+          })
+        } else {
+          this.updateDragInfo({ x, y })
+        }
+      },
+      onDragStop(e) {
+        if (this.moving) {
+          this.moving = false
+          hasCopiedOnDrag = false
+          canvasSize = null
+          canvasPosition = null
+          referenceLineMap = null
+          this.removeMatchedLine()
+        } else if (!e.ctrlKey) {
+          this.replaceActiveItems([this.item])
+        }
+      },
+      onRotate(e) {
+        if (!this.rotating) {
+          this.rotating = true
+          store.dispatch('poster/history/push')
+        }
+        this.updateDragInfo({ rotateZ: (e > 0 ? e : 360 + e) % 360 })
+      },
+      onRotateStop() {
+        this.rotating = false
+      },
+      updateDragInfo: updateDragInfo
     }
   }
 }

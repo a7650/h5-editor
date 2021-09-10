@@ -142,6 +142,7 @@ import settingCenter from './settingCenter'
 import Vue from 'vue'
 import ExportService from 'poster/service/exportService'
 import { pluginMap, pluginWrap } from '../plugins'
+
 const pluginComponents = {}
 const plugins = []
 for (const [pluginName, options] of Object.entries(pluginMap.extendSideBar)) {

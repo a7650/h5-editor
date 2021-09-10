@@ -83,6 +83,10 @@ export default {
       ]
     }
   },
+  created() {
+    this.current = this.widgets[0]
+    this.init()
+  },
   methods: {
     ...mapActions(['addBackground']),
     init() {
@@ -94,10 +98,6 @@ export default {
         })
       )
     }
-  },
-  created() {
-    this.current = this.widgets[0]
-    this.init()
   }
 }
 </script>

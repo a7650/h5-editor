@@ -1,9 +1,13 @@
 <template>
   <div class="poster-editor" :class="{ 'init-loading': initLoading }">
     <div class="base">
+      <!-- 左侧添加组件栏 -->
       <left-side />
+      <!-- 主要操作区域 -->
       <main-component ref="main" />
+      <!-- 常用功能栏 -->
       <extend-side-bar />
+      <!-- 组件编辑区域 -->
       <control-component />
     </div>
     <!-- 图层面板 -->
@@ -21,7 +25,7 @@ import leftSide from './leftSide/index'
 import extendSideBar from './extendSideBar'
 import layerPanel from './extendSideBar/layerPanel'
 import store from '@/store'
-import posterModule from './vuexModule/poster'
+import posterModule from '@/store/modules/poster/poster'
 
 const DELETE_KEY = 8 // delete
 const COPY_KEY = 67 // c
@@ -127,7 +131,7 @@ export default {
           if (this.activeItemIds.length > 0) {
             this.replacePosterItems(
               this.posterItems.filter(
-                item => !this.activeItemIds.includes(item.id)
+                (item) => !this.activeItemIds.includes(item.id)
               )
             )
           }
@@ -145,7 +149,7 @@ export default {
             // const widgetRef = widgetRefs[itemId][0]
             // copiedWidgets.push(getCopyData(widgetRef.item, widgetRef._self))
             // })
-            const copiedWidgets = [...this.activeItems].map(item => {
+            const copiedWidgets = [...this.activeItems].map((item) => {
               item._copyFrom = 'command'
               return item
             })

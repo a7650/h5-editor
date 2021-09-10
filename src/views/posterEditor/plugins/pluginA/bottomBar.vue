@@ -1,6 +1,8 @@
 <template>
   <div class="plugin-a">
-    #插件测试
+    <button>
+      #底部工具栏插件测试#
+    </button>
   </div>
 </template>
 
@@ -12,4 +14,10 @@ export default {
   methods: {}
 }
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+button {
+  font-size: 12px;
+  background-color: none;
+  border: 1px solid $colorBorder;
+}
+</style>

@@ -12,14 +12,13 @@
 import { controlMixin } from '../helpers'
 export default {
   mixins: [controlMixin],
-  props: ['pluginHelpers'],
   computed: {
     buttonCount: {
       get() {
         return this.wState.buttonCount
       },
       set(val) {
-        this.pluginHelpers.updateWidgetState({
+        this.$pluginHelpers.updateWidgetState({
           keyPath: 'buttonCount',
           value: parseInt(val),
           widgetId: this.item.id

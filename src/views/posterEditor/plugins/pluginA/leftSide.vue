@@ -7,13 +7,18 @@
 <script>
 import PluginA from './constructor'
 export default {
-  props: ['pluginHelpers'],
   methods: {
     add() {
-      this.pluginHelpers.addWidget(new PluginA())
+      this.$pluginHelpers.addWidget(new PluginA())
     }
   }
 }
 </script>
 
-<style></style>
+<style scoped>
+.left-side-test{
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+</style>

@@ -4,9 +4,9 @@
 <p align="center">H5-Editor是一个纯前端项目，基于 Vue2 开发、通过拖拽生成页面，类似于 <a href="http://www.eqxiu.com">易企秀</a>、<a href="https://h5.baidu.com">百度 H5</a>等</p>
 
 
-### 预览
+### Demo
 
-> [点击此处访问项目示例](http://49.235.89.23/poster)
+> [点击此处访问在线demo](http://49.235.89.23/poster)
 
                                                       
 ## Usage
