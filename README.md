@@ -6,7 +6,7 @@
 
 ### Demo
 
-> [点击此处访问在线demo](http://49.235.89.23/poster)
+> [点击此处访问在线demo](https://a7650.github.io/h5-editor/#/)
 
                                                       
 ## Usage
