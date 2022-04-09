@@ -14,7 +14,7 @@
     "element-ui": "^2.13.2",
     "file-saver": "^2.0.2",
     "lodash": "^4.17.19",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "portal-vue": "^2.1.7",
     "ts-loader": "^8.0.1",
     "typescript": "^3.9.7",
