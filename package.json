@@ -13,7 +13,7 @@
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
     "file-saver": "^2.0.2",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "moment": "^2.27.0",
     "portal-vue": "^2.1.7",
     "ts-loader": "^8.0.1",
