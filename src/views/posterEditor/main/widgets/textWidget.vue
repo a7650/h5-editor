@@ -112,6 +112,7 @@ export default {
     margin: 10px;
     width: calc(100% - 20px);
     height: calc(100% - 20px);
+    overflow: hidden;
     white-space: wrap;
     word-break: break-all;
     &.editing {
